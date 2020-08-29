@@ -1,0 +1,43 @@
+{
+  "name": "twitch-listener",
+  "version": "1.0.0",
+  "description": "listener for my twitch bot",
+  "main": "index.js",
+  "author": "WalkerMakes",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc",
+    "start": "node index.js",
+    "dev": "concurrently \"tsc -w\" \"nodemon ./dist/index.js\""
+  },
+  "dependencies": {
+    "@types/cors": "^2.8.7",
+    "@types/express": "^4.17.7",
+    "@types/node": "^14.0.27",
+    "axios": "^0.19.2",
+    "cors": "^2.8.5",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-graphql": "^0.11.0",
+    "graphql": "^15.3.0",
+    "graphql-modules": "^1.0.0-alpha.1",
+    "graphql-tag": "^2.11.0",
+    "graphql-tools": "^6.0.18",
+    "mongoose": "^5.10.0",
+    "reflect-metadata": "^0.1.13",
+    "tmi": "^2.0.0",
+    "twitch": "^4.1.3",
+    "twitch-chat-client": "^4.1.3",
+    "twitch-pubsub-client": "^4.1.3",
+    "twitch-webhooks": "^4.1.3",
+    "twitchps": "^1.5.4"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.10",
+    "concurrently": "^5.3.0",
+    "jest": "^26.4.2",
+    "nodemon": "^2.0.4",
+    "ts-jest": "^26.3.0",
+    "typescript": "^3.9.7"
+  }
+}
