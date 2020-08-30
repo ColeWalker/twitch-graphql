@@ -8,7 +8,6 @@ export const getRandomSub = async (
     userId
   )
   const max = subscriptions.data.length
-  const min = 0
-  const random = Math.floor(Math.random() * (max - min) + min)
+  const random = Math.floor(Math.random() * max)
   return subscriptions.data[random]
 }
