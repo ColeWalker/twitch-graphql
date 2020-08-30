@@ -6,6 +6,7 @@ import { TwitchId } from '../injections/Twitch-Id'
 import { HelixSubscription } from 'twitch/lib'
 import { getSubs } from '../subscriptions/GetSubs'
 import { getCurrentSubCount } from '../subscriptions/SubCount'
+import { getRandomSub } from '../subscriptions/GetRandomSub'
 
 export const SubscriberResolvers = {
   Query: {
@@ -18,6 +19,16 @@ export const SubscriberResolvers = {
       const apiClient = await clients.apiClient()
       const twitchId = injector.get(TwitchId).id()
       return await getLatestSub(twitchId, apiClient)
+    },
+    async randomSub(
+      _parent: {},
+      args: {},
+      { injector }: GraphQLModules.ModuleContext
+    ) {
+      const clients = await injector.get(TwitchClients)
+      const apiClient = await clients.apiClient()
+      const twitchId = injector.get(TwitchId).id()
+      return await getRandomSub(twitchId, apiClient)
     },
     async allSubs(
       _parent: {},
@@ -65,8 +76,9 @@ export const SubscriberModule = createModule({
   typeDefs: gql`
     type Query {
       latestSub: Subscriber!
+      randomSub: Subscriber!
       allSubs: [Subscriber]!
-      subCount: Int
+      subCount: Int!
     }
 
     type Subscriber {
