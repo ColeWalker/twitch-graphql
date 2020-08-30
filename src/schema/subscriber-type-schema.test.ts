@@ -32,6 +32,34 @@ describe('SubscriberModule', () => {
     expect(result?.data?.latestSub).toHaveProperty('userDisplayName')
   })
 
+  it('randomSub', async () => {
+    const app = createApplication({ modules: [SubscriberModule] })
+    const schema = app.createSchemaForApollo()
+
+    const document = parse(`
+      {
+        randomSub {
+          userId
+          tier
+          userDisplayName
+          isGift
+        }
+      }
+    `)
+    const contextValue = { request: {}, response: {} }
+    const result = await execute({
+      schema,
+      contextValue,
+      document,
+    })
+
+    expect(result?.errors?.length).toBeFalsy()
+    expect(result?.data?.randomSub).toHaveProperty('tier')
+    expect(result?.data?.randomSub).toHaveProperty('userId')
+    expect(result?.data?.randomSub).toHaveProperty('isGift')
+    expect(result?.data?.randomSub).toHaveProperty('userDisplayName')
+  })
+
   it('allSubs', async () => {
     const app = createApplication({ modules: [SubscriberModule] })
     const schema = app.createSchemaForApollo()
