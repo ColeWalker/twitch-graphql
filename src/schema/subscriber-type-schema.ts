@@ -85,7 +85,6 @@ export const SubscriberModule = createModule({
       userDisplayName: String!
       userId: String!
       isGift: Boolean!
-      # user: User
     }
   `,
   resolvers: SubscriberResolvers,
