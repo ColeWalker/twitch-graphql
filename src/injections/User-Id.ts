@@ -1,4 +1,10 @@
 import 'reflect-metadata'
-import { InjectionToken } from 'graphql-modules'
+import { Injectable } from 'graphql-modules'
+require('dotenv').config()
 
-export const UserId = new InjectionToken<string>('user-id')
+@Injectable()
+export class UserId {
+  id() {
+    return process.env.USER_ID || ''
+  }
+}

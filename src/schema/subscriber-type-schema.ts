@@ -6,10 +6,7 @@ import { TwitchId } from '../injections/Twitch-Id'
 import { HelixSubscription } from 'twitch/lib'
 import { getSubs } from '../subscriptions/GetSubs'
 import { getCurrentSubCount } from '../subscriptions/SubCount'
-require('dotenv').config()
 
-const userId = process.env.USER_ID || ''
-const twitchId = process.env.TWITCH_ID || ''
 export const SubscriberResolvers = {
   Query: {
     async latestSub(
@@ -19,8 +16,8 @@ export const SubscriberResolvers = {
     ) {
       const clients = await injector.get(TwitchClients)
       const apiClient = await clients.apiClient()
-
-      return await getLatestSub(injector.get(TwitchId), apiClient)
+      const twitchId = injector.get(TwitchId).id()
+      return await getLatestSub(twitchId, apiClient)
     },
     async allSubs(
       _parent: {},
@@ -29,8 +26,9 @@ export const SubscriberResolvers = {
     ) {
       const clients = await injector.get(TwitchClients)
       const apiClient = await clients.apiClient()
+      const twitchId = injector.get(TwitchId).id()
 
-      return await getSubs(injector.get(TwitchId), apiClient)
+      return await getSubs(twitchId, apiClient)
     },
     async subCount(
       _parent: {},
@@ -39,7 +37,9 @@ export const SubscriberResolvers = {
     ) {
       const clients = await injector.get(TwitchClients)
       const apiClient = await clients.apiClient()
-      return await getCurrentSubCount(injector.get(TwitchId), apiClient)
+      const twitchId = injector.get(TwitchId).id()
+
+      return await getCurrentSubCount(twitchId, apiClient)
     },
   },
   Subscriber: {
@@ -61,17 +61,7 @@ export const SubscriberResolvers = {
 export const SubscriberModule = createModule({
   id: `subscriber-module`,
   dirname: __dirname,
-  providers: [
-    TwitchClients,
-    {
-      provide: TwitchId,
-      useValue: twitchId,
-    },
-    {
-      provide: UserId,
-      useValue: userId,
-    },
-  ],
+  providers: [TwitchClients, TwitchId, UserId],
   typeDefs: gql`
     type Query {
       latestSub: Subscriber!

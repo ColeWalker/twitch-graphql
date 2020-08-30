@@ -3,7 +3,6 @@ import ApiClient from 'twitch'
 import PubSubClient from 'twitch-pubsub-client'
 import RefreshToken from '../helpers/RefreshToken'
 import { Injectable } from 'graphql-modules'
-require('dotenv').config()
 
 @Injectable()
 export class TwitchClients {
