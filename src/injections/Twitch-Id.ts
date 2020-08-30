@@ -1,4 +1,9 @@
 import 'reflect-metadata'
-import { InjectionToken } from 'graphql-modules'
+import { Injectable } from 'graphql-modules'
 
-export const TwitchId = new InjectionToken<string>('twitch-id')
+@Injectable()
+export class TwitchId {
+  id() {
+    return process.env.TWITCH_ID || ''
+  }
+}
