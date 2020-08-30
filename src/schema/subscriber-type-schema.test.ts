@@ -1,6 +1,7 @@
 import { SubscriberModule } from './subscriber-type-schema'
 import { execute, parse } from 'graphql'
 import { createApplication } from 'graphql-modules'
+import { UserModule } from './user-type-schema'
 
 describe('SubscriberModule', () => {
   it('latestSub', async () => {
@@ -74,5 +75,29 @@ describe('SubscriberModule', () => {
 
     expect(result?.errors?.length).toBeFalsy()
     expect(result?.data?.subCount).toBeTruthy()
+  })
+
+  it('sub user', async () => {
+    const app = createApplication({ modules: [SubscriberModule, UserModule] })
+    const schema = app.createSchemaForApollo()
+
+    const document = parse(`
+      {
+        latestSub {
+          user{
+            displayName
+          }
+        }
+      }
+    `)
+    const contextValue = { request: {}, response: {} }
+    const result = await execute({
+      schema,
+      contextValue,
+      document,
+    })
+
+    expect(result?.errors?.length).toBeFalsy()
+    expect(result?.data?.latestSub?.user).toBeTruthy()
   })
 })

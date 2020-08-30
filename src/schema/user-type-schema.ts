@@ -1,15 +1,29 @@
 import { createModule, gql } from 'graphql-modules'
-import { HelixSubscription } from 'twitch/lib'
+import { HelixSubscription, HelixUser } from 'twitch/lib'
 
 const UserResolvers = {
   Subscriber: {
-    async user(
-      sub: HelixSubscription,
-      args: {},
-      { injector }: GraphQLModules.ModuleContext
-    ) {},
+    async user(sub: HelixSubscription) {
+      return await sub.getUser()
+    },
   },
-  User: {},
+  User: {
+    displayName(user: HelixUser) {
+      return user.displayName
+    },
+    description(user: HelixUser) {
+      return user.description
+    },
+    id(user: HelixUser) {
+      return user.id
+    },
+    profilePictureURL(user: HelixUser) {
+      return user.profilePictureUrl
+    },
+    views(user: HelixUser) {
+      return user.views
+    },
+  },
 }
 export const UserModule = createModule({
   id: `user-module`,
@@ -20,7 +34,7 @@ export const UserModule = createModule({
       description: String!
       id: String!
       profilePictureURL: String!
-      view: Int!
+      views: Int!
 
       # stream: Stream
     }
