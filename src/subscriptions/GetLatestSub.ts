@@ -9,13 +9,13 @@ export const getLatestSub = async (
     type: TwitchAPICallType.Kraken,
   })
 
-  const allSubs = await twitchClient.helix.subscriptions.getSubscriptions(
+  const helixSubs = await twitchClient.helix.subscriptions.getSubscriptions(
     userId
   )
 
-  const sub = allSubs.data.find(
+  const sub = helixSubs.data.find(
     (h) => h.userId === subscriptions.subscriptions[0].user._id
   )
 
-  return sub || allSubs.data[allSubs.data.length - 1]
+  return sub || helixSubs.data[helixSubs.data.length - 1]
 }
