@@ -1,9 +1,8 @@
 import PubSubClient from 'twitch-pubsub-client/lib'
 
-import getCurrentSubCount from './SubCount'
+import { getCurrentSubCount } from './SubCount'
 import ApiClient from 'twitch'
 import express from 'express'
-import { moveMessagePortToContext } from 'worker_threads'
 export default async function (
   channelID: string,
   pubSubClient: PubSubClient,

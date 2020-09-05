@@ -1,27 +1,25 @@
 import express from 'express'
-import ApiClient from 'twitch'
-import PubSubClient from 'twitch-pubsub-client'
-import getCurrentSubCount from './subscriptions/SubCount'
-import RedemptionListener from './channel-points/RedemptionListener'
-import SubscriptionListener from './subscriptions/SubscriptionListener'
-import RefreshToken from './helpers/RefreshToken'
 import cors from 'cors'
+import { graphqlHTTP } from 'express-graphql'
+import { SubscriberModule } from './schema/subscriber-type-schema'
+import { UserModule } from './schema/user-type-schema'
+import { createApplication } from 'graphql-modules'
 require('dotenv').config()
 
-const app = express()
-app.use(cors())
-;(async () => {
-  //   const userName = process.env.TWITCH_USER_NAME || ''
-  const channelID = process.env.TWITCH_ID || ''
-  console.log(channelID)
-  const authProvider = await RefreshToken()
-  const apiClient = new ApiClient({ authProvider })
-  const pubSubClient = new PubSubClient()
-  await pubSubClient.registerUserListener(apiClient)
+const app = createApplication({
+  modules: [SubscriberModule, UserModule],
+})
+const execute = app.createExecution()
+const server = express()
+server.use(cors())
+server.use(
+  '/graphql',
+  graphqlHTTP((request: any) => ({
+    schema: app.schema,
+    graphiql: true,
+    customExecuteFn: execute as any,
+    context: { request },
+  }))
+)
 
-  app.set('subCount', await getCurrentSubCount(channelID, apiClient))
-  await RedemptionListener(channelID, pubSubClient)
-
-  await SubscriptionListener(channelID, pubSubClient, apiClient, app)
-  app.listen(5555)
-})()
+server.listen(5555)
