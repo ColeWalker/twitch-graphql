@@ -35,8 +35,8 @@ More information can be found on the [conventional commits website.](https://www
 
 After you have set up your twitch application, you can get all of the required keys by doing the following:
 
-1. Visit the following url`https://id.twitch.tv/oauth2/authorize?client_id=YOUR APPLICATION CLIENT ID&redirect_uri=http://localhost&response_type=code&scope=channel:read:subscriptions+channel_subscriptions+analytics:read:games+chat:read whispers:read+channel:read:redemptions+bits:read`
-2. It will send you to `localhost://code=SOME CODE` copy the code
+1. Visit the following url: `https://id.twitch.tv/oauth2/authorize?client_id=YOUR APPLICATION CLIENT ID&redirect_uri=http://localhost&response_type=code&scope=channel:read:subscriptions+channel_subscriptions+analytics:read:games+chat:read whispers:read+channel:read:redemptions+bits:read`
+2. It will send you to `localhost://code=SOME CODE/other-junk` copy the code only.
 3. Paste the code into a POST request at this URL: `https://id.twitch.tv/oauth2/token?client_id=YOUR CLIENT ID&client_secret=YOUR CLIENT SECRET&code=YOUR CODE&grant_type=authorization_code&redirect_uri=http://localhost`
 
 This will respond with the refresh token that you need.
