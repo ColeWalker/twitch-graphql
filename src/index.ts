@@ -6,6 +6,22 @@ import { UserModule } from './schema/user-type-schema'
 import { createApplication } from 'graphql-modules'
 require('dotenv').config()
 
+let port = 5555
+
+const portEnv = parseInt(process?.env?.PORT || '')
+if (portEnv) {
+  port = portEnv
+}
+
+const portIndex =
+  process?.argv?.findIndex((arg) => arg === '--port' || arg === '-p') + 1
+
+const portCmdNum = parseInt(process?.argv?.[portIndex])
+
+if (portCmdNum) {
+  port = portCmdNum
+}
+
 const app = createApplication({
   modules: [SubscriberModule, UserModule],
 })
@@ -22,4 +38,6 @@ server.use(
   }))
 )
 
-server.listen(5555)
+server.listen(port, () => {
+  console.log(`server listening at ${port}`)
+})
