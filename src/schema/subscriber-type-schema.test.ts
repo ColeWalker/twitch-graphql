@@ -85,6 +85,37 @@ describe('SubscriberModule', () => {
     expect(Array.isArray(result?.data?.allSubs)).toBeTruthy()
   })
 
+  it('findSub', async () => {
+    const app = createApplication({ modules: [SubscriberModule] })
+    const schema = app.createSchemaForApollo()
+
+    const document = parse(`
+      {
+        getSubscriberByDisplayName(displayName: "SupCole") {
+          userId
+          tier
+          userDisplayName
+          isGift
+        }
+      }
+    `)
+    const contextValue = { request: {}, response: {} }
+    const result = await execute({
+      schema,
+      contextValue,
+      document,
+    })
+
+    expect(result?.errors?.length).toBeFalsy()
+    expect(result?.data?.getSubscriberByDisplayName).toBeTruthy()
+    expect(result?.data?.getSubscriberByDisplayName).toHaveProperty('tier')
+    expect(result?.data?.getSubscriberByDisplayName).toHaveProperty('userId')
+    expect(result?.data?.getSubscriberByDisplayName).toHaveProperty('isGift')
+    expect(result?.data?.getSubscriberByDisplayName).toHaveProperty(
+      'userDisplayName'
+    )
+  })
+
   it('subCount', async () => {
     const app = createApplication({ modules: [SubscriberModule] })
     const schema = app.createSchemaForApollo()
