@@ -37,14 +37,15 @@ describe('StreamModule', () => {
 
     expect(result?.errors?.length).toBeFalsy()
     const stream = result?.data?.latestSub?.user?.stream
-    expect(stream).toBeTruthy()
-    expect(stream).toHaveProperty('language')
-    expect(stream).toHaveProperty('gameId')
-    expect(stream).toHaveProperty('id')
-    expect(stream).toHaveProperty('title')
-    expect(stream).toHaveProperty('viewers')
-    expect(stream).toHaveProperty('thumbnailUrl')
-    expect(stream).toHaveProperty('userDisplayName')
-    expect(stream).toHaveProperty('userId')
+    if (stream) {
+      expect(stream).toHaveProperty('language')
+      expect(stream).toHaveProperty('gameId')
+      expect(stream).toHaveProperty('id')
+      expect(stream).toHaveProperty('title')
+      expect(stream).toHaveProperty('viewers')
+      expect(stream).toHaveProperty('thumbnailUrl')
+      expect(stream).toHaveProperty('userDisplayName')
+      expect(stream).toHaveProperty('userId')
+    }
   })
 })
