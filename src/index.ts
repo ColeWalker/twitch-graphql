@@ -3,6 +3,8 @@ import cors from 'cors'
 import { graphqlHTTP } from 'express-graphql'
 import { SubscriberModule } from './schema/subscriber-type-schema'
 import { UserModule } from './schema/user-type-schema'
+import { StreamModule } from './schema/stream-type-schema'
+import { GameModule } from './schema/game-type-schema'
 import { createApplication } from 'graphql-modules'
 require('dotenv').config()
 
@@ -23,7 +25,7 @@ if (portCmdNum) {
 }
 
 const app = createApplication({
-  modules: [SubscriberModule, UserModule],
+  modules: [SubscriberModule, UserModule, StreamModule, GameModule],
 })
 const execute = app.createExecution()
 const server = express()
@@ -32,7 +34,7 @@ server.use(
   '/graphql',
   graphqlHTTP((request: any) => ({
     schema: app.schema,
-    graphiql: false,
+    graphiql: true,
     customExecuteFn: execute as any,
     context: { request },
   }))
