@@ -34,7 +34,7 @@ server.use(
   '/graphql',
   graphqlHTTP((request: any) => ({
     schema: app.schema,
-    graphiql: true,
+    graphiql: false,
     customExecuteFn: execute as any,
     context: { request },
   }))
