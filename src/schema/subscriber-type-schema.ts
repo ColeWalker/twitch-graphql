@@ -52,6 +52,19 @@ export const SubscriberResolvers = {
 
       return await getCurrentSubCount(twitchId, apiClient)
     },
+    async getSubscriberByDisplayName(
+      _parent: {},
+      args: { displayName: string },
+      { injector }: GraphQLModules.ModuleContext
+    ) {
+      const clients = await injector.get(TwitchClients)
+      const apiClient = await clients.apiClient()
+      const twitchId = injector.get(TwitchId).id()
+
+      const allSubs = await getSubs(twitchId, apiClient)
+
+      return allSubs.find((sub) => sub.userDisplayName === args?.displayName)
+    },
   },
   Subscriber: {
     async userId(obj: HelixSubscription) {
@@ -79,6 +92,7 @@ export const SubscriberModule = createModule({
       randomSub: Subscriber!
       allSubs: [Subscriber]!
       subCount: Int!
+      getSubscriberByDisplayName(displayName: String!): Subscriber
     }
 
     type Subscriber {
