@@ -24,6 +24,19 @@ if (portCmdNum) {
   port = portCmdNum
 }
 
+let useGraphiql = false
+if (process?.env?.GRAPHIQL?.toLowerCase() === 'true') {
+  useGraphiql = true
+}
+
+if (
+  process?.argv?.some(
+    (arg) => arg.toLowerCase() === '--graphiql' || arg.toLowerCase() === '-g'
+  )
+) {
+  useGraphiql = true
+}
+
 const app = createApplication({
   modules: [SubscriberModule, UserModule, StreamModule, GameModule],
 })
@@ -34,12 +47,12 @@ server.use(
   '/graphql',
   graphqlHTTP((request: any) => ({
     schema: app.schema,
-    graphiql: false,
+    graphiql: useGraphiql,
     customExecuteFn: execute as any,
     context: { request },
   }))
 )
 
 server.listen(port, () => {
-  console.log(`server listening at ${port}`)
+  console.log(`server listening at ${port}, graphiql enabled: ${useGraphiql}`)
 })
