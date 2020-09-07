@@ -1,6 +1,6 @@
 {
   "name": "twitch-graphql",
-  "version": "1.0.0",
+  "version": "0.0.0-development",
   "description": "A graphql wrapper for the Twitch API.",
   "main": "./dist/index.js",
   "author": "Cole Walker",
@@ -11,7 +11,8 @@
     "build": "tsc",
     "start": "node ./dist/server.js",
     "dev": "concurrently \"tsc -w\" \"nodemon ./dist/server.js\"",
-    "dev-g": "concurrently \"tsc -w\" \"nodemon ./dist/server.js -g\""
+    "dev-g": "concurrently \"tsc -w\" \"nodemon ./dist/server.js -g\"",
+    "semantic-release": "semantic-release"
   },
   "husky": {
     "hooks": {
@@ -48,7 +49,12 @@
     "husky": "^4.2.5",
     "jest": "^26.4.2",
     "nodemon": "^2.0.4",
+    "semantic-release": "^17.1.1",
     "ts-jest": "^26.3.0",
     "typescript": "^3.9.7"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ColeWalker/twitch-graphql-server.git"
   }
 }
