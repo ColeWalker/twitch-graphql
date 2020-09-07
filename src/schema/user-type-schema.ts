@@ -1,7 +1,7 @@
 import { createModule, gql } from 'graphql-modules'
 import { HelixSubscription, HelixUser } from 'twitch/lib'
 
-const UserResolvers = {
+export const UserResolvers = {
   Subscriber: {
     async user(sub: HelixSubscription) {
       return await sub.getUser()

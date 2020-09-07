@@ -2,10 +2,12 @@
   "name": "twitch-listener",
   "version": "1.0.0",
   "description": "listener for my twitch bot",
-  "main": "./dist/index.js",
+  "main": "dist/index.js",
   "author": "WalkerMakes",
   "license": "MIT",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "prepublish": "tsc",
     "build": "tsc",
     "start": "node ./dist/server.js",
     "dev": "concurrently \"tsc -w\" \"nodemon ./dist/server.js\"",
