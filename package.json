@@ -2,7 +2,7 @@
   "name": "twitch-graphql",
   "version": "0.0.0-development",
   "description": "A graphql wrapper for the Twitch API.",
-  "main": "./dist/index.js",
+  "main": "dist/index.js",
   "author": "Cole Walker",
   "license": "MIT",
   "types": "dist/index.d.ts",
