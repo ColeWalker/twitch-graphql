@@ -25,23 +25,24 @@ export const UserResolvers = {
     },
   },
 }
+
+export const UserSchema = gql`
+  type User {
+    displayName: String!
+    description: String!
+    id: String!
+    profilePictureURL: String!
+    views: Int!
+  }
+
+  extend type Subscriber {
+    user: User!
+  }
+`
+
 export const UserModule = createModule({
   id: `user-module`,
   dirname: __dirname,
-  typeDefs: gql`
-    type User {
-      displayName: String!
-      description: String!
-      id: String!
-      profilePictureURL: String!
-      views: Int!
-
-      # stream: Stream
-    }
-
-    extend type Subscriber {
-      user: User!
-    }
-  `,
+  typeDefs: UserSchema,
   resolvers: UserResolvers,
 })
