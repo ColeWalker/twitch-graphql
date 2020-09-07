@@ -6,8 +6,9 @@
   "author": "Cole Walker",
   "license": "MIT",
   "types": "dist/index.d.ts",
+  "homepage": "https://github.com/ColeWalker/twitch-graphql-server",
   "scripts": {
-    "prepublish": "tsc",
+    "prepare": "tsc",
     "build": "tsc",
     "start": "node ./dist/server.js",
     "dev": "concurrently \"tsc -w\" \"nodemon ./dist/server.js\"",
@@ -17,6 +18,10 @@
     "hooks": {
       "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ColeWalker/twitch-graphql-server.git"
   },
   "dependencies": {
     "@types/cors": "^2.8.7",
