@@ -19,3 +19,7 @@ jobs:
         run: yarn
       - name: Run tests
         run: yarn jest
+      - name: Release
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: npx semantic-release
