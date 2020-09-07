@@ -1,12 +1,12 @@
-# Twitch GraphQL Server
+# Twitch GraphQL
 
-This is an open source twitch API graphql wrapper. It is not currently working, but I think you can see where it's heading.
+This is an open source twitch API graphql wrapper. If you clone this repository you can run it as a full-functioning server. It is also installable as an npm package.
 
 By default it will run at `http://localhost:5555/graphql`.
 
 ## Environment Variables
 
-This project assumes that you already have a Twitch API App set up, and an OAuth token with every scope (this is a wrapper for the API, so we will be touching all of it). This information will be stored inside of several environment variables in a .env file. If you need a Twitch API Application (for user ID and client secret), information regarding setting one up is [documented in the Twitch API documentation.](https://dev.twitch.tv/docs/api/) If you require an OAuth or refresh token, there is [documentation available in the Twitch API documentation.](https://dev.twitch.tv/docs/authentication) Alternatively, there is a [guide below on how to retrieve a refresh token.](#getting-a-twitch-refresh-token)
+This project assumes that you already have a Twitch API App set up, and an OAuth token with every scope that you will need. This information will be stored inside of several environment variables in a .env file. If you need a Twitch API Application (for user ID and client secret), information regarding setting one up is [documented in the Twitch API documentation.](https://dev.twitch.tv/docs/api/) If you require an OAuth or refresh token, there is [documentation available in the Twitch API documentation.](https://dev.twitch.tv/docs/authentication) Alternatively, there is a [guide below on how to retrieve a refresh token.](#getting-a-twitch-refresh-token)
 
 | Variable      | Value                                                 |
 | ------------- | ----------------------------------------------------- |
@@ -16,6 +16,64 @@ This project assumes that you already have a Twitch API App set up, and an OAuth
 | REFRESH_TOKEN | The refresh token for your OAuth token                |
 | PORT          | The port that you want to run the server on           |
 | GRAPHIQL      | Whether or not you want the server to enable graphiql |
+
+## Installation and Usage of the NPM Package
+
+This library is also available as a NPM package.
+
+To install, run
+
+`npm install twitch-graphql`
+
+or
+
+`yarn add twitch-graphql`
+
+Usage of the package depends on the structure of your application. If you choose to use [graphql-modules](https://graphql-modules.com/) (Recommended), you can import the modules that you require and add them to your application, complete with authentication.
+
+Example:
+
+```ts
+import { graphqlHTTP } from 'express-graphql'
+import { SubscriberModule } from 'twitch-graphql'
+import { UserModule } from 'twitch-graphql'
+import { StreamModule } from 'twitch-graphql'
+import { GameModule } from 'twitch-graphql'
+import { createApplication } from 'graphql-modules'
+
+const port = 5555
+const app = createApplication({
+  modules: [SubscriberModule, UserModule, StreamModule, GameModule],
+})
+const execute = app.createExecution()
+const server = express()
+
+server.use(
+  '/graphql',
+  graphqlHTTP((request: any) => ({
+    schema: app.schema,
+    graphiql: useGraphiql,
+    customExecuteFn: execute as any,
+    context: { request },
+  }))
+)
+
+server.listen(port, () => {
+  console.log(`server listening at ${port}, graphiql enabled: ${useGraphiql}`)
+})
+```
+
+This example will run a server containing all of the current Twitch API modules.
+
+Alternatively, you can import the schema and resolvers separately. However, since the resolvers require a grapqhl-modules dependency injection to retrieve authentication information, you may have to rewrite them entirely if you choose to not use grapqhl-modules for your architecture.
+
+Examples of importing Schema and Resolvers:
+
+```ts
+import { StreamSchema, StreamResolvers } from 'twitch-graphql'
+import { SubscriberSchema, SubscriberResolvers } from 'twitch-graphql'
+import { UserSchema, UserResolvers } from 'twitch-graphql
+```
 
 ## Command line arguments
 
