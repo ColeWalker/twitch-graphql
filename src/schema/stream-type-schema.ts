@@ -38,26 +38,28 @@ export const StreamResolvers = {
   },
 }
 
+export const StreamSchema = gql`
+  type Stream {
+    language: String!
+    gameId: String!
+    id: String!
+    title: String!
+    viewers: Int!
+    thumbnailUrl: String!
+    userDisplayName: String!
+    userId: String!
+
+    user: User
+  }
+
+  extend type User {
+    stream: Stream
+  }
+`
+
 export const StreamModule = createModule({
   id: `stream-module`,
   dirname: __dirname,
-  typeDefs: gql`
-    type Stream {
-      language: String!
-      gameId: String!
-      id: String!
-      title: String!
-      viewers: Int!
-      thumbnailUrl: String!
-      userDisplayName: String!
-      userId: String!
-
-      user: User
-    }
-
-    extend type User {
-      stream: Stream
-    }
-  `,
+  typeDefs: StreamSchema,
   resolvers: StreamResolvers,
 })

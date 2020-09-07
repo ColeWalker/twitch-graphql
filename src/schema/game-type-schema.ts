@@ -20,19 +20,21 @@ export const GameResolvers = {
   },
 }
 
+export const GameSchema = gql`
+  type Game {
+    boxArtUrl: String!
+    id: String!
+    name: String!
+  }
+
+  extend type Stream {
+    game: Game
+  }
+`
+
 export const GameModule = createModule({
   id: `game-module`,
   dirname: __dirname,
-  typeDefs: gql`
-    type Game {
-      boxArtUrl: String!
-      id: String!
-      name: String!
-    }
-
-    extend type Stream {
-      game: Game
-    }
-  `,
+  typeDefs: GameSchema,
   resolvers: GameResolvers,
 })

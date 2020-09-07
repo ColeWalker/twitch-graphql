@@ -82,26 +82,28 @@ export const SubscriberResolvers = {
   },
 }
 
+export const SubscriberSchema = gql`
+  type Query {
+    latestSub: Subscriber!
+    randomSub: Subscriber!
+    allSubs: [Subscriber]!
+    subCount: Int!
+    getSubscriberByDisplayName(displayName: String!): Subscriber
+  }
+
+  type Subscriber {
+    cumulativeMonths: Int!
+    tier: Int!
+    userDisplayName: String!
+    userId: String!
+    isGift: Boolean!
+  }
+`
+
 export const SubscriberModule = createModule({
   id: `subscriber-module`,
   dirname: __dirname,
   providers: [TwitchClients, TwitchId, UserId],
-  typeDefs: gql`
-    type Query {
-      latestSub: Subscriber!
-      randomSub: Subscriber!
-      allSubs: [Subscriber]!
-      subCount: Int!
-      getSubscriberByDisplayName(displayName: String!): Subscriber
-    }
-
-    type Subscriber {
-      cumulativeMonths: Int!
-      tier: Int!
-      userDisplayName: String!
-      userId: String!
-      isGift: Boolean!
-    }
-  `,
+  typeDefs: SubscriberSchema,
   resolvers: SubscriberResolvers,
 })
