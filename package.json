@@ -5,7 +5,9 @@
   "main": "./dist/index.js",
   "author": "Cole Walker",
   "license": "MIT",
+  "types": "dist/index.d.ts",
   "scripts": {
+    "prepublish": "tsc",
     "build": "tsc",
     "start": "node ./dist/server.js",
     "dev": "concurrently \"tsc -w\" \"nodemon ./dist/server.js\"",
