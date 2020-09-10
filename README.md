@@ -133,3 +133,76 @@ After you have set up your twitch application, you can get all of the required k
 3. Paste the code into a POST request at this URL: `https://id.twitch.tv/oauth2/token?client_id=YOUR CLIENT ID&client_secret=YOUR CLIENT SECRET&code=YOUR CODE&grant_type=authorization_code&redirect_uri=http://localhost`
 
 This will respond with the refresh token that you need.
+
+## Schemas Provided
+
+### Subscriber
+
+```graphql
+type Query {
+  latestSub: Subscriber!
+  randomSub: Subscriber!
+  allSubs: [Subscriber]!
+  subCount: Int!
+  getSubscriberByDisplayName(displayName: String!): Subscriber
+}
+
+type Subscriber {
+  cumulativeMonths: Int!
+  tier: Int!
+  userDisplayName: String!
+  userId: String!
+  isGift: Boolean!
+}
+```
+
+### User
+
+```graphql
+type User {
+  displayName: String!
+  description: String!
+  id: String!
+  profilePictureURL: String!
+  views: Int!
+}
+
+extend type Subscriber {
+  user: User!
+}
+```
+
+### Stream
+
+```graphql
+type Stream {
+  language: String!
+  gameId: String!
+  id: String!
+  title: String!
+  viewers: Int!
+  thumbnailUrl: String!
+  userDisplayName: String!
+  userId: String!
+
+  user: User
+}
+
+extend type User {
+  stream: Stream
+}
+```
+
+### Game
+
+```graphql
+type Game {
+  boxArtUrl: String!
+  id: String!
+  name: String!
+}
+
+extend type Stream {
+  game: Game
+}
+```
