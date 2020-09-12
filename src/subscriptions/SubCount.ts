@@ -1,4 +1,4 @@
-import ApiClient from 'twitch'
+import { ApiClient } from 'twitch'
 
 export async function getCurrentSubCount(
   userId: string,

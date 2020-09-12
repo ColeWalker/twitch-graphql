@@ -1,10 +1,10 @@
-import ApiClient, { HelixSubscription, TwitchAPICallType } from 'twitch'
+import { ApiClient, HelixSubscription, TwitchAPICallType } from 'twitch'
 
 export const getLatestSub = async (
   userId: string,
   twitchClient: ApiClient
 ): Promise<HelixSubscription> => {
-  const subscriptions = await twitchClient.callAPI({
+  const subscriptions = await twitchClient.callApi({
     url: `channels/${userId}/subscriptions?limit=1&direction=desc`,
     type: TwitchAPICallType.Kraken,
   })
