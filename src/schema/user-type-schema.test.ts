@@ -2,11 +2,12 @@ import { createApplication } from 'graphql-modules'
 import { SubscriberModule } from './subscriber-type-schema'
 import { UserModule } from './user-type-schema'
 import { parse, execute } from 'graphql'
+import { QueryModule } from './query-type-schema'
 
 describe('UserModule', () => {
   it('user should have all fields', async () => {
     const app = createApplication({
-      modules: [SubscriberModule, UserModule],
+      modules: [QueryModule, SubscriberModule, UserModule],
     })
     const schema = app.createSchemaForApollo()
 
@@ -40,7 +41,7 @@ describe('UserModule', () => {
   })
   it('getUserById should work', async () => {
     const app = createApplication({
-      modules: [SubscriberModule, UserModule],
+      modules: [QueryModule, SubscriberModule, UserModule],
     })
     const schema = app.createSchemaForApollo()
 
@@ -81,7 +82,7 @@ describe('UserModule', () => {
   })
   it('getUserByDisplayName should work', async () => {
     const app = createApplication({
-      modules: [SubscriberModule, UserModule],
+      modules: [QueryModule, SubscriberModule, UserModule],
     })
     const schema = app.createSchemaForApollo()
 

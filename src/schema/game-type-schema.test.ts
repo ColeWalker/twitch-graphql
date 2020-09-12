@@ -4,10 +4,17 @@ import { UserModule } from './user-type-schema'
 import { StreamModule } from './stream-type-schema'
 import { GameModule } from './game-type-schema'
 import { parse, execute } from 'graphql'
+import { QueryModule } from './query-type-schema'
 describe('GameModule', () => {
   it('game should have all fields', async () => {
     const app = createApplication({
-      modules: [SubscriberModule, UserModule, StreamModule, GameModule],
+      modules: [
+        QueryModule,
+        SubscriberModule,
+        UserModule,
+        StreamModule,
+        GameModule,
+      ],
     })
     const schema = app.createSchemaForApollo()
 
@@ -44,7 +51,13 @@ describe('GameModule', () => {
   })
   it('can search game with getGameByName', async () => {
     const app = createApplication({
-      modules: [SubscriberModule, UserModule, StreamModule, GameModule],
+      modules: [
+        QueryModule,
+        SubscriberModule,
+        UserModule,
+        StreamModule,
+        GameModule,
+      ],
     })
     const schema = app.createSchemaForApollo()
 
