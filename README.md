@@ -31,6 +31,8 @@ or
 
 Usage of the package depends on the structure of your application. If you choose to use [graphql-modules](https://graphql-modules.com/) (Recommended), you can import the modules that you require and add them to your application, complete with authentication.
 
+Every module in this library depends on the base module, "Query". You will **_ALWAYS NEED TO IMPORT AND USE `QueryModule`_**
+
 Example:
 
 ```ts
@@ -43,7 +45,13 @@ import { createApplication } from 'graphql-modules'
 
 const port = 5555
 const app = createApplication({
-  modules: [SubscriberModule, UserModule, StreamModule, GameModule],
+  modules: [
+    QueryModule,
+    SubscriberModule,
+    UserModule,
+    StreamModule,
+    GameModule,
+  ],
 })
 const execute = app.createExecution()
 const server = express()
@@ -70,6 +78,7 @@ Alternatively, you can import the schema and resolvers separately. However, sinc
 Examples of importing Schema and Resolvers:
 
 ```ts
+import { QuerySchema, QueryResolver } from 'twitch-graphql'
 import { StreamSchema, StreamResolvers } from 'twitch-graphql'
 import { SubscriberSchema, SubscriberResolvers } from 'twitch-graphql'
 import { UserSchema, UserResolvers } from 'twitch-graphql
@@ -139,7 +148,7 @@ This will respond with the refresh token that you need.
 ### Subscriber
 
 ```graphql
-type Query {
+extend type Query {
   latestSub: Subscriber!
   randomSub: Subscriber!
   allSubs: [Subscriber]!

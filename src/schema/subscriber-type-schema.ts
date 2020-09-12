@@ -83,7 +83,7 @@ export const SubscriberResolvers = {
 }
 
 export const SubscriberSchema = gql`
-  type Query {
+  extend type Query {
     latestSub: Subscriber!
     randomSub: Subscriber!
     allSubs: [Subscriber]!
