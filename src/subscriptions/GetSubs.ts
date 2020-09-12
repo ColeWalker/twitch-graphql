@@ -1,4 +1,4 @@
-import ApiClient, { HelixSubscription } from 'twitch'
+import { ApiClient, HelixSubscription } from 'twitch'
 
 export const getSubs = async (
   userId: string,

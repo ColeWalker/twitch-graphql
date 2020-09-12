@@ -1,7 +1,7 @@
-import PubSubClient from 'twitch-pubsub-client/lib'
+import { PubSubClient } from 'twitch-pubsub-client/lib'
 
 import { getCurrentSubCount } from './SubCount'
-import ApiClient from 'twitch'
+import { ApiClient } from 'twitch'
 import express from 'express'
 export default async function (
   channelID: string,

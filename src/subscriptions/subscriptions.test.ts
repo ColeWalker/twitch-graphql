@@ -1,6 +1,6 @@
 import { getLatestSub } from './GetLatestSub'
 import RefreshToken from '../helpers/RefreshToken'
-import ApiClient from 'twitch'
+import { ApiClient } from 'twitch'
 import { getSubs } from './GetSubs'
 import { getCurrentSubCount } from './SubCount'
 import { getRandomSub } from './GetRandomSub'
