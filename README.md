@@ -172,6 +172,8 @@ type Subscriber {
 
 ### User
 
+Please note that using follows with a high number of maxPages will likely result in rate limiting from twitch.
+
 ```graphql
 type User {
   displayName: String!
@@ -179,6 +181,8 @@ type User {
   id: String!
   profilePictureURL: String!
   views: Int!
+
+  follows(maxPages: Int!): FollowConnection
 
   getFollowToId(userId: String!): Follow
   getFollowToDisplayName(displayName: String!): Follow
@@ -192,6 +196,12 @@ type Follow {
   followDate: String!
   followerUser: User!
   followedUser: User!
+}
+
+type FollowConnection {
+  total: Int!
+  nodes: [Follow]
+  cursor: String
 }
 
 extend type Subscriber {
