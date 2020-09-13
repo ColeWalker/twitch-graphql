@@ -37,6 +37,7 @@ Example:
 
 ```ts
 import { graphqlHTTP } from 'express-graphql'
+import { QueryModule } from 'twitch-graphql'
 import { SubscriberModule } from 'twitch-graphql'
 import { UserModule } from 'twitch-graphql'
 import { StreamModule } from 'twitch-graphql'
