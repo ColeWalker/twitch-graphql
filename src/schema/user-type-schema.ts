@@ -83,6 +83,9 @@ export const UserResolvers = {
 
       return !!followed && user.follows(followed.id)
     },
+    async follows(user: HelixUser) {
+      return (await user.getFollows()).data
+    },
   },
   Follow: {
     followDate(follow: HelixFollow) {
@@ -108,6 +111,7 @@ export const UserSchema = gql`
     profilePictureURL: String!
     views: Int!
 
+    follows: [Follow]
     getFollowToId(userId: String!): Follow
     getFollowToDisplayName(displayName: String!): Follow
 
