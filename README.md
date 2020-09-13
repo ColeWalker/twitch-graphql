@@ -37,6 +37,7 @@ Example:
 
 ```ts
 import { graphqlHTTP } from 'express-graphql'
+import { QueryModule } from 'twitch-graphql'
 import { SubscriberModule } from 'twitch-graphql'
 import { UserModule } from 'twitch-graphql'
 import { StreamModule } from 'twitch-graphql'
@@ -145,6 +146,10 @@ This will respond with the refresh token that you need.
 
 ## Schemas Provided
 
+### Query
+
+Base schema, all other modules extend this.
+
 ### Subscriber
 
 ```graphql
@@ -174,10 +179,28 @@ type User {
   id: String!
   profilePictureURL: String!
   views: Int!
+
+  getFollowToId(userId: String!): Follow
+  getFollowToDisplayName(displayName: String!): Follow
+
+  followsId(userId: String!): Boolean!
+  followsDisplayName(displayName: String!): Boolean!
+}
+
+type Follow {
+  followDateUTC: String!
+  followDate: String!
+  followerUser: User!
+  followedUser: User!
 }
 
 extend type Subscriber {
   user: User!
+}
+
+extend type Query {
+  getUserById(userId: String!): User
+  getUserByDisplayName(displayName: String!): User
 }
 ```
 
