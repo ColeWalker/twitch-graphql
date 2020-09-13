@@ -1,6 +1,7 @@
 import express from 'express'
 import cors from 'cors'
 import { graphqlHTTP } from 'express-graphql'
+import { QueryModule } from './schema/query-type-schema'
 import { SubscriberModule } from './schema/subscriber-type-schema'
 import { UserModule } from './schema/user-type-schema'
 import { StreamModule } from './schema/stream-type-schema'
@@ -38,7 +39,13 @@ if (
 }
 
 const app = createApplication({
-  modules: [SubscriberModule, UserModule, StreamModule, GameModule],
+  modules: [
+    QueryModule,
+    SubscriberModule,
+    UserModule,
+    StreamModule,
+    GameModule,
+  ],
 })
 const execute = app.createExecution()
 const server = express()

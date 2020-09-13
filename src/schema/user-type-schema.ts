@@ -1,5 +1,5 @@
 import { createModule, gql } from 'graphql-modules'
-import { HelixSubscription, HelixUser } from 'twitch/lib'
+import { HelixFollow, HelixSubscription, HelixUser } from 'twitch/lib'
 import { TwitchClients } from '../injections/Twitch-Clients'
 import { TwitchId } from '../injections/Twitch-Id'
 import { UserId } from '../injections/User-Id'
@@ -34,6 +34,7 @@ export const UserResolvers = {
   },
   User: {
     displayName(user: HelixUser) {
+      HelixFollow
       return user.displayName
     },
     description(user: HelixUser) {
@@ -48,6 +49,54 @@ export const UserResolvers = {
     views(user: HelixUser) {
       return user.views
     },
+    async getFollowToId(user: HelixUser, args: { userId: string }) {
+      return user.getFollowTo(args.userId)
+    },
+    async getFollowToDisplayName(
+      user: HelixUser,
+      args: { displayName: string },
+      { injector }: GraphQLModules.ModuleContext
+    ) {
+      const clients = await injector.get(TwitchClients)
+      const apiClient = await clients.apiClient()
+
+      const followed = await apiClient.helix.users.getUserByName(
+        args.displayName
+      )
+
+      return followed && user.getFollowTo(followed.id)
+    },
+    async followsId(user: HelixUser, args: { userId: string }) {
+      return user.follows(args.userId)
+    },
+    async followsDisplayName(
+      user: HelixUser,
+      args: { displayName: string },
+      { injector }: GraphQLModules.ModuleContext
+    ) {
+      const clients = await injector.get(TwitchClients)
+      const apiClient = await clients.apiClient()
+
+      const followed = await apiClient.helix.users.getUserByName(
+        args.displayName
+      )
+
+      return !!followed && user.follows(followed.id)
+    },
+  },
+  Follow: {
+    followDate(follow: HelixFollow) {
+      return follow.followDate.toDateString()
+    },
+    followDateUTC(follow: HelixFollow) {
+      return follow.followDate
+    },
+    async followerUser(follow: HelixFollow) {
+      return await follow.getUser()
+    },
+    async followedUser(follow: HelixFollow) {
+      return await follow.getFollowedUser()
+    },
   },
 }
 
@@ -58,6 +107,19 @@ export const UserSchema = gql`
     id: String!
     profilePictureURL: String!
     views: Int!
+
+    getFollowToId(userId: String!): Follow
+    getFollowToDisplayName(displayName: String!): Follow
+
+    followsId(userId: String!): Boolean!
+    followsDisplayName(displayName: String!): Boolean!
+  }
+
+  type Follow {
+    followDateUTC: String!
+    followDate: String!
+    followerUser: User!
+    followedUser: User!
   }
 
   extend type Subscriber {
