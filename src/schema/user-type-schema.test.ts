@@ -268,4 +268,39 @@ describe('UserModule', () => {
     const follows = result?.data?.latestSub?.user?.followsDisplayName
     expect(typeof follows).toBe('boolean')
   })
+  it('follows should work', async () => {
+    const app = createApplication({
+      modules: [QueryModule, SubscriberModule, UserModule],
+    })
+    const schema = app.createSchemaForApollo()
+
+    const displayName = 'SupCole'
+
+    const document = parse(`
+      {
+        getUserByDisplayName(displayName: "${displayName}"){
+          displayName
+          follows(maxPages: 1) {
+            total
+            nodes
+            cursor
+          }
+        }
+      }
+    `)
+    const contextValue = { request: {}, response: {} }
+    const result = await execute({
+      schema,
+      contextValue,
+      document,
+    })
+
+    expect(result?.errors?.length).toBeFalsy()
+    const follows = result?.data?.getUserByDisplayName?.follows
+    if (follows) {
+      expect(typeof follows?.total).toEqual('number')
+      expect(follows).toHaveProperty('nodes')
+      expect(follows).toHaveProperty('cursor')
+    }
+  })
 })
