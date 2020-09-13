@@ -18,3 +18,8 @@ export {
   UserResolvers,
   UserSchema,
 } from './schema/user-type-schema'
+export {
+  QueryModule,
+  QueryResolvers,
+  QuerySchema,
+} from './schema/query-type-schema'
