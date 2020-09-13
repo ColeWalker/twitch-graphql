@@ -1,5 +1,5 @@
 import { createModule, gql } from 'graphql-modules'
-import { HelixFollow, HelixSubscription, HelixUser } from 'twitch/lib'
+import { HelixFollow, HelixSubscription, HelixUser } from 'twitch'
 import { TwitchClients } from '../injections/Twitch-Clients'
 import { TwitchId } from '../injections/Twitch-Id'
 import { UserId } from '../injections/User-Id'
@@ -83,8 +83,29 @@ export const UserResolvers = {
 
       return !!followed && user.follows(followed.id)
     },
-    async follows(user: HelixUser) {
-      return (await user.getFollows()).data
+    async follows(
+      user: HelixUser,
+      args: { maxPages: number },
+      { injector }: GraphQLModules.ModuleContext
+    ) {
+      const clients = await injector.get(TwitchClients)
+      const apiClient = await clients.apiClient()
+      const page = await apiClient.helix.users.getFollowsPaginated({
+        user: user,
+      })
+
+      let pages = []
+      if (page.current) pages.push(...page.current)
+      for (let i = 1; i <= args.maxPages; i++) {
+        await page.getNext()
+        if (page.current) pages.push(...page.current)
+      }
+
+      return {
+        nodes: pages.map((el) => new HelixFollow(el, apiClient)),
+        cursor: page.currentCursor,
+        total: await page.getTotalCount(),
+      }
     },
   },
   Follow: {
@@ -111,7 +132,8 @@ export const UserSchema = gql`
     profilePictureURL: String!
     views: Int!
 
-    follows: [Follow]
+    follows(maxPages: Int!): FollowConnection
+
     getFollowToId(userId: String!): Follow
     getFollowToDisplayName(displayName: String!): Follow
 
@@ -124,6 +146,12 @@ export const UserSchema = gql`
     followDate: String!
     followerUser: User!
     followedUser: User!
+  }
+
+  type FollowConnection {
+    total: Int!
+    nodes: [Follow]
+    cursor: String
   }
 
   extend type Subscriber {
