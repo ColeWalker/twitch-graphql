@@ -3,11 +3,17 @@ import { SubscriberModule } from './subscriber-type-schema'
 import { UserModule } from './user-type-schema'
 import { parse, execute } from 'graphql'
 import { QueryModule } from './query-type-schema'
+import { UserSubscriberLinkModule } from './user-subscriber-link-type-schema'
 
 describe('UserModule', () => {
   it('user should have all fields', async () => {
     const app = createApplication({
-      modules: [QueryModule, SubscriberModule, UserModule],
+      modules: [
+        QueryModule,
+        SubscriberModule,
+        UserSubscriberLinkModule,
+        UserModule,
+      ],
     })
     const schema = app.createSchemaForApollo()
 
@@ -42,7 +48,12 @@ describe('UserModule', () => {
   })
   it('getUserById should work', async () => {
     const app = createApplication({
-      modules: [QueryModule, SubscriberModule, UserModule],
+      modules: [
+        QueryModule,
+        SubscriberModule,
+        UserSubscriberLinkModule,
+        UserModule,
+      ],
     })
     const schema = app.createSchemaForApollo()
 
@@ -79,7 +90,12 @@ describe('UserModule', () => {
   })
   it('getUserByDisplayName should work', async () => {
     const app = createApplication({
-      modules: [QueryModule, SubscriberModule, UserModule],
+      modules: [
+        QueryModule,
+        SubscriberModule,
+        UserSubscriberLinkModule,
+        UserModule,
+      ],
     })
     const schema = app.createSchemaForApollo()
 
@@ -116,7 +132,12 @@ describe('UserModule', () => {
   })
   it('getFollowToId should work', async () => {
     const app = createApplication({
-      modules: [QueryModule, SubscriberModule, UserModule],
+      modules: [
+        QueryModule,
+        SubscriberModule,
+        UserSubscriberLinkModule,
+        UserModule,
+      ],
     })
     const schema = app.createSchemaForApollo()
 
@@ -166,7 +187,12 @@ describe('UserModule', () => {
   })
   it('getFollowToDisplayName should work', async () => {
     const app = createApplication({
-      modules: [QueryModule, SubscriberModule, UserModule],
+      modules: [
+        QueryModule,
+        SubscriberModule,
+        UserSubscriberLinkModule,
+        UserModule,
+      ],
     })
     const schema = app.createSchemaForApollo()
 
@@ -214,7 +240,12 @@ describe('UserModule', () => {
   })
   it('followsId should work', async () => {
     const app = createApplication({
-      modules: [QueryModule, SubscriberModule, UserModule],
+      modules: [
+        QueryModule,
+        SubscriberModule,
+        UserSubscriberLinkModule,
+        UserModule,
+      ],
     })
     const schema = app.createSchemaForApollo()
 
@@ -242,7 +273,12 @@ describe('UserModule', () => {
   })
   it('followsDisplayName should work', async () => {
     const app = createApplication({
-      modules: [QueryModule, SubscriberModule, UserModule],
+      modules: [
+        QueryModule,
+        SubscriberModule,
+        UserSubscriberLinkModule,
+        UserModule,
+      ],
     })
     const schema = app.createSchemaForApollo()
 
@@ -270,7 +306,12 @@ describe('UserModule', () => {
   })
   it('follows should work', async () => {
     const app = createApplication({
-      modules: [QueryModule, SubscriberModule, UserModule],
+      modules: [
+        QueryModule,
+        SubscriberModule,
+        UserSubscriberLinkModule,
+        UserModule,
+      ],
     })
     const schema = app.createSchemaForApollo()
 

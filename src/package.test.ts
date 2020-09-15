@@ -16,6 +16,15 @@ import {
   QueryModule,
   QueryResolvers,
   QuerySchema,
+  UserSubscriberLinkModule,
+  UserSubscriberLinkResolvers,
+  UserSubscriberLinkSchema,
+  GameStreamLinkModule,
+  GameStreamLinkResolvers,
+  GameStreamLinkSchema,
+  StreamUserLinkModule,
+  StreamUserLinkResolvers,
+  StreamUserLinkSchema,
 } from './index'
 
 describe('npm package', () => {
@@ -35,6 +44,15 @@ describe('npm package', () => {
     expect(QueryModule).toBeTruthy()
     expect(QueryResolvers).toBeTruthy()
     expect(QuerySchema).toBeTruthy()
+    expect(UserSubscriberLinkModule).toBeTruthy()
+    expect(UserSubscriberLinkResolvers).toBeTruthy()
+    expect(UserSubscriberLinkSchema).toBeTruthy()
+    expect(GameStreamLinkModule).toBeTruthy()
+    expect(GameStreamLinkResolvers).toBeTruthy()
+    expect(GameStreamLinkSchema).toBeTruthy()
+    expect(StreamUserLinkModule).toBeTruthy()
+    expect(StreamUserLinkResolvers).toBeTruthy()
+    expect(StreamUserLinkSchema).toBeTruthy()
   })
 
   it('modules should work together', async () => {
@@ -44,7 +62,10 @@ describe('npm package', () => {
         SubscriberModule,
         UserModule,
         StreamModule,
+        UserSubscriberLinkModule,
+        GameStreamLinkModule,
         GameModule,
+        StreamUserLinkModule,
       ],
     })
     const schema = app.createSchemaForApollo()

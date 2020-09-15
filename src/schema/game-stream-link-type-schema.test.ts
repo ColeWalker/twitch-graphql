@@ -7,7 +7,8 @@ import { parse, execute } from 'graphql'
 import { QueryModule } from './query-type-schema'
 import { UserSubscriberLinkModule } from './user-subscriber-link-type-schema'
 import { GameStreamLinkModule } from './game-stream-link-type-schema'
-describe('GameModule', () => {
+
+describe('GameStreamLinkModule', () => {
   it('game should have all fields', async () => {
     const app = createApplication({
       modules: [
@@ -15,8 +16,8 @@ describe('GameModule', () => {
         SubscriberModule,
         UserModule,
         UserSubscriberLinkModule,
-        GameStreamLinkModule,
         StreamModule,
+        GameStreamLinkModule,
         GameModule,
       ],
     })
@@ -48,52 +49,11 @@ describe('GameModule', () => {
     expect(result?.errors?.length).toBeFalsy()
 
     const game = result?.data?.latestSub?.user?.stream?.game
-    if (game) {
-      expect(game).toHaveProperty('boxArtUrl')
-      expect(game).toHaveProperty('name')
-      expect(game).toHaveProperty('id')
-    }
-  })
-  it('can search game with getGameByName', async () => {
-    const app = createApplication({
-      modules: [
-        QueryModule,
-        SubscriberModule,
-        UserModule,
-        StreamModule,
-        UserSubscriberLinkModule,
-        GameModule,
-      ],
-    })
-    const schema = app.createSchemaForApollo()
 
-    const document = parse(`
-      {
-        getGameByName(gameName: "Science & Technology") {
-          id
-          boxArtUrl
-          name
-        }  
-      }
-    `)
-    const contextValue = { request: {}, response: {} }
-    const result = await execute({
-      schema,
-      contextValue,
-      document,
-    })
-    expect(result?.errors?.length).toBeFalsy()
-    const game = result?.data?.getGameByName
     if (game) {
       expect(game).toHaveProperty('boxArtUrl')
       expect(game).toHaveProperty('name')
       expect(game).toHaveProperty('id')
-      expect(game).toMatchObject({
-        boxArtUrl:
-          'https://static-cdn.jtvnw.net/ttv-boxart/Science%20&%20Technology-{width}x{height}.jpg',
-        id: '509670',
-        name: 'Science & Technology',
-      })
     }
   })
 })

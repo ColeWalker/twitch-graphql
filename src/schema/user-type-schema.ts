@@ -1,15 +1,10 @@
 import { createModule, gql } from 'graphql-modules'
-import { HelixFollow, HelixSubscription, HelixUser } from 'twitch'
+import { HelixFollow, HelixUser } from 'twitch'
 import { TwitchClients } from '../injections/Twitch-Clients'
 import { TwitchId } from '../injections/Twitch-Id'
 import { UserId } from '../injections/User-Id'
 
 export const UserResolvers = {
-  Subscriber: {
-    async user(sub: HelixSubscription) {
-      return await sub.getUser()
-    },
-  },
   Query: {
     async getUserByDisplayName(
       _parent: {},
@@ -152,10 +147,6 @@ export const UserSchema = gql`
     total: Int!
     nodes: [Follow]
     cursor: String
-  }
-
-  extend type Subscriber {
-    user: User!
   }
 
   extend type Query {

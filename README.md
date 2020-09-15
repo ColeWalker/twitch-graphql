@@ -42,6 +42,9 @@ import { SubscriberModule } from 'twitch-graphql'
 import { UserModule } from 'twitch-graphql'
 import { StreamModule } from 'twitch-graphql'
 import { GameModule } from 'twitch-graphql'
+import { UserSubscriberLinkModule } from 'twitch-graphql'
+import { StreamUserLinkModule } from 'twitch-graphql'
+import { GameStreamLinkModule } from 'twitch-graphql'
 import { createApplication } from 'graphql-modules'
 
 const port = 5555
@@ -52,6 +55,9 @@ const app = createApplication({
     UserModule,
     StreamModule,
     GameModule,
+    UserSubscriberLinkModule,
+    StreamUserLinkModule,
+    GameStreamLinkModule,
   ],
 })
 const execute = app.createExecution()
@@ -108,7 +114,7 @@ Contributors should be using [prettier](https://prettier.io/) to automatically f
 
 To contribute please follow these steps:
 
-1. Clone the repository: ` git clone https://github.com/ColeWalker/twitch-graphql-server`
+1. Clone the repository: `git clone https://github.com/ColeWalker/twitch-graphql-server`
 2. Create a new branch named after the issue that you're going to fix. Prefix branch name with a Conventional Commits type. Example:
    `git checkout -b feature/add-port-config`
 3. Write code and write tests for your code. We use jest and ts-jest. If your code is not properly covered by tests, it will be rejected. Since this is a wrapper for an external API, our tests cannot be thorough, however, you should provide as much coverage as possible. Follow any .test.ts file for examples.
@@ -204,13 +210,19 @@ type FollowConnection {
   cursor: String
 }
 
-extend type Subscriber {
-  user: User!
-}
-
 extend type Query {
   getUserById(userId: String!): User
   getUserByDisplayName(displayName: String!): User
+}
+```
+
+### UserSubscriberLink
+
+This module extends Subscriber to add the user field. Only use if both modules are being used in your application.
+
+```graphql
+extend type Subscriber {
+  user: User!
 }
 ```
 
@@ -226,12 +238,19 @@ type Stream {
   thumbnailUrl: String!
   userDisplayName: String!
   userId: String!
-
-  user: User
 }
+```
 
+### StreamUserLink
+
+This module extends Stream to add the user field, and User to add the stream field. Only use if both modules are being used in your application.
+
+```graphql
 extend type User {
   stream: Stream
+}
+extend type Stream {
+  user: User
 }
 ```
 
@@ -244,6 +263,16 @@ type Game {
   name: String!
 }
 
+extend type Query {
+  getGameByName(gameName: String!): Game
+}
+```
+
+### GameStreamLink
+
+This module extends Stream to add the game field. Only use if both modules are being used in your application.
+
+```graphql
 extend type Stream {
   game: Game
 }
