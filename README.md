@@ -232,12 +232,19 @@ type Stream {
   thumbnailUrl: String!
   userDisplayName: String!
   userId: String!
-
-  user: User
 }
+```
 
+### StreamUserLink
+
+This module extends Stream to add the user field, and User to add the stream field. Only use if both modules are being used in your application.
+
+```graphql
 extend type User {
   stream: Stream
+}
+extend type Stream {
+  user: User
 }
 ```
 

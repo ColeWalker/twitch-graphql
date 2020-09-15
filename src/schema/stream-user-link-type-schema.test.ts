@@ -2,14 +2,12 @@ import { createApplication } from 'graphql-modules'
 import { SubscriberModule } from './subscriber-type-schema'
 import { UserModule } from './user-type-schema'
 import { StreamModule } from './stream-type-schema'
-import { GameModule } from './game-type-schema'
 import { parse, execute } from 'graphql'
 import { QueryModule } from './query-type-schema'
 import { UserSubscriberLinkModule } from './user-subscriber-link-type-schema'
-import { GameStreamLinkModule } from './game-stream-link-type-schema'
-
-describe('GameStreamLinkModule', () => {
-  it('game should have all fields', async () => {
+import { StreamUserLinkModule } from './stream-user-link-type-schema'
+describe('StreamUserLinkModule', () => {
+  it('stream should have all fields', async () => {
     const app = createApplication({
       modules: [
         QueryModule,
@@ -17,8 +15,7 @@ describe('GameStreamLinkModule', () => {
         UserModule,
         UserSubscriberLinkModule,
         StreamModule,
-        GameStreamLinkModule,
-        GameModule,
+        StreamUserLinkModule,
       ],
     })
     const schema = app.createSchemaForApollo()
@@ -29,11 +26,14 @@ describe('GameStreamLinkModule', () => {
           user{
             displayName
             stream {
-              game {
-                id
-                boxArtUrl
-                name
-              }
+              language
+              gameId
+              id
+              title
+              viewers
+              thumbnailUrl
+              userDisplayName
+              userId
             }
           }
         }
@@ -47,13 +47,16 @@ describe('GameStreamLinkModule', () => {
     })
 
     expect(result?.errors?.length).toBeFalsy()
-
-    const game = result?.data?.latestSub?.user?.stream?.game
-
-    if (game) {
-      expect(game).toHaveProperty('boxArtUrl')
-      expect(game).toHaveProperty('name')
-      expect(game).toHaveProperty('id')
+    const stream = result?.data?.latestSub?.user?.stream
+    if (stream) {
+      expect(stream).toHaveProperty('language')
+      expect(stream).toHaveProperty('gameId')
+      expect(stream).toHaveProperty('id')
+      expect(stream).toHaveProperty('title')
+      expect(stream).toHaveProperty('viewers')
+      expect(stream).toHaveProperty('thumbnailUrl')
+      expect(stream).toHaveProperty('userDisplayName')
+      expect(stream).toHaveProperty('userId')
     }
   })
 })
