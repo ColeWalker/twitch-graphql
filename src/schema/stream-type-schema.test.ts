@@ -4,10 +4,17 @@ import { UserModule } from './user-type-schema'
 import { StreamModule } from './stream-type-schema'
 import { parse, execute } from 'graphql'
 import { QueryModule } from './query-type-schema'
+import { UserSubscriberLinkModule } from './user-subscriber-link-type-schema'
 describe('StreamModule', () => {
   it('stream should have all fields', async () => {
     const app = createApplication({
-      modules: [QueryModule, SubscriberModule, UserModule, StreamModule],
+      modules: [
+        QueryModule,
+        SubscriberModule,
+        UserModule,
+        UserSubscriberLinkModule,
+        StreamModule,
+      ],
     })
     const schema = app.createSchemaForApollo()
 

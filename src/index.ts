@@ -23,3 +23,8 @@ export {
   QueryResolvers,
   QuerySchema,
 } from './schema/query-type-schema'
+export {
+  UserSubscriberLinkModule,
+  UserSubscriberLinkResolvers,
+  UserSubscriberLinkSchema,
+} from './schema/user-subscriber-link-type-schema'

@@ -3,6 +3,7 @@ import { execute, parse } from 'graphql'
 import { createApplication } from 'graphql-modules'
 import { UserModule } from './user-type-schema'
 import { QueryModule } from './query-type-schema'
+import { UserSubscriberLinkModule } from './user-subscriber-link-type-schema'
 
 describe('SubscriberModule', () => {
   it('latestSub', async () => {
@@ -139,7 +140,12 @@ describe('SubscriberModule', () => {
 
   it('sub user', async () => {
     const app = createApplication({
-      modules: [QueryModule, SubscriberModule, UserModule],
+      modules: [
+        QueryModule,
+        SubscriberModule,
+        UserSubscriberLinkModule,
+        UserModule,
+      ],
     })
     const schema = app.createSchemaForApollo()
 

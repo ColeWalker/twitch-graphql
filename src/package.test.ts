@@ -16,6 +16,9 @@ import {
   QueryModule,
   QueryResolvers,
   QuerySchema,
+  UserSubscriberLinkModule,
+  UserSubscriberLinkResolvers,
+  UserSubscriberLinkSchema,
 } from './index'
 
 describe('npm package', () => {
@@ -35,6 +38,9 @@ describe('npm package', () => {
     expect(QueryModule).toBeTruthy()
     expect(QueryResolvers).toBeTruthy()
     expect(QuerySchema).toBeTruthy()
+    expect(UserSubscriberLinkModule).toBeTruthy()
+    expect(UserSubscriberLinkResolvers).toBeTruthy()
+    expect(UserSubscriberLinkSchema).toBeTruthy()
   })
 
   it('modules should work together', async () => {
@@ -44,6 +50,7 @@ describe('npm package', () => {
         SubscriberModule,
         UserModule,
         StreamModule,
+        UserSubscriberLinkModule,
         GameModule,
       ],
     })

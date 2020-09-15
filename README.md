@@ -108,7 +108,7 @@ Contributors should be using [prettier](https://prettier.io/) to automatically f
 
 To contribute please follow these steps:
 
-1. Clone the repository: ` git clone https://github.com/ColeWalker/twitch-graphql-server`
+1. Clone the repository: `git clone https://github.com/ColeWalker/twitch-graphql-server`
 2. Create a new branch named after the issue that you're going to fix. Prefix branch name with a Conventional Commits type. Example:
    `git checkout -b feature/add-port-config`
 3. Write code and write tests for your code. We use jest and ts-jest. If your code is not properly covered by tests, it will be rejected. Since this is a wrapper for an external API, our tests cannot be thorough, however, you should provide as much coverage as possible. Follow any .test.ts file for examples.
@@ -204,13 +204,19 @@ type FollowConnection {
   cursor: String
 }
 
-extend type Subscriber {
-  user: User!
-}
-
 extend type Query {
   getUserById(userId: String!): User
   getUserByDisplayName(displayName: String!): User
+}
+```
+
+### UserSubscriberLink
+
+This module extends Subscriber to add the user field. Only use if both modules are being used in your application.
+
+```graphql
+extend type Subscriber {
+  user: User!
 }
 ```
 

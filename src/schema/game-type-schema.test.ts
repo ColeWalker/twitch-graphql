@@ -5,6 +5,7 @@ import { StreamModule } from './stream-type-schema'
 import { GameModule } from './game-type-schema'
 import { parse, execute } from 'graphql'
 import { QueryModule } from './query-type-schema'
+import { UserSubscriberLinkModule } from './user-subscriber-link-type-schema'
 describe('GameModule', () => {
   it('game should have all fields', async () => {
     const app = createApplication({
@@ -12,6 +13,7 @@ describe('GameModule', () => {
         QueryModule,
         SubscriberModule,
         UserModule,
+        UserSubscriberLinkModule,
         StreamModule,
         GameModule,
       ],
@@ -56,6 +58,7 @@ describe('GameModule', () => {
         SubscriberModule,
         UserModule,
         StreamModule,
+        UserSubscriberLinkModule,
         GameModule,
       ],
     })
