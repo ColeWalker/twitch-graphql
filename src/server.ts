@@ -7,6 +7,8 @@ import { UserModule } from './schema/user-type-schema'
 import { StreamModule } from './schema/stream-type-schema'
 import { GameModule } from './schema/game-type-schema'
 import { createApplication } from 'graphql-modules'
+import { UserSubscriberLinkModule } from './schema/user-subscriber-link-type-schema'
+import { GameStreamLinkModule } from './schema/game-stream-link-type-schema'
 require('dotenv').config()
 
 let port = 5555
@@ -44,6 +46,8 @@ const app = createApplication({
     SubscriberModule,
     UserModule,
     StreamModule,
+    UserSubscriberLinkModule,
+    GameStreamLinkModule,
     GameModule,
   ],
 })
