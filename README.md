@@ -4,6 +4,24 @@ This is an open source twitch API graphql wrapper. If you clone this repository 
 
 By default it will run at `http://localhost:5555/graphql`.
 
+- [Twitch GraphQL](#twitch-graphql)
+  - [Environment Variables](#environment-variables)
+  - [Installation and Usage of the NPM Package](#installation-and-usage-of-the-npm-package)
+  - [Command line arguments](#command-line-arguments)
+  - [Commands](#commands)
+  - [Contributing](#contributing)
+  - [Code Style](#code-style)
+  - [Getting a Twitch Refresh Token](#getting-a-twitch-refresh-token)
+  - [Schemas Provided](#schemas-provided)
+    - [Query](#query)
+    - [Subscriber](#subscriber)
+    - [User](#user)
+    - [UserSubscriberLink](#usersubscriberlink)
+    - [Stream](#stream)
+    - [StreamUserLink](#streamuserlink)
+    - [Game](#game)
+    - [GameStreamLink](#gamestreamlink)
+
 ## Environment Variables
 
 This project assumes that you already have a Twitch API App set up, and an OAuth token with every scope that you will need. This information will be stored inside of several environment variables in a .env file. If you need a Twitch API Application (for user ID and client secret), information regarding setting one up is [documented in the Twitch API documentation.](https://dev.twitch.tv/docs/api/) If you require an OAuth or refresh token, there is [documentation available in the Twitch API documentation.](https://dev.twitch.tv/docs/authentication) Alternatively, there is a [guide below on how to retrieve a refresh token.](#getting-a-twitch-refresh-token)
