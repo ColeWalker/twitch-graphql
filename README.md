@@ -250,6 +250,16 @@ type Game {
   name: String!
 }
 
+extend type Query {
+  getGameByName(gameName: String!): Game
+}
+```
+
+### GameStreamLink
+
+This module extends Stream to add the game field. Only use if both modules are being used in your application.
+
+```graphql
 extend type Stream {
   game: Game
 }

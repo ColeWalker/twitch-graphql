@@ -1,15 +1,10 @@
 import { createModule, gql } from 'graphql-modules'
-import { HelixStream, HelixGame } from 'twitch/lib'
+import { HelixGame } from 'twitch/lib'
 import { TwitchClients } from '../injections/Twitch-Clients'
 import { TwitchId } from '../injections/Twitch-Id'
 import { UserId } from '../injections/User-Id'
 
 export const GameResolvers = {
-  Stream: {
-    async game(stream: HelixStream) {
-      return await stream.getGame()
-    },
-  },
   Query: {
     async getGameByName(
       _parent: {},
@@ -40,10 +35,6 @@ export const GameSchema = gql`
     boxArtUrl: String!
     id: String!
     name: String!
-  }
-
-  extend type Stream {
-    game: Game
   }
 
   extend type Query {

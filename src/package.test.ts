@@ -19,6 +19,9 @@ import {
   UserSubscriberLinkModule,
   UserSubscriberLinkResolvers,
   UserSubscriberLinkSchema,
+  GameStreamLinkModule,
+  GameStreamLinkResolvers,
+  GameStreamLinkSchema,
 } from './index'
 
 describe('npm package', () => {
@@ -41,6 +44,9 @@ describe('npm package', () => {
     expect(UserSubscriberLinkModule).toBeTruthy()
     expect(UserSubscriberLinkResolvers).toBeTruthy()
     expect(UserSubscriberLinkSchema).toBeTruthy()
+    expect(GameStreamLinkModule).toBeTruthy()
+    expect(GameStreamLinkResolvers).toBeTruthy()
+    expect(GameStreamLinkSchema).toBeTruthy()
   })
 
   it('modules should work together', async () => {
@@ -51,6 +57,7 @@ describe('npm package', () => {
         UserModule,
         StreamModule,
         UserSubscriberLinkModule,
+        GameStreamLinkModule,
         GameModule,
       ],
     })

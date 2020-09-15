@@ -28,3 +28,8 @@ export {
   UserSubscriberLinkResolvers,
   UserSubscriberLinkSchema,
 } from './schema/user-subscriber-link-type-schema'
+export {
+  GameStreamLinkModule,
+  GameStreamLinkResolvers,
+  GameStreamLinkSchema,
+} from './schema/game-stream-link-type-schema'
