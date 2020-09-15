@@ -42,6 +42,9 @@ import { SubscriberModule } from 'twitch-graphql'
 import { UserModule } from 'twitch-graphql'
 import { StreamModule } from 'twitch-graphql'
 import { GameModule } from 'twitch-graphql'
+import { UserSubscriberLinkModule } from 'twitch-graphql'
+import { StreamUserLinkModule } from 'twitch-graphql'
+import { GameStreamLinkModule } from 'twitch-graphql'
 import { createApplication } from 'graphql-modules'
 
 const port = 5555
@@ -52,6 +55,9 @@ const app = createApplication({
     UserModule,
     StreamModule,
     GameModule,
+    UserSubscriberLinkModule,
+    StreamUserLinkModule,
+    GameStreamLinkModule,
   ],
 })
 const execute = app.createExecution()
