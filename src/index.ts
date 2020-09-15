@@ -33,3 +33,8 @@ export {
   GameStreamLinkResolvers,
   GameStreamLinkSchema,
 } from './schema/game-stream-link-type-schema'
+export {
+  StreamUserLinkModule,
+  StreamUserLinkResolvers,
+  StreamUserLinkSchema,
+} from './schema/stream-user-link-type-schema'

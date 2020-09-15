@@ -26,6 +26,7 @@ describe('GameModule', () => {
       {
         latestSub {
           user{
+            displayName
             stream {
               game {
                 id

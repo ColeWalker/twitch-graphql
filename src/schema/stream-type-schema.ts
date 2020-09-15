@@ -1,12 +1,7 @@
 import { createModule, gql } from 'graphql-modules'
-import { HelixUser, HelixStream } from 'twitch/lib'
+import { HelixStream } from 'twitch/lib'
 
 export const StreamResolvers = {
-  User: {
-    async stream(user: HelixUser) {
-      return await user.getStream()
-    },
-  },
   Stream: {
     language(stream: HelixStream) {
       return stream.language
@@ -32,9 +27,6 @@ export const StreamResolvers = {
     userId(stream: HelixStream) {
       return stream.userId
     },
-    async user(stream: HelixStream) {
-      return await stream.getUser()
-    },
   },
 }
 
@@ -48,12 +40,6 @@ export const StreamSchema = gql`
     thumbnailUrl: String!
     userDisplayName: String!
     userId: String!
-
-    user: User
-  }
-
-  extend type User {
-    stream: Stream
   }
 `
 
