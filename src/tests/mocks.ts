@@ -46,6 +46,25 @@ export const helixStreamRaw = {
   },
 }
 
+export const helixGameRaw = {
+  data: [
+    {
+      box_art_url: 'https://static-cdn.jtvnw.net/ttv-boxart/Fortnite-52x72.jpg',
+      id: '33214',
+      name: 'Fortnite',
+    },
+  ],
+  pagination: {
+    cursor: 'eyJiIjpudWxsLCJhIjp7IkN',
+  },
+}
+
+export const expectedGame = {
+  boxArtUrl: 'https://static-cdn.jtvnw.net/ttv-boxart/Fortnite-52x72.jpg',
+  id: '33214',
+  name: 'Fortnite',
+}
+
 export const expectedStream = {
   language: 'en',
   gameId: '417752',

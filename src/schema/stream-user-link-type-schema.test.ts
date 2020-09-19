@@ -6,6 +6,39 @@ import { parse, execute } from 'graphql'
 import { QueryModule } from './query-type-schema'
 import { UserSubscriberLinkModule } from './user-subscriber-link-type-schema'
 import { StreamUserLinkModule } from './stream-user-link-type-schema'
+import nock from 'nock'
+import {
+  expectedStream,
+  expectedUserRaw,
+  helixStreamRaw,
+  helixSubRaw,
+  krakenSubRaw,
+} from '../tests/mocks'
+
+nock('https://api.twitch.tv')
+  .get('/helix/users')
+  .query(true)
+  .reply(200, {
+    data: [expectedUserRaw],
+  })
+  .persist()
+nock('https://api.twitch.tv')
+  .get(/\/kraken\/channels\/[0-9]*\/subscriptions/)
+  .query(true)
+  .reply(200, krakenSubRaw)
+  .persist()
+nock('https://api.twitch.tv')
+  .get('/helix/subscriptions')
+  .query(true)
+  .reply(200, helixSubRaw)
+  .persist()
+
+nock('https://api.twitch.tv')
+  .get('/helix/streams')
+  .query(true)
+  .reply(200, helixStreamRaw)
+  .persist()
+
 describe('StreamUserLinkModule', () => {
   it('stream should have all fields', async () => {
     const app = createApplication({
@@ -48,15 +81,6 @@ describe('StreamUserLinkModule', () => {
 
     expect(result?.errors?.length).toBeFalsy()
     const stream = result?.data?.latestSub?.user?.stream
-    if (stream) {
-      expect(stream).toHaveProperty('language')
-      expect(stream).toHaveProperty('gameId')
-      expect(stream).toHaveProperty('id')
-      expect(stream).toHaveProperty('title')
-      expect(stream).toHaveProperty('viewers')
-      expect(stream).toHaveProperty('thumbnailUrl')
-      expect(stream).toHaveProperty('userDisplayName')
-      expect(stream).toHaveProperty('userId')
-    }
+    expect(stream).toMatchObject(expectedStream)
   })
 })
