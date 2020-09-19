@@ -51,11 +51,34 @@ export const helixSubRaw = {
       user_id: '123',
       user_name: 'snoirf',
     },
+    {
+      broadcaster_id: '123',
+      broadcaster_name: 'test_user',
+      is_gift: true,
+      tier: '1000',
+      plan_name: 'The Ninjas',
+      user_id: '1234',
+      user_name: 'other_guy',
+    },
   ],
   pagination: {
     cursor: 'xxxx',
   },
 }
+export const expectedAllSubs = [
+  {
+    isGift: true,
+    tier: 1000,
+    userId: '123',
+    userDisplayName: 'snoirf',
+  },
+  {
+    isGift: true,
+    tier: 1000,
+    userId: '1234',
+    userDisplayName: 'other_guy',
+  },
+]
 
 export const krakenSubRaw = {
   _id: 'ac2f1248993eaf97e71721458bd88aae66c92330',

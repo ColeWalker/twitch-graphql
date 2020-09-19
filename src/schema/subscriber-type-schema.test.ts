@@ -1,9 +1,32 @@
 import { SubscriberModule } from './subscriber-type-schema'
 import { execute, parse } from 'graphql'
 import { createApplication } from 'graphql-modules'
-import { UserModule } from './user-type-schema'
 import { QueryModule } from './query-type-schema'
-import { UserSubscriberLinkModule } from './user-subscriber-link-type-schema'
+import nock from 'nock'
+import {
+  expectedAllSubs,
+  expectedUserRaw,
+  helixSubRaw,
+  krakenSubRaw,
+} from '../tests/mocks'
+
+nock('https://api.twitch.tv')
+  .get('/helix/users')
+  .query(true)
+  .reply(200, {
+    data: [expectedUserRaw],
+  })
+  .persist()
+nock('https://api.twitch.tv')
+  .get(/\/kraken\/channels\/[0-9]*\/subscriptions/)
+  .query(true)
+  .reply(200, krakenSubRaw)
+  .persist()
+nock('https://api.twitch.tv')
+  .get('/helix/subscriptions')
+  .query(true)
+  .reply(200, helixSubRaw)
+  .persist()
 
 describe('SubscriberModule', () => {
   it('latestSub', async () => {
@@ -28,10 +51,7 @@ describe('SubscriberModule', () => {
     })
 
     expect(result?.errors?.length).toBeFalsy()
-    expect(result?.data?.latestSub).toHaveProperty('tier')
-    expect(result?.data?.latestSub).toHaveProperty('userId')
-    expect(result?.data?.latestSub).toHaveProperty('isGift')
-    expect(result?.data?.latestSub).toHaveProperty('userDisplayName')
+    expect(result?.data?.latestSub).toMatchObject(expectedAllSubs[1])
   })
 
   it('randomSub', async () => {
@@ -56,10 +76,7 @@ describe('SubscriberModule', () => {
     })
 
     expect(result?.errors?.length).toBeFalsy()
-    expect(result?.data?.randomSub).toHaveProperty('tier')
-    expect(result?.data?.randomSub).toHaveProperty('userId')
-    expect(result?.data?.randomSub).toHaveProperty('isGift')
-    expect(result?.data?.randomSub).toHaveProperty('userDisplayName')
+    expect(expectedAllSubs).toContainEqual(result?.data?.randomSub)
   })
 
   it('allSubs', async () => {
@@ -84,7 +101,7 @@ describe('SubscriberModule', () => {
     })
 
     expect(result?.errors?.length).toBeFalsy()
-    expect(Array.isArray(result?.data?.allSubs)).toBeTruthy()
+    expect(result?.data?.allSubs).toMatchObject(expectedAllSubs)
   })
 
   it('findSub', async () => {
@@ -93,7 +110,7 @@ describe('SubscriberModule', () => {
 
     const document = parse(`
       {
-        getSubscriberByDisplayName(displayName: "SupCole") {
+        getSubscriberByDisplayName(displayName: "snoirf") {
           userId
           tier
           userDisplayName
@@ -110,11 +127,7 @@ describe('SubscriberModule', () => {
 
     expect(result?.errors?.length).toBeFalsy()
     const sub = result?.data?.getSubscriberByDisplayName
-    expect(sub).toBeTruthy()
-    expect(sub).toHaveProperty('tier')
-    expect(sub).toHaveProperty('userId')
-    expect(sub).toHaveProperty('isGift')
-    expect(sub).toHaveProperty('userDisplayName')
+    expect(sub).toMatchObject(expectedAllSubs[0])
   })
 
   it('subCount', async () => {
@@ -134,37 +147,6 @@ describe('SubscriberModule', () => {
     })
 
     expect(result?.errors?.length).toBeFalsy()
-    expect(result?.data?.subCount).toBeTruthy()
-  })
-
-  it('sub user', async () => {
-    const app = createApplication({
-      modules: [
-        QueryModule,
-        SubscriberModule,
-        UserSubscriberLinkModule,
-        UserModule,
-      ],
-    })
-    const schema = app.createSchemaForApollo()
-
-    const document = parse(`
-      {
-        latestSub {
-          user{
-            displayName
-          }
-        }
-      }
-    `)
-    const contextValue = { request: {}, response: {} }
-    const result = await execute({
-      schema,
-      contextValue,
-      document,
-    })
-
-    expect(result?.errors?.length).toBeFalsy()
-    expect(result?.data?.latestSub?.user).toBeTruthy()
+    expect(result?.data?.subCount).toEqual(1)
   })
 })
