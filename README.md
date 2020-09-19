@@ -210,6 +210,14 @@ This module extends Subscriber to add the user field. Only use if both modules a
 extend type Subscriber {
   user: User!
 }
+
+extend type User {
+  isSubscribedToId(userId: String!): Boolean!
+  isSubscribedToDisplayName(displayName: String!): Boolean!
+
+  getSubscriptionToId(userId: String!): Subscriber
+  getSubscriptionToDisplayName(displayName: String!): Subscriber
+}
 ```
 
 ### Stream

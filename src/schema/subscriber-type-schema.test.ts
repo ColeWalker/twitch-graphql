@@ -109,13 +109,12 @@ describe('SubscriberModule', () => {
     })
 
     expect(result?.errors?.length).toBeFalsy()
-    expect(result?.data?.getSubscriberByDisplayName).toBeTruthy()
-    expect(result?.data?.getSubscriberByDisplayName).toHaveProperty('tier')
-    expect(result?.data?.getSubscriberByDisplayName).toHaveProperty('userId')
-    expect(result?.data?.getSubscriberByDisplayName).toHaveProperty('isGift')
-    expect(result?.data?.getSubscriberByDisplayName).toHaveProperty(
-      'userDisplayName'
-    )
+    const sub = result?.data?.getSubscriberByDisplayName
+    expect(sub).toBeTruthy()
+    expect(sub).toHaveProperty('tier')
+    expect(sub).toHaveProperty('userId')
+    expect(sub).toHaveProperty('isGift')
+    expect(sub).toHaveProperty('userDisplayName')
   })
 
   it('subCount', async () => {
