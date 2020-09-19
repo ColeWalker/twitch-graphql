@@ -4,6 +4,8 @@ This is an open source twitch API graphql wrapper. If you clone this repository 
 
 By default it will run at `http://localhost:5555/graphql`.
 
+[Contribution Guidelines](/CONTRIBUTING.md)
+
 - [Twitch GraphQL](#twitch-graphql)
   - [Environment Variables](#environment-variables)
   - [Installation and Usage of the NPM Package](#installation-and-usage-of-the-npm-package)
