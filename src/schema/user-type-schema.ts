@@ -45,7 +45,7 @@ export const UserResolvers = {
       return user.views
     },
     async getFollowToId(user: HelixUser, args: { userId: string }) {
-      return user.getFollowTo(args.userId)
+      return await user.getFollowTo(args.userId)
     },
     async getFollowToDisplayName(
       user: HelixUser,
@@ -59,7 +59,7 @@ export const UserResolvers = {
         args.displayName
       )
 
-      return followed && user.getFollowTo(followed.id)
+      return followed && (await user?.getFollowTo(followed.id))
     },
     async followsId(user: HelixUser, args: { userId: string }) {
       return user.follows(args.userId)

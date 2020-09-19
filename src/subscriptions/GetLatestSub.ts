@@ -14,7 +14,7 @@ export const getLatestSub = async (
   )
 
   const sub = helixSubs.data.find(
-    (h) => h.userId === subscriptions.subscriptions[0].user._id
+    (h) => h.userId === subscriptions?.subscriptions?.[0]?.user?._id
   )
 
   return sub || helixSubs.data[helixSubs.data.length - 1]

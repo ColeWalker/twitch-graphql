@@ -4,6 +4,40 @@ import { UserModule } from './user-type-schema'
 import { parse, execute } from 'graphql'
 import { QueryModule } from './query-type-schema'
 import { UserSubscriberLinkModule } from './user-subscriber-link-type-schema'
+import nock from 'nock'
+import {
+  expectedUserObject,
+  expectedUserRaw,
+  helixSubRaw,
+  krakenSubRaw,
+  userFollowObject,
+  userFollowsObject,
+  userFollowsRaw,
+} from '../tests/mocks'
+
+nock('https://api.twitch.tv')
+  .get('/helix/users')
+  .query(true)
+  .reply(200, {
+    data: [expectedUserRaw],
+  })
+  .persist()
+nock('https://api.twitch.tv')
+  .get(/\/kraken\/channels\/[0-9]*\/subscriptions/)
+  .query(true)
+  .reply(200, krakenSubRaw)
+  .persist()
+nock('https://api.twitch.tv')
+  .get('/helix/subscriptions')
+  .query(true)
+  .reply(200, helixSubRaw)
+  .persist()
+
+nock('https://api.twitch.tv')
+  .get('/helix/users/follows')
+  .query(true)
+  .reply(200, userFollowsRaw)
+  .persist()
 
 describe('UserModule', () => {
   it('user should have all fields', async () => {
@@ -36,15 +70,10 @@ describe('UserModule', () => {
       contextValue,
       document,
     })
-
     expect(result?.errors?.length).toBeFalsy()
+
     const user = result?.data?.latestSub?.user
-    expect(user).toBeTruthy()
-    expect(user).toHaveProperty('displayName')
-    expect(user).toHaveProperty('id')
-    expect(user).toHaveProperty('profilePictureURL')
-    expect(user).toHaveProperty('views')
-    expect(user).toHaveProperty('description')
+    expect(user).toMatchObject(expectedUserObject)
   })
   it('getUserById should work', async () => {
     const app = createApplication({
@@ -57,12 +86,9 @@ describe('UserModule', () => {
     })
     const schema = app.createSchemaForApollo()
 
-    const userId = '23573216'
-    const displayName = 'SupCole'
-
     const document = parse(`
       {
-        getUserById(userId: "${userId}"){
+        getUserById(userId: "anything"){
             displayName
             description
             id
@@ -79,15 +105,10 @@ describe('UserModule', () => {
     })
 
     expect(result?.errors?.length).toBeFalsy()
-    const user = result?.data?.getUserByDisplayName
-    if (user) {
-      expect(user).toHaveProperty('description')
-      expect(user).toHaveProperty('profilePictureURL')
-      expect(user).toHaveProperty('views')
-
-      expect(user).toMatchObject({ id: userId, displayName })
-    }
+    const user = result?.data?.getUserById
+    expect(user).toMatchObject(expectedUserObject)
   })
+
   it('getUserByDisplayName should work', async () => {
     const app = createApplication({
       modules: [
@@ -99,12 +120,9 @@ describe('UserModule', () => {
     })
     const schema = app.createSchemaForApollo()
 
-    const displayName = 'SupCole'
-    const userId = '23573216'
-
     const document = parse(`
       {
-        getUserByDisplayName(displayName: "${displayName}"){
+        getUserByDisplayName(displayName: "anything"){
             displayName
             description
             id
@@ -119,125 +137,15 @@ describe('UserModule', () => {
       contextValue,
       document,
     })
-
     expect(result?.errors?.length).toBeFalsy()
+
     const user = result?.data?.getUserByDisplayName
-    if (user) {
-      expect(user).toHaveProperty('description')
-      expect(user).toHaveProperty('profilePictureURL')
-      expect(user).toHaveProperty('views')
 
-      expect(user).toMatchObject({ id: userId, displayName })
-    }
+    expect(user).toMatchObject(expectedUserObject)
   })
-  it('getFollowToId should work', async () => {
-    const app = createApplication({
-      modules: [
-        QueryModule,
-        SubscriberModule,
-        UserSubscriberLinkModule,
-        UserModule,
-      ],
-    })
-    const schema = app.createSchemaForApollo()
+})
 
-    const userId = '23573216'
-
-    const document = parse(`
-      {
-        latestSub {
-          user {
-            displayName
-            getFollowToId(userId: "${userId}"){
-              followDate
-              followDateUTC
-              
-              followerUser{
-                displayName
-              }
-
-              followedUser{
-                displayName
-              }
-            }
-          }
-        }
-      }
-    `)
-    const contextValue = { request: {}, response: {} }
-    const result = await execute({
-      schema,
-      contextValue,
-      document,
-    })
-
-    expect(result?.errors?.length).toBeFalsy()
-
-    const follow = result?.data?.latestSub?.user?.getFollowTo
-    if (follow) {
-      expect(follow).toHaveProperty('followDate')
-      expect(follow).toHaveProperty('followDateUTC')
-
-      expect(follow).toHaveProperty('followerUser')
-      expect(follow.followerUser).toHaveProperty('displayName')
-
-      expect(follow).toHaveProperty('followedUser')
-      expect(follow.followedUser).toHaveProperty('displayName')
-    }
-  })
-  it('getFollowToDisplayName should work', async () => {
-    const app = createApplication({
-      modules: [
-        QueryModule,
-        SubscriberModule,
-        UserSubscriberLinkModule,
-        UserModule,
-      ],
-    })
-    const schema = app.createSchemaForApollo()
-
-    const displayName = 'SupCole'
-
-    const document = parse(`
-      {
-        latestSub{
-          user {
-            displayName
-            getFollowToDisplayName(displayName: "${displayName}"){
-              followDate
-              followDateUTC
-              
-              followerUser{
-                displayName
-              }
-
-              followedUser{
-                displayName
-              }
-            }
-          }
-        }
-      }
-    `)
-    const contextValue = { request: {}, response: {} }
-    const result = await execute({
-      schema,
-      contextValue,
-      document,
-    })
-    expect(result?.errors?.length).toBeFalsy()
-    const follow = result?.data?.latestSub?.user?.getFollowTo
-    if (follow) {
-      expect(follow).toHaveProperty('followDate')
-      expect(follow).toHaveProperty('followDateUTC')
-
-      expect(follow).toHaveProperty('followerUser')
-      expect(follow.followerUser).toHaveProperty('displayName')
-
-      expect(follow).toHaveProperty('followedUser')
-      expect(follow.followedUser).toHaveProperty('displayName')
-    }
-  })
+describe('follows', () => {
   it('followsId should work', async () => {
     const app = createApplication({
       modules: [
@@ -249,14 +157,12 @@ describe('UserModule', () => {
     })
     const schema = app.createSchemaForApollo()
 
-    const userId = '23573216'
-
     const document = parse(`
       {
         latestSub{
           user {
             displayName
-            followsId(userId: "${userId}")
+            followsId(userId: "anything")
           }
         }
       }
@@ -269,8 +175,9 @@ describe('UserModule', () => {
     })
     expect(result?.errors?.length).toBeFalsy()
     const follows = result?.data?.latestSub?.user?.followsId
-    expect(typeof follows).toBe('boolean')
+    expect(follows).toBe(true)
   })
+
   it('followsDisplayName should work', async () => {
     const app = createApplication({
       modules: [
@@ -282,14 +189,12 @@ describe('UserModule', () => {
     })
     const schema = app.createSchemaForApollo()
 
-    const displayName = 'SupCole'
-
     const document = parse(`
       {
         latestSub{
           user {
             displayName
-            followsDisplayName(displayName: "${displayName}")
+            followsDisplayName(displayName: "anything")
           }
         }
       }
@@ -302,7 +207,7 @@ describe('UserModule', () => {
     })
     expect(result?.errors?.length).toBeFalsy()
     const follows = result?.data?.latestSub?.user?.followsDisplayName
-    expect(typeof follows).toBe('boolean')
+    expect(follows).toBe(true)
   })
   it('follows should work', async () => {
     const app = createApplication({
@@ -315,15 +220,16 @@ describe('UserModule', () => {
     })
     const schema = app.createSchemaForApollo()
 
-    const displayName = 'SupCole'
-
     const document = parse(`
       {
-        getUserByDisplayName(displayName: "${displayName}"){
+        getUserByDisplayName(displayName: "anything"){
           displayName
           follows(maxPages: 1) {
             total
-            nodes
+            nodes{
+              followDateUTC
+              followDate
+            }
             cursor
           }
         }
@@ -338,10 +244,80 @@ describe('UserModule', () => {
 
     expect(result?.errors?.length).toBeFalsy()
     const follows = result?.data?.getUserByDisplayName?.follows
-    if (follows) {
-      expect(typeof follows?.total).toEqual('number')
-      expect(follows).toHaveProperty('nodes')
-      expect(follows).toHaveProperty('cursor')
-    }
+
+    expect(follows).toMatchObject(userFollowsObject)
+  })
+  it('getFollowToId should work', async () => {
+    const app = createApplication({
+      modules: [
+        QueryModule,
+        SubscriberModule,
+        UserSubscriberLinkModule,
+        UserModule,
+      ],
+    })
+    const schema = app.createSchemaForApollo()
+
+    const document = parse(`
+      {
+        latestSub {
+          user {
+            displayName
+            getFollowToId(userId: "321"){
+              followDate
+              followDateUTC
+              
+            }
+          }
+        }
+      }
+    `)
+    const contextValue = { request: {}, response: {} }
+    const result = await execute({
+      schema,
+      contextValue,
+      document,
+    })
+    expect(result?.errors?.length).toBeFalsy()
+
+    const follow = result?.data?.latestSub?.user?.getFollowToId
+    expect(follow).toMatchObject(userFollowObject)
+  })
+
+  it('getFollowToDisplayName should work', async () => {
+    const app = createApplication({
+      modules: [
+        QueryModule,
+        SubscriberModule,
+        UserSubscriberLinkModule,
+        UserModule,
+      ],
+    })
+    const schema = app.createSchemaForApollo()
+
+    const document = parse(`
+      {
+        latestSub {
+          user {
+            displayName
+            getFollowToDisplayName(displayName: "LIRIK"){
+              followDate
+              followDateUTC
+            }
+          }
+        }
+      }
+    `)
+    const contextValue = { request: {}, response: {} }
+
+    const result = await execute({
+      schema,
+      contextValue,
+      document,
+    })
+
+    expect(result?.errors?.length).toBeFalsy()
+    const follow = result?.data?.latestSub?.user?.getFollowToDisplayName
+    expect(follow).toMatchObject(userFollowObject)
   })
 })
