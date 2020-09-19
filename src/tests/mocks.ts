@@ -24,7 +24,39 @@ export const userFollowsRaw = {
     cursor: 'xxx',
   },
 }
+export const helixStreamRaw = {
+  data: [
+    {
+      id: '26007494656',
+      user_id: '23161357',
+      user_name: 'LIRIK',
+      game_id: '417752',
+      type: 'live',
+      title: "Hey Guys, It's Monday - Twitter: @Lirik",
+      viewer_count: 32575,
+      started_at: '2017-08-14T16:08:32Z',
+      language: 'en',
+      thumbnail_url:
+        'https://static-cdn.jtvnw.net/previews-ttv/live_user_lirik-{width}x{height}.jpg',
+      tag_ids: ['6ea6bca4-4712-4ab9-a906-e3336a9d8039'],
+    },
+  ],
+  pagination: {
+    cursor: 'eyJiIjpudWxsLCJhIjp7Ik9mZnNldCI6MjB9fQ==',
+  },
+}
 
+export const expectedStream = {
+  language: 'en',
+  gameId: '417752',
+  id: '26007494656',
+  title: "Hey Guys, It's Monday - Twitter: @Lirik",
+  viewers: 32575,
+  thumbnailUrl:
+    'https://static-cdn.jtvnw.net/previews-ttv/live_user_lirik-{width}x{height}.jpg',
+  userDisplayName: 'LIRIK',
+  userId: '23161357',
+}
 export const userFollowsObject = {
   total: 2,
   nodes: [
