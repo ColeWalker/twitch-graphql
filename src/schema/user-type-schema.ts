@@ -11,7 +11,7 @@ export const UserResolvers = {
       args: { displayName: string },
       { injector }: GraphQLModules.ModuleContext
     ) {
-      const clients = await injector.get(TwitchClients)
+      const clients = injector.get(TwitchClients)
       const apiClient = await clients.apiClient()
 
       return apiClient.helix.users.getUserByName(args.displayName)
@@ -21,7 +21,7 @@ export const UserResolvers = {
       args: { userId: string },
       { injector }: GraphQLModules.ModuleContext
     ) {
-      const clients = await injector.get(TwitchClients)
+      const clients = injector.get(TwitchClients)
       const apiClient = await clients.apiClient()
 
       return apiClient.helix.users.getUserById(args.userId)
@@ -52,7 +52,7 @@ export const UserResolvers = {
       args: { displayName: string },
       { injector }: GraphQLModules.ModuleContext
     ) {
-      const clients = await injector.get(TwitchClients)
+      const clients = injector.get(TwitchClients)
       const apiClient = await clients.apiClient()
 
       const followed = await apiClient.helix.users.getUserByName(
@@ -69,7 +69,7 @@ export const UserResolvers = {
       args: { displayName: string },
       { injector }: GraphQLModules.ModuleContext
     ) {
-      const clients = await injector.get(TwitchClients)
+      const clients = injector.get(TwitchClients)
       const apiClient = await clients.apiClient()
 
       const followed = await apiClient.helix.users.getUserByName(
@@ -83,7 +83,7 @@ export const UserResolvers = {
       args: { maxPages: number },
       { injector }: GraphQLModules.ModuleContext
     ) {
-      const clients = await injector.get(TwitchClients)
+      const clients = injector.get(TwitchClients)
       const apiClient = await clients.apiClient()
       const page = await apiClient.helix.users.getFollowsPaginated({
         user: user,

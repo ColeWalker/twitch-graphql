@@ -233,6 +233,30 @@ type Stream {
   userDisplayName: String!
   userId: String!
 }
+
+type StreamConnection {
+  total: Int!
+  nodes: [Stream]
+  cursor: String
+}
+
+extend type Query {
+  getStreams(streamFilter: StreamFilter!, maxPages: Int = 1): StreamConnection
+}
+
+input StreamFilter {
+  gameIds: [String]
+  gameNames: [String]
+  languages: [String]
+  type: StreamType
+  userIds: [String]
+  userNames: [String]
+}
+
+enum StreamType {
+  live
+  none
+}
 ```
 
 ### StreamUserLink

@@ -82,4 +82,48 @@ describe('StreamModule', () => {
     const stream = result?.data?.latestSub?.user?.stream
     expect(stream).toMatchObject(expectedStream)
   })
+
+  it('getStreams', async () => {
+    const app = createApplication({
+      modules: [
+        QueryModule,
+        SubscriberModule,
+        UserModule,
+        UserSubscriberLinkModule,
+        StreamModule,
+        StreamUserLinkModule,
+      ],
+    })
+    const schema = app.createSchemaForApollo()
+
+    const document = parse(`
+      {
+        getStreams(
+          streamFilter: {
+            userNames: ["supcole"]
+          }
+        ) {
+          nodes { 
+            language
+            gameId
+            id
+            title
+            viewers
+            thumbnailUrl
+            userDisplayName
+            userId
+          }
+        }
+      }
+    `)
+    const contextValue = { request: {}, response: {} }
+    const result = await execute({
+      schema,
+      contextValue,
+      document,
+    })
+    expect(result?.errors?.length).toBeFalsy()
+    const stream = result?.data?.getStreams?.nodes
+    expect(stream).toMatchObject([expectedStream])
+  })
 })
