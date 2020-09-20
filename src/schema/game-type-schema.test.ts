@@ -7,6 +7,45 @@ import { parse, execute } from 'graphql'
 import { QueryModule } from './query-type-schema'
 import { UserSubscriberLinkModule } from './user-subscriber-link-type-schema'
 import { GameStreamLinkModule } from './game-stream-link-type-schema'
+import nock from 'nock'
+import {
+  expectedGame,
+  expectedUserRaw,
+  helixGameRaw,
+  helixStreamRaw,
+  helixSubRaw,
+  krakenSubRaw,
+} from '../tests/mocks'
+import { StreamUserLinkModule } from './stream-user-link-type-schema'
+
+nock('https://api.twitch.tv')
+  .get('/helix/users')
+  .query(true)
+  .reply(200, {
+    data: [expectedUserRaw],
+  })
+  .persist()
+nock('https://api.twitch.tv')
+  .get(/\/kraken\/channels\/[0-9]*\/subscriptions/)
+  .query(true)
+  .reply(200, krakenSubRaw)
+  .persist()
+nock('https://api.twitch.tv')
+  .get('/helix/subscriptions')
+  .query(true)
+  .reply(200, helixSubRaw)
+  .persist()
+nock('https://api.twitch.tv')
+  .get('/helix/streams')
+  .query(true)
+  .reply(200, helixStreamRaw)
+  .persist()
+nock('https://api.twitch.tv')
+  .get('/helix/games')
+  .query(true)
+  .reply(200, helixGameRaw)
+  .persist()
+
 describe('GameModule', () => {
   it('game should have all fields', async () => {
     const app = createApplication({
@@ -16,6 +55,7 @@ describe('GameModule', () => {
         UserModule,
         UserSubscriberLinkModule,
         GameStreamLinkModule,
+        StreamUserLinkModule,
         StreamModule,
         GameModule,
       ],
@@ -46,14 +86,10 @@ describe('GameModule', () => {
     })
 
     expect(result?.errors?.length).toBeFalsy()
-
     const game = result?.data?.latestSub?.user?.stream?.game
-    if (game) {
-      expect(game).toHaveProperty('boxArtUrl')
-      expect(game).toHaveProperty('name')
-      expect(game).toHaveProperty('id')
-    }
+    expect(game).toMatchObject(expectedGame)
   })
+
   it('can search game with getGameByName', async () => {
     const app = createApplication({
       modules: [
@@ -84,16 +120,6 @@ describe('GameModule', () => {
     })
     expect(result?.errors?.length).toBeFalsy()
     const game = result?.data?.getGameByName
-    if (game) {
-      expect(game).toHaveProperty('boxArtUrl')
-      expect(game).toHaveProperty('name')
-      expect(game).toHaveProperty('id')
-      expect(game).toMatchObject({
-        boxArtUrl:
-          'https://static-cdn.jtvnw.net/ttv-boxart/Science%20&%20Technology-{width}x{height}.jpg',
-        id: '509670',
-        name: 'Science & Technology',
-      })
-    }
+    expect(game).toMatchObject(expectedGame)
   })
 })
