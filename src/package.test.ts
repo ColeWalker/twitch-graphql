@@ -25,6 +25,12 @@ import {
   StreamUserLinkModule,
   StreamUserLinkResolvers,
   StreamUserLinkSchema,
+  RedemptionPubSubModule,
+  RedemptionPubSubResolvers,
+  RedemptionPubSubSchema,
+  RedemptionUserLinkModule,
+  RedemptionUserLinkResolvers,
+  RedemptionUserLinkSchema,
 } from './index'
 import nock from 'nock'
 import {
@@ -89,6 +95,12 @@ describe('npm package', () => {
     expect(StreamUserLinkModule).toBeTruthy()
     expect(StreamUserLinkResolvers).toBeTruthy()
     expect(StreamUserLinkSchema).toBeTruthy()
+    expect(RedemptionUserLinkModule).toBeTruthy()
+    expect(RedemptionUserLinkResolvers).toBeTruthy()
+    expect(RedemptionUserLinkSchema).toBeTruthy()
+    expect(RedemptionPubSubModule).toBeTruthy()
+    expect(RedemptionPubSubResolvers).toBeTruthy()
+    expect(RedemptionPubSubSchema).toBeTruthy()
   })
 
   it('modules should work together', async () => {
@@ -102,6 +114,8 @@ describe('npm package', () => {
         GameStreamLinkModule,
         GameModule,
         StreamUserLinkModule,
+        RedemptionPubSubModule,
+        RedemptionUserLinkModule,
       ],
     })
     const schema = app.createSchemaForApollo()
