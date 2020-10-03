@@ -10,6 +10,12 @@ export const QuerySchema = gql`
   type Query {
     _: Boolean
   }
+  type Subscription {
+    _: Boolean
+  }
+  type Mutation {
+    _: Boolean
+  }
 `
 
 export const QueryModule = createModule({

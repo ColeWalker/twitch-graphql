@@ -38,3 +38,13 @@ export {
   StreamUserLinkResolvers,
   StreamUserLinkSchema,
 } from './schema/stream-user-link-type-schema'
+export {
+  RedemptionPubSubModule,
+  RedemptionPubSubResolvers,
+  RedemptionPubSubSchema,
+} from './schema/redemption-pubsub-type-schema'
+export {
+  RedemptionUserLinkModule,
+  RedemptionUserLinkResolvers,
+  RedemptionUserLinkSchema,
+} from './schema/redemption-pubsub-user-link-type-schema'
