@@ -25,7 +25,7 @@ export const BitUserLinkSchema = gql`
 `
 
 export const BitUserLinkModule = createModule({
-  id: `chat-pubsub-user-link-module`,
+  id: `bit-pubsub-user-link-module`,
   dirname: __dirname,
   providers: [TwitchClients, TwitchId, UserId],
   typeDefs: BitUserLinkSchema,
