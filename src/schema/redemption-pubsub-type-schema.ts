@@ -15,11 +15,11 @@ export const RedemptionPubSubResolvers = {
         const clients = injector.get(TwitchClients)
 
         const twitchClient = await clients.apiClient()
-
+        const myId = (await twitchClient.getTokenInfo()).userId
         const pubSubClient = await clients.pubSubClient()
         await pubSubClient.registerUserListener(twitchClient)
         const curriedOnRedemption = (cb: any) =>
-          pubSubClient.onRedemption('23573216', cb)
+          pubSubClient.onRedemption(myId, cb)
 
         const asyncified = asyncify(curriedOnRedemption)
 
