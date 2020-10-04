@@ -14,4 +14,8 @@ export class TwitchClients {
   async pubSubClient() {
     return new PubSubClient()
   }
+
+  async authProvider() {
+    return RefreshToken()
+  }
 }

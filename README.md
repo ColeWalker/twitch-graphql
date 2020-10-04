@@ -24,6 +24,8 @@ By default it will run at `http://localhost:5555/graphql`.
   - [PubSubs](#pubsubs)
     - [RedemptionPubSub](#redemptionpubsub)
     - [RedemptionUserLink](#redemptionuserlink)
+    - [ChatPubSub](#chatpubsub)
+    - [ChatUserLink](#chatuserlink)
 
 ## Environment Variables
 
@@ -372,5 +374,35 @@ import { RedemptionUserLinkModule } from 'twitch-graphql'
 extend type Redemption {
   user: User
   channelRedeemedAt: User
+}
+```
+
+### ChatPubSub
+
+```**ts**
+import { ChatPubSubModule } from 'twitch-graphql'
+```
+
+```graphql
+type Chat {
+  message: String
+  displayName: String
+  channel: String
+}
+
+extend type Subscription {
+  newChat(channel: String!): Chat
+}
+```
+
+### ChatUserLink
+
+```**ts**
+import { ChatUserLinkModule } from 'twitch-graphql'
+```
+
+```graphql
+extend type Chat {
+  user: User
 }
 ```

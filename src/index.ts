@@ -48,3 +48,13 @@ export {
   RedemptionUserLinkResolvers,
   RedemptionUserLinkSchema,
 } from './schema/redemption-pubsub-user-link-type-schema'
+export {
+  ChatPubSubModule,
+  ChatPubSubResolvers,
+  ChatPubSubSchema,
+} from './schema/chat-pubsub-type-schema'
+export {
+  ChatUserLinkModule,
+  ChatUserLinkResolvers,
+  ChatUserLinkSchema,
+} from './schema/chat-pubsub-user-link-schema'
