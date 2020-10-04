@@ -33,7 +33,7 @@ export const BitPubSubResolvers = {
 }
 
 export const BitPubSubSchema = gql`
-  type Bits {
+  type Bit {
     userId: String
     userName: String
     message: String
@@ -43,7 +43,7 @@ export const BitPubSubSchema = gql`
   }
 
   extend type Subscription {
-    newBits: Bits
+    newBits: Bit
   }
 `
 
