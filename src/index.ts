@@ -58,3 +58,13 @@ export {
   ChatUserLinkResolvers,
   ChatUserLinkSchema,
 } from './schema/chat-pubsub-user-link-schema'
+export {
+  BitPubSubModule,
+  BitPubSubResolvers,
+  BitPubSubSchema,
+} from './schema/bit-pubsub-type-schema'
+export {
+  BitUserLinkModule,
+  BitUserLinkResolvers,
+  BitUserLinkSchema,
+} from './schema/bit-pubsub-user-link-schema'

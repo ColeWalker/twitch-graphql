@@ -4,9 +4,9 @@ import { TwitchId } from '../injections/Twitch-Id'
 import { UserId } from '../injections/User-Id'
 import asyncify from 'callback-to-async-iterator'
 
-export const RedemptionPubSubResolvers = {
+export const BitPubSubResolvers = {
   Subscription: {
-    newRedemption: {
+    newBits: {
       subscribe: async (
         _: any,
         _args: any,
@@ -18,10 +18,10 @@ export const RedemptionPubSubResolvers = {
         const myId = (await twitchClient.getTokenInfo()).userId
         const pubSubClient = await clients.pubSubClient()
         await pubSubClient.registerUserListener(twitchClient)
-        const curriedOnRedemption = (cb: any) =>
-          pubSubClient.onRedemption(myId, cb)
 
-        const asyncified = asyncify(curriedOnRedemption)
+        const curriedOnBits = (cb: any) => pubSubClient.onBits(myId, cb)
+
+        const asyncified = asyncify(curriedOnBits)
 
         return asyncified
       },
@@ -32,33 +32,25 @@ export const RedemptionPubSubResolvers = {
   },
 }
 
-export const RedemptionPubSubSchema = gql`
-  type Redemption {
+export const BitPubSubSchema = gql`
+  type Bit {
     userId: String
-    id: String
-    channelId: String
     userName: String
-    userDisplayName: String
-    redemptionDate: String
-    rewardId: String
-    rewardName: String
-    rewardPrompt: String
-    rewardCost: Int
-    rewardIsQueued: String
-    rewardImage: String
     message: String
-    status: String
+    bits: Int
+    totalBits: Int
+    isAnonymous: Boolean
   }
 
   extend type Subscription {
-    newRedemption: Redemption
+    newBits: Bit
   }
 `
 
-export const RedemptionPubSubModule = createModule({
-  id: `redemption-pubsub-module`,
+export const BitPubSubModule = createModule({
+  id: `bit-pubsub-module`,
   dirname: __dirname,
   providers: [TwitchClients, TwitchId, UserId],
-  typeDefs: RedemptionPubSubSchema,
-  resolvers: RedemptionPubSubResolvers,
+  typeDefs: BitPubSubSchema,
+  resolvers: BitPubSubResolvers,
 })
