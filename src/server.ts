@@ -15,6 +15,8 @@ import { RedemptionUserLinkModule } from './schema/redemption-pubsub-user-link-t
 import { ChatPubSubModule } from './schema/chat-pubsub-type-schema'
 import { ApolloServer } from 'apollo-server-express'
 import { ChatUserLinkModule } from './schema/chat-pubsub-user-link-schema'
+import { BitPubSubModule } from './schema/bit-pubsub-type-schema'
+import { BitUserLinkModule } from './schema/bit-pubsub-user-link-schema'
 require('dotenv').config()
 
 let port = 5555
@@ -60,6 +62,8 @@ const app = createApplication({
     RedemptionUserLinkModule,
     ChatPubSubModule,
     ChatUserLinkModule,
+    BitPubSubModule,
+    BitUserLinkModule,
   ],
 })
 
