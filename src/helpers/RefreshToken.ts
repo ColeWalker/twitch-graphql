@@ -7,17 +7,11 @@ const client_id = process.env.USER_ID || ''
 const client_secret = process.env.SECRET || ''
 const refresh_token = process.env.REFRESH_TOKEN || ''
 
-interface IAuthRequest {
-  clientId: string | null | undefined
-  clientSecret: string | null | undefined
-  refreshToken: string | null | undefined
-}
-
-export default async ({
-  clientId = client_id,
-  clientSecret = client_secret,
-  refreshToken = refresh_token,
-}: IAuthRequest): Promise<AuthProvider> => {
+export default async (
+  clientId: string = client_id,
+  clientSecret: string = client_secret,
+  refreshToken: string = refresh_token
+): Promise<AuthProvider> => {
   if (!clientId?.length || !clientSecret?.length || !refreshToken?.length) {
     throw error('env not loading properly')
   }
