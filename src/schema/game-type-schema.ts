@@ -12,6 +12,17 @@ export const GameResolvers = {
 
 			return await apiClient.helix.games.getGameByName(args.gameName);
 		}
+	},
+	Game: {
+		id(game: HelixGame) {
+			return game.id;
+		},
+		name(game: HelixGame) {
+			return game.name;
+		},
+		boxArtUrl(game: HelixGame) {
+			return game.boxArtUrl;
+		}
 	}
 };
 
