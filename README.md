@@ -28,6 +28,9 @@ By default it will run at `http://localhost:5555/graphql`.
     - [ChatUserLink](#chatuserlink)
     - [BitPubSub](#bitpubsub)
     - [BitUserLink](#bituserlink)
+  - [SubscriptionPubSub](#subscriptionpubsub)
+    - [SubscriptionPubSubChatLink](#subscriptionpubsubchatlink)
+    - [SubscriptionPubSubUserLink](#subscriptionpubsubuserlink)
 
 ## Environment Variables
 
@@ -439,5 +442,59 @@ import { BitPubSubModule } from 'twitch-graphql'
 ```graphql
 extend type Bit {
   user: User
+}
+```
+
+## SubscriptionPubSub
+
+```ts
+import { SubscriptionPubSubModule } from 'twitch-graphql'
+```
+
+```graphql
+type SubscriptionMessage {
+  userId: String
+  userName: String
+  userDisplayName: String
+  streakMonths: Int
+  cumulativeMonths: Int
+  months: Int
+  time: String
+  subPlan: String
+  isResub: Boolean
+  isGift: Boolean
+  isAnonymous: Boolean
+  gifterId: String
+  gifterName: String
+  gifterDisplayName: String
+  giftDuration: Int
+}
+extend type Subscription {
+  newSubscription: SubscriptionMessage
+}
+```
+
+### SubscriptionPubSubChatLink
+
+```ts
+import { SubscriptionPubSubChatLinkModule } from 'twitch-graphql'
+```
+
+```graphql
+extend type SubscriptionMessage {
+  message: Chat
+}
+```
+
+### SubscriptionPubSubUserLink
+
+```ts
+import { SubscriptionPubSubUserLinkModule } from 'twitch-graphql'
+```
+
+```graphql
+extend type SubscriptionMessage {
+  user: User
+  gifterUser: User
 }
 ```

@@ -68,3 +68,17 @@ export {
   BitUserLinkResolvers,
   BitUserLinkSchema,
 } from './schema/bit-pubsub-user-link-schema'
+export {
+  SubscriptionPubSubModule,
+  SubscriptionPubSubResolvers,
+  SubscriptionPubSubSchema,
+} from './schema/subscription-pubsub-type-schema'
+export {
+  SubscriptionPubSubUserLinkModule,
+  SubscriptionPubSubUserLinkResolvers,
+  SubscriptionPubSubUserLinkSchema,
+} from './schema/subscription-pubsub-user-link-schema'
+export {
+  SubscriptionPubSubChatLinkModule,
+  SubscriptionPubSubChatLinkSchema,
+} from './schema/subscription-pubsub-chat-link-schema'
