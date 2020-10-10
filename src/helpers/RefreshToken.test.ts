@@ -10,7 +10,7 @@ const refreshToken = 'refresh_token'
 axios.defaults.adapter = require('axios/lib/adapters/http')
 describe('RefreshToken', () => {
   it('Gets auth correctly', async () => {
-    const scope = nock('https://id.twitch.tv')
+    nock('https://id.twitch.tv')
       .post(
         `/oauth2/token?grant_type=refresh_token&refresh_token=${refreshToken}&client_id=${clientId}&client_secret=${clientSecret}`
       )
