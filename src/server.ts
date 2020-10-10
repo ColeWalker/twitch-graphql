@@ -12,7 +12,11 @@ import { GameStreamLinkModule } from './schema/game-stream-link-type-schema'
 import { RedemptionPubSubModule } from './schema/redemption-pubsub-type-schema'
 import { StreamUserLinkModule } from './schema/stream-user-link-type-schema'
 import { RedemptionUserLinkModule } from './schema/redemption-pubsub-user-link-type-schema'
+import { ChatPubSubModule } from './schema/chat-pubsub-type-schema'
 import { ApolloServer } from 'apollo-server-express'
+import { ChatUserLinkModule } from './schema/chat-pubsub-user-link-schema'
+import { BitPubSubModule } from './schema/bit-pubsub-type-schema'
+import { BitUserLinkModule } from './schema/bit-pubsub-user-link-schema'
 require('dotenv').config()
 
 let port = 5555
@@ -56,6 +60,10 @@ const app = createApplication({
     StreamUserLinkModule,
     RedemptionPubSubModule,
     RedemptionUserLinkModule,
+    ChatPubSubModule,
+    ChatUserLinkModule,
+    BitPubSubModule,
+    BitUserLinkModule,
   ],
 })
 

@@ -31,6 +31,18 @@ import {
   RedemptionUserLinkModule,
   RedemptionUserLinkResolvers,
   RedemptionUserLinkSchema,
+  ChatPubSubModule,
+  ChatPubSubResolvers,
+  ChatPubSubSchema,
+  ChatUserLinkModule,
+  ChatUserLinkResolvers,
+  ChatUserLinkSchema,
+  BitPubSubModule,
+  BitPubSubResolvers,
+  BitPubSubSchema,
+  BitUserLinkModule,
+  BitUserLinkResolvers,
+  BitUserLinkSchema,
 } from './index'
 import nock from 'nock'
 import {
@@ -101,6 +113,18 @@ describe('npm package', () => {
     expect(RedemptionPubSubModule).toBeTruthy()
     expect(RedemptionPubSubResolvers).toBeTruthy()
     expect(RedemptionPubSubSchema).toBeTruthy()
+    expect(ChatPubSubModule).toBeTruthy()
+    expect(ChatPubSubResolvers).toBeTruthy()
+    expect(ChatPubSubSchema).toBeTruthy()
+    expect(ChatUserLinkModule).toBeTruthy()
+    expect(ChatUserLinkResolvers).toBeTruthy()
+    expect(ChatUserLinkSchema).toBeTruthy()
+    expect(BitPubSubModule).toBeTruthy()
+    expect(BitPubSubResolvers).toBeTruthy()
+    expect(BitPubSubSchema).toBeTruthy()
+    expect(BitUserLinkModule).toBeTruthy()
+    expect(BitUserLinkResolvers).toBeTruthy()
+    expect(BitUserLinkSchema).toBeTruthy()
   })
 
   it('modules should work together', async () => {
@@ -116,6 +140,10 @@ describe('npm package', () => {
         StreamUserLinkModule,
         RedemptionPubSubModule,
         RedemptionUserLinkModule,
+        ChatPubSubModule,
+        ChatUserLinkModule,
+        BitPubSubModule,
+        BitUserLinkModule,
       ],
     })
     const schema = app.createSchemaForApollo()
