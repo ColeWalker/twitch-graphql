@@ -1,5 +1,5 @@
 import { createModule, gql } from 'graphql-modules'
-import { HelixFollow, HelixUser } from 'twitch'
+import { HelixFollow, HelixFollowData, HelixUser } from 'twitch'
 import { TwitchClients } from '../injections/Twitch-Clients'
 import { TwitchId } from '../injections/Twitch-Id'
 import { UserId } from '../injections/User-Id'
@@ -89,7 +89,7 @@ export const UserResolvers = {
         user: user,
       })
 
-      let pages = []
+      let pages: HelixFollowData[] = []
       if (page.current) pages.push(...page.current)
       for (let i = 1; i <= args.maxPages; i++) {
         await page.getNext()
