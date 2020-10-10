@@ -8,9 +8,9 @@ const client_secret = process.env.SECRET || ''
 const refresh_token = process.env.REFRESH_TOKEN || ''
 
 interface IAuthRequest {
-  clientId: string
-  clientSecret: string
-  refreshToken: string
+  clientId: string | null | undefined
+  clientSecret: string | null | undefined
+  refreshToken: string | null | undefined
 }
 
 export default async ({
@@ -18,7 +18,7 @@ export default async ({
   clientSecret = client_secret,
   refreshToken = refresh_token,
 }: IAuthRequest): Promise<AuthProvider> => {
-  if (!clientId.length || !clientSecret.length || !refreshToken.length) {
+  if (!clientId?.length || !clientSecret?.length || !refreshToken?.length) {
     throw error('env not loading properly')
   }
   const raw = await axios.post(
