@@ -25,7 +25,5 @@ export default async ({
     accessToken
   )
 
-  console.log(authProvider) //?
-
   return authProvider
 }
