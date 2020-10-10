@@ -43,6 +43,14 @@ import {
   BitUserLinkModule,
   BitUserLinkResolvers,
   BitUserLinkSchema,
+  SubscriptionPubSubModule,
+  SubscriptionPubSubResolvers,
+  SubscriptionPubSubSchema,
+  SubscriptionPubSubUserLinkModule,
+  SubscriptionPubSubUserLinkResolvers,
+  SubscriptionPubSubUserLinkSchema,
+  SubscriptionPubSubChatLinkModule,
+  SubscriptionPubSubChatLinkSchema,
 } from './index'
 import nock from 'nock'
 import {
@@ -125,6 +133,14 @@ describe('npm package', () => {
     expect(BitUserLinkModule).toBeTruthy()
     expect(BitUserLinkResolvers).toBeTruthy()
     expect(BitUserLinkSchema).toBeTruthy()
+    expect(SubscriptionPubSubModule).toBeTruthy()
+    expect(SubscriptionPubSubResolvers).toBeTruthy()
+    expect(SubscriptionPubSubSchema).toBeTruthy()
+    expect(SubscriptionPubSubUserLinkModule).toBeTruthy()
+    expect(SubscriptionPubSubUserLinkResolvers).toBeTruthy()
+    expect(SubscriptionPubSubUserLinkSchema).toBeTruthy()
+    expect(SubscriptionPubSubChatLinkModule).toBeTruthy()
+    expect(SubscriptionPubSubChatLinkSchema).toBeTruthy()
   })
 
   it('modules should work together', async () => {
@@ -144,6 +160,9 @@ describe('npm package', () => {
         ChatUserLinkModule,
         BitPubSubModule,
         BitUserLinkModule,
+        SubscriptionPubSubModule,
+        SubscriptionPubSubChatLinkModule,
+        SubscriptionPubSubUserLinkModule,
       ],
     })
     const schema = app.createSchemaForApollo()

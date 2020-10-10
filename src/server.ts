@@ -17,6 +17,10 @@ import { ApolloServer } from 'apollo-server-express'
 import { ChatUserLinkModule } from './schema/chat-pubsub-user-link-schema'
 import { BitPubSubModule } from './schema/bit-pubsub-type-schema'
 import { BitUserLinkModule } from './schema/bit-pubsub-user-link-schema'
+import { SubscriptionPubSubModule } from './schema/subscription-pubsub-type-schema'
+import { SubscriptionPubSubUserLinkModule } from './schema/subscription-pubsub-user-link-schema'
+import { SubscriptionPubSubChatLinkModule } from './schema/subscription-pubsub-chat-link-schema'
+
 require('dotenv').config()
 
 let port = 5555
@@ -64,6 +68,9 @@ const app = createApplication({
     ChatUserLinkModule,
     BitPubSubModule,
     BitUserLinkModule,
+    SubscriptionPubSubModule,
+    SubscriptionPubSubUserLinkModule,
+    SubscriptionPubSubChatLinkModule,
   ],
 })
 
