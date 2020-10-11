@@ -17,8 +17,8 @@ jobs:
       matrix:
         node-version: [12.x]
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/cache@v2
+      - uses: actions/checkout@v1
+      - uses: actions/cache@v1
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-modules
@@ -29,7 +29,6 @@ jobs:
       - name: install modules
         run: |
           npm install
-          npm build
           npm test --verbose
       - name: Release
         env:
