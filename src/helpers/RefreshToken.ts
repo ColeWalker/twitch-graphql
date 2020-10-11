@@ -8,7 +8,9 @@ export default async (
   refreshToken?: string
 ): Promise<AuthProvider> => {
   if (!clientId?.length || !clientSecret?.length || !refreshToken?.length) {
-    throw new Error('Client info not filled out')
+    clientId = process.env.USER_ID || ''
+    clientSecret = process.env.SECRET || ''
+    refreshToken = process.env.REFRESH_TOKEN || ''
   }
   const raw = await axios.post(
     `https://id.twitch.tv/oauth2/token?grant_type=refresh_token&refresh_token=${refreshToken}&client_id=${clientId}&client_secret=${clientSecret}`
