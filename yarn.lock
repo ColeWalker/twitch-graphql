@@ -4695,7 +4695,7 @@ graphql-extensions@^0.12.5:
     apollo-server-env "^2.4.5"
     apollo-server-types "^0.6.0"
 
-graphql-modules@^1.0.0-alpha.1:
+graphql-modules@^1.0.0-alpha.2:
   version "1.0.0-alpha.2"
   resolved "https://registry.yarnpkg.com/graphql-modules/-/graphql-modules-1.0.0-alpha.2.tgz#539946a5a436e08242842daf1655b9c58d84cf9a"
   integrity sha512-Um+jxXbq+JzHQYkC7oDKw4IXhMOFoyoYUtcxYhIrPaaKclWnzCaVzGQ0et8wB5rx97MRfsF/giMYnnY3KiKGJw==
