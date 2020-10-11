@@ -15,22 +15,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-node@v2-beta
-        with:
-          node-version: '12'
-      - name: Cache node modules
-        uses: actions/cache@v2
+      - uses: actions/cache@v2
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-modules
-          restore-keys: |
-            ${{ runner.os }}-node-
 
-      - name: install modules and test
-        run: |
-          npm install
-          npm test
+      - name: install modules
+        run: yarn
 
+      - name: Run tests
+        run: yarn jest
       - name: Release
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

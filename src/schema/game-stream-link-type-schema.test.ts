@@ -47,6 +47,10 @@ nock('https://api.twitch.tv')
   .persist()
 
 describe('GameStreamLinkModule', () => {
+  beforeEach(function (done) {
+    if (!nock.isActive()) nock.activate()
+    done()
+  })
   it('game should have all fields', async () => {
     const app = createApplication({
       modules: [
