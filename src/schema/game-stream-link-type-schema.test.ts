@@ -19,7 +19,7 @@ import {
 import { StreamUserLinkModule } from './stream-user-link-type-schema'
 
 describe('GameStreamLinkModule', () => {
-  beforeAll(() => {
+  it('game should have all fields', async () => {
     nock('https://api.twitch.tv')
       .get('/helix/users')
       .query(true)
@@ -47,8 +47,6 @@ describe('GameStreamLinkModule', () => {
       .query(true)
       .reply(200, helixGameRaw)
       .persist()
-  })
-  it('game should have all fields', async () => {
     const app = createApplication({
       modules: [
         QueryModule,
