@@ -29,6 +29,7 @@ jobs:
       - name: install modules
         run: |
           npm install
+          npm build
           npm test --verbose
       - name: Release
         env:
