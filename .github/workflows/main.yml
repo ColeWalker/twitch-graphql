@@ -21,10 +21,10 @@ jobs:
           key: ${{ runner.os }}-modules
 
       - name: install modules
-        run: yarn
+        run: yarn --development
 
       - name: Run tests
-        run: yarn jest
+        run: yarn jest --development
       - name: Release
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

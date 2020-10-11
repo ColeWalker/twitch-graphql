@@ -17,7 +17,6 @@ import {
   krakenSubRaw,
 } from '../tests/mocks'
 import { StreamUserLinkModule } from './stream-user-link-type-schema'
-import 'whatwg-fetch'
 
 nock('https://api.twitch.tv')
   .get('/helix/users')
