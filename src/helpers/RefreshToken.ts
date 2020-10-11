@@ -8,9 +8,9 @@ const client_secrets = async () => process.env.SECRET || ''
 const refresh_tokens = async () => process.env.REFRESH_TOKEN || ''
 
 export default async (
-  client_id: string,
-  client_secret: string,
-  refresh_token: string
+  client_id: string | Promise<string>,
+  client_secret: string | Promise<string>,
+  refresh_token: string | Promise<string>
 ): Promise<AuthProvider> => {
   let clientId = client_id || (await client_ids())
   let clientSecret = client_secret || (await client_secrets())
