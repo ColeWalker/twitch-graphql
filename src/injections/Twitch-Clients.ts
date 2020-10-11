@@ -8,7 +8,7 @@ require('dotenv').config()
 export class TwitchClients {
   async apiClient() {
     const authProvider = await RefreshToken()
-
+    console.log(authProvider) //?
     return new ApiClient({ authProvider, preAuth: true })
   }
 
