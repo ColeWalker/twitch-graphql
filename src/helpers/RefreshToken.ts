@@ -8,13 +8,13 @@ const client_secrets = async () => process.env.SECRET || ''
 const refresh_tokens = async () => process.env.REFRESH_TOKEN || ''
 
 export default async (
-  client_id: Promise<string> = client_ids(),
-  client_secret: Promise<string> = client_secrets(),
-  refresh_token: Promise<string> = refresh_tokens()
+  client_id: string,
+  client_secret: string,
+  refresh_token: string
 ): Promise<AuthProvider> => {
-  const clientId = await client_id
-  const clientSecret = await client_secret
-  const refreshToken = await refresh_token
+  let clientId = client_id || (await client_ids())
+  let clientSecret = client_secret || (await client_secrets())
+  let refreshToken = refresh_token || (await refresh_tokens())
   if (!clientId?.length || !clientSecret?.length || !refreshToken?.length) {
     throw error('env not loading properly')
   }
