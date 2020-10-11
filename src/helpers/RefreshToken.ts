@@ -3,15 +3,18 @@ import { AuthProvider, StaticAuthProvider } from 'twitch/lib'
 import { error } from 'console'
 require('dotenv').config()
 
-const client_id = process.env.USER_ID || ''
-const client_secret = process.env.SECRET || ''
-const refresh_token = process.env.REFRESH_TOKEN || ''
+const client_ids = async () => process.env.USER_ID || ''
+const client_secrets = async () => process.env.SECRET || ''
+const refresh_tokens = async () => process.env.REFRESH_TOKEN || ''
 
 export default async (
-  clientId: string = client_id,
-  clientSecret: string = client_secret,
-  refreshToken: string = refresh_token
+  client_id: Promise<string> = client_ids(),
+  client_secret: Promise<string> = client_secrets(),
+  refresh_token: Promise<string> = refresh_tokens()
 ): Promise<AuthProvider> => {
+  const clientId = await client_id
+  const clientSecret = await client_secret
+  const refreshToken = await refresh_token
   if (!clientId?.length || !clientSecret?.length || !refreshToken?.length) {
     throw error('env not loading properly')
   }
