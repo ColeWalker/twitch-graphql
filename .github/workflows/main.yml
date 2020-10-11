@@ -7,8 +7,7 @@ env:
   USER_ID: ${{ secrets.USER_ID }}
 on:
   push:
-    branches:
-      - '*'
+    branches: [master]
   pull_request:
     branches: [master]
 jobs:
@@ -16,16 +15,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      # - uses: actions/cache@v2
-      #   with:
-      #     path: '**/node_modules'
-      #     key: ${{ runner.os }}-modules
+      - name: Cache node modules
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules
+          restore-keys: |
+            ${{ runner.os }}-node-
 
-      - name: install modules
-        run: yarn
+      - name: install modules and test
+        run: |
+          npm install
+          npm test
 
-      - name: Run tests
-        run: yarn jest
       - name: Release
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
