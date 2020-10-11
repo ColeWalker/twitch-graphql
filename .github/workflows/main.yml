@@ -26,7 +26,7 @@ jobs:
       - name: install modules and test
         run: |
           npm install
-          npm test
+          jest test
 
       - name: Release
         env:
