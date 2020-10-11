@@ -28,8 +28,8 @@ jobs:
 
       - name: install modules and test
         run: |
-          yarn install
-          yarn jest
+          npm install
+          npm test
 
       - name: Release
         env:
