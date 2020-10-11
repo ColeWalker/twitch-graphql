@@ -24,7 +24,7 @@ jobs:
         run: yarn --development
 
       - name: Run tests
-        run: yarn jest --development
+        run: yarn jest
       - name: Release
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
