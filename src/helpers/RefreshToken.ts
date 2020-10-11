@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { AuthProvider, StaticAuthProvider } from 'twitch/lib'
-import { error } from 'console'
 require('dotenv').config()
 
 const client_ids = process.env.USER_ID || ''
