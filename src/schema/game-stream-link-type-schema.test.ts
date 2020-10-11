@@ -17,6 +17,7 @@ import {
   krakenSubRaw,
 } from '../tests/mocks'
 import { StreamUserLinkModule } from './stream-user-link-type-schema'
+import 'whatwg-fetch'
 
 nock('https://api.twitch.tv')
   .get('/helix/users')
@@ -47,10 +48,6 @@ nock('https://api.twitch.tv')
   .persist()
 
 describe('GameStreamLinkModule', () => {
-  beforeEach(function (done) {
-    if (!nock.isActive()) nock.activate()
-    done()
-  })
   it('game should have all fields', async () => {
     const app = createApplication({
       modules: [
