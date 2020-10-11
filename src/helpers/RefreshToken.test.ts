@@ -10,15 +10,15 @@ const refreshToken = 'refresh_token'
 axios.defaults.adapter = require('axios/lib/adapters/http')
 describe('RefreshToken', () => {
   it('Gets auth correctly', async () => {
-    nock('https://id.twitch.tv')
+    nock('https://id.twitch.tv/oauth2')
       .post(
-        `/oauth2/token?grant_type=refresh_token&refresh_token=${refreshToken}&client_id=${clientId}&client_secret=${clientSecret}`
+        `/token?grant_type=refresh_token&refresh_token=${refreshToken}&client_id=${clientId}&client_secret=${clientSecret}`
       )
       .reply(200, {
         access_token: 'dummy_string',
       })
       .persist()
-    const auth = await RefreshToken({ refreshToken, clientId, clientSecret })
+    const auth = await RefreshToken(clientId, clientSecret, refreshToken)
     expect(auth).toHaveProperty('clientId')
     expect(auth.clientId).toBe('user_id')
   })
