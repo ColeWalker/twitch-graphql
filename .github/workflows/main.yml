@@ -31,6 +31,8 @@ jobs:
           npm install
           npm run build
           npm test --verbose
+        env:
+          CI: true
       - name: Release
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
