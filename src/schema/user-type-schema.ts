@@ -84,7 +84,7 @@ export const UserResolvers = {
         user: user,
       })
 
-      let pages: HelixFollowData[] = []
+      let pages: any[] = []
       if (page.current) pages.push(...page.current)
       for (let i = 1; i <= args.maxPages; i++) {
         await page.getNext()

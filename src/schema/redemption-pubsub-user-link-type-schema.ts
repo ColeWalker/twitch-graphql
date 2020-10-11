@@ -1,6 +1,6 @@
 import { createModule, gql } from 'graphql-modules'
 import { PubSubRedemptionMessage } from 'twitch-pubsub-client/lib'
-import { TwitchClients } from '../injections/Twitch-Clients'
+import TwitchClients from '../injections/Twitch-Clients'
 import { TwitchId } from '../injections/Twitch-Id'
 import { UserId } from '../injections/User-Id'
 
@@ -11,7 +11,7 @@ export const RedemptionUserLinkResolvers = {
       _args: any,
       { injector }: GraphQLModules.Context
     ) => {
-      const clients = injector.get(TwitchClients)
+      const clients = TwitchClients
       const twitchClient = await clients.apiClient()
 
       return twitchClient.helix.users.getUserById(redemption.userId)
@@ -21,7 +21,7 @@ export const RedemptionUserLinkResolvers = {
       _args: any,
       { injector }: GraphQLModules.Context
     ) => {
-      const clients = injector.get(TwitchClients)
+      const clients = TwitchClients
       const twitchClient = await clients.apiClient()
 
       return twitchClient.helix.users.getUserById(redemption.channelId)
@@ -39,7 +39,7 @@ export const RedemptionUserLinkSchema = gql`
 export const RedemptionUserLinkModule = createModule({
   id: `redemption-pubsub-user-link-module`,
   dirname: __dirname,
-  providers: [TwitchClients, TwitchId, UserId],
+  providers: [TwitchId, UserId],
   typeDefs: RedemptionUserLinkSchema,
   resolvers: RedemptionUserLinkResolvers,
 })

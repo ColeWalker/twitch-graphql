@@ -1,6 +1,6 @@
 import { gql, createModule } from 'graphql-modules'
 import { HelixSubscription, HelixUser } from 'twitch'
-import TwitchClient from '../injections/Twitch-Clients'
+import TwitchClients from '../injections/Twitch-Clients'
 import { TwitchId } from '../injections/Twitch-Id'
 import { UserId } from '../injections/User-Id'
 
@@ -19,7 +19,7 @@ export const UserSubscriberLinkResolvers = {
       args: { displayName: string },
       { injector }: GraphQLModules.ModuleContext
     ) {
-      const apiClient = await TwitchClient.apiClient()
+      const apiClient = await TwitchClients.apiClient()
 
       const subscribed = await apiClient.helix.users.getUserByName(
         args.displayName
@@ -35,7 +35,7 @@ export const UserSubscriberLinkResolvers = {
       args: { displayName: string },
       { injector }: GraphQLModules.ModuleContext
     ) {
-      const apiClient = await TwitchClient.apiClient()
+      const apiClient = await TwitchClients.apiClient()
 
       const subscribed = await apiClient.helix.users.getUserByName(
         args.displayName
