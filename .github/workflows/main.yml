@@ -13,18 +13,24 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [8.x, 10.x, 12.x]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/cache@v2
         with:
           path: '**/node_modules'
           key: ${{ runner.os }}-modules
-
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
       - name: install modules
-        run: yarn --development
+        run: npm install
 
       - name: Run tests
-        run: yarn jest
+        run: npm test --verbose
       - name: Release
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

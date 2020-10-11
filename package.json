@@ -1,5 +1,8 @@
 {
   "name": "twitch-graphql",
+  "jest": {
+    "verbose": true
+  },
   "version": "0.0.0-development",
   "description": "A graphql wrapper for the Twitch API.",
   "main": "dist/index.js",
@@ -19,6 +22,7 @@
     "prepare": "tsc",
     "build": "tsc",
     "start": "node ./dist/server.js",
+    "test": "jest --coverage",
     "dev": "concurrently \"tsc -w\" \"nodemon ./dist/server.js\"",
     "dev-g": "concurrently \"tsc -w\" \"nodemon ./dist/server.js -g\"",
     "semantic-release": "semantic-release"
