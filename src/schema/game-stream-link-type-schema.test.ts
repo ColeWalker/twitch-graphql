@@ -19,7 +19,7 @@ import {
 import { StreamUserLinkModule } from './stream-user-link-type-schema'
 
 describe('GameStreamLinkModule', () => {
-  beforeEach(() => {
+  beforeAll(() => {
     nock('https://api.twitch.tv')
       .get('/helix/users')
       .query(true)
