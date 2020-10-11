@@ -27,10 +27,10 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
       - name: install modules
-        run: npm install
-
-      - name: Run tests
-        run: npm test --verbose
+        run: |
+          npm install
+          npm build
+          npm test --verbose
       - name: Release
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
