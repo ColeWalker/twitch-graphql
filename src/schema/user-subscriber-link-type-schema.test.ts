@@ -4,6 +4,49 @@ import { UserModule } from './user-type-schema'
 import { parse, execute } from 'graphql'
 import { QueryModule } from './query-type-schema'
 import { UserSubscriberLinkModule } from './user-subscriber-link-type-schema'
+import nock from 'nock'
+import {
+  expectedUserRaw,
+  krakenSubRaw,
+  helixSubRaw,
+  userFollowsRaw,
+  helixStreamRaw,
+  helixGameRaw,
+} from '../tests/mocks'
+
+nock('https://api.twitch.tv')
+  .get('/helix/users')
+  .query(true)
+  .reply(200, {
+    data: [expectedUserRaw],
+  })
+  .persist()
+nock('https://api.twitch.tv')
+  .get(/\/kraken\/channels\/[0-9]*\/subscriptions/)
+  .query(true)
+  .reply(200, krakenSubRaw)
+  .persist()
+nock('https://api.twitch.tv')
+  .get('/helix/subscriptions')
+  .query(true)
+  .reply(200, helixSubRaw)
+  .persist()
+nock('https://api.twitch.tv')
+  .get('/helix/streams')
+  .query(true)
+  .reply(200, helixStreamRaw)
+  .persist()
+nock('https://api.twitch.tv')
+  .get('/helix/games')
+  .query(true)
+  .reply(200, helixGameRaw)
+  .persist()
+nock('https://api.twitch.tv')
+  .get('/helix/users/follows')
+  .query(true)
+  .reply(200, userFollowsRaw)
+  .persist()
+
 describe('UserSubscriberLinkModule', () => {
   it('user should have all fields', async () => {
     const app = createApplication({
@@ -36,8 +79,10 @@ describe('UserSubscriberLinkModule', () => {
       document,
     })
 
+    console.log(result) //?
+
     expect(result?.errors?.length).toBeFalsy()
-    const user = result?.data?.latestSub?.user
+    const user = await result?.data?.latestSub?.user
     expect(user).toBeTruthy()
     expect(user).toHaveProperty('displayName')
     expect(user).toHaveProperty('id')
@@ -56,8 +101,6 @@ describe('UserSubscriberLinkModule', () => {
     })
     const schema = app.createSchemaForApollo()
 
-    const userId = '23573216'
-
     const document = parse(`
       {
         latestSub {
@@ -68,7 +111,7 @@ describe('UserSubscriberLinkModule', () => {
             profilePictureURL
             views
 
-            getSubscriptionToId(userId: "${userId}"){
+            getSubscriptionToId(userId: "123"){
               userId
               tier
               userDisplayName
@@ -86,7 +129,7 @@ describe('UserSubscriberLinkModule', () => {
     })
 
     expect(result?.errors?.length).toBeFalsy()
-    const user = result?.data?.latestSub?.user
+    const user = await result?.data?.latestSub?.user
     if (user) {
       expect(user).toBeTruthy()
 
@@ -111,8 +154,6 @@ describe('UserSubscriberLinkModule', () => {
     })
     const schema = app.createSchemaForApollo()
 
-    const displayName = 'SupCole'
-
     const document = parse(`
       {
         latestSub {
@@ -123,7 +164,7 @@ describe('UserSubscriberLinkModule', () => {
             profilePictureURL
             views
 
-            getSubscriptionToDisplayName(displayName: "${displayName}"){
+            getSubscriptionToDisplayName(displayName: "dallas"){
               userId
               tier
               userDisplayName
@@ -139,9 +180,10 @@ describe('UserSubscriberLinkModule', () => {
       contextValue,
       document,
     })
+    console.log(result) //?
 
     expect(result?.errors?.length).toBeFalsy()
-    const user = result?.data?.latestSub?.user
+    const user = await result?.data?.latestSub?.user
     if (user) {
       expect(user).toBeTruthy()
 
@@ -191,7 +233,7 @@ describe('UserSubscriberLinkModule', () => {
     })
 
     expect(result?.errors?.length).toBeFalsy()
-    const user = result?.data?.latestSub?.user
+    const user = await result?.data?.latestSub?.user
     if (user) {
       expect(user).toBeTruthy()
 
@@ -235,7 +277,7 @@ describe('UserSubscriberLinkModule', () => {
     })
 
     expect(result?.errors?.length).toBeFalsy()
-    const user = result?.data?.latestSub?.user
+    const user = await result?.data?.latestSub?.user
     if (user) {
       expect(user).toBeTruthy()
 

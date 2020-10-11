@@ -6,7 +6,15 @@ import { Injectable } from 'graphql-modules'
 require('dotenv').config()
 
 @Injectable()
-export class TwitchClients {
+class TwitchClients {
+  static instance: TwitchClients
+  constructor() {
+    if (!TwitchClients.instance) {
+      TwitchClients.instance = this
+    }
+    // Initialize object
+    return TwitchClients.instance
+  }
   async apiClient() {
     const client_id = process.env.USER_ID || ''
     const client_secret = process.env.SECRET || ''
@@ -24,3 +32,6 @@ export class TwitchClients {
     return new PubSubClient()
   }
 }
+const instance = new TwitchClients()
+Object.freeze(instance)
+export default instance

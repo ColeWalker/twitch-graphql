@@ -105,7 +105,7 @@ describe('GameModule', () => {
 
     const document = parse(`
       {
-        getGameByName(gameName: "Science & Technology") {
+        getGameByName(gameName: "Fortnite") {
           id
           boxArtUrl
           name

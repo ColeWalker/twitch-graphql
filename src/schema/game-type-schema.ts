@@ -1,6 +1,6 @@
 import { createModule, gql } from 'graphql-modules'
 import { HelixGame } from 'twitch/lib'
-import { TwitchClients } from '../injections/Twitch-Clients'
+import TwitchClient from '../injections/Twitch-Clients'
 import { TwitchId } from '../injections/Twitch-Id'
 import { UserId } from '../injections/User-Id'
 
@@ -11,8 +11,7 @@ export const GameResolvers = {
       args: { gameName: string },
       { injector }: GraphQLModules.ModuleContext
     ) {
-      const clients = injector.get(TwitchClients)
-      const apiClient = await clients.apiClient()
+      const apiClient = await TwitchClient.apiClient()
 
       return await apiClient.helix.games.getGameByName(args.gameName)
     },
@@ -45,7 +44,7 @@ export const GameSchema = gql`
 export const GameModule = createModule({
   id: `game-module`,
   dirname: __dirname,
-  providers: [TwitchClients, TwitchId, UserId],
+  providers: [TwitchId, UserId],
   typeDefs: GameSchema,
   resolvers: GameResolvers,
 })

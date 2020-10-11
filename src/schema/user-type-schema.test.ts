@@ -72,7 +72,7 @@ describe('UserModule', () => {
     })
     expect(result?.errors?.length).toBeFalsy()
 
-    const user = result?.data?.latestSub?.user
+    const user = await result?.data?.latestSub?.user
     expect(user).toMatchObject(expectedUserObject)
   })
   it('getUserById should work', async () => {
@@ -88,7 +88,7 @@ describe('UserModule', () => {
 
     const document = parse(`
       {
-        getUserById(userId: "anything"){
+        getUserById(userId: "IIIsutha067III"){
             displayName
             description
             id
@@ -105,7 +105,7 @@ describe('UserModule', () => {
     })
 
     expect(result?.errors?.length).toBeFalsy()
-    const user = result?.data?.getUserById
+    const user = await result?.data?.getUserById
     expect(user).toMatchObject(expectedUserObject)
   })
 
@@ -122,7 +122,7 @@ describe('UserModule', () => {
 
     const document = parse(`
       {
-        getUserByDisplayName(displayName: "anything"){
+        getUserByDisplayName(displayName: "IIIsutha067III"){
             displayName
             description
             id
@@ -139,7 +139,7 @@ describe('UserModule', () => {
     })
     expect(result?.errors?.length).toBeFalsy()
 
-    const user = result?.data?.getUserByDisplayName
+    const user = await result?.data?.getUserByDisplayName
 
     expect(user).toMatchObject(expectedUserObject)
   })
@@ -222,7 +222,7 @@ describe('follows', () => {
 
     const document = parse(`
       {
-        getUserByDisplayName(displayName: "anything"){
+        getUserByDisplayName(displayName: "IIIsutha067III"){
           displayName
           follows(maxPages: 1) {
             total
