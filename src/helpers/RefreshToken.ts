@@ -7,9 +7,9 @@ const client_secrets = process.env.SECRET || ''
 const refresh_tokens = process.env.REFRESH_TOKEN || ''
 
 export default async (
-  clientId: string | undefined,
-  clientSecret: string | undefined,
-  refreshToken: string | undefined
+  clientId: string | undefined = undefined,
+  clientSecret: string | undefined = undefined,
+  refreshToken: string | undefined = undefined
 ): Promise<AuthProvider> => {
   if (!clientId?.length || !clientSecret?.length || !refreshToken?.length) {
     clientId = await client_ids
