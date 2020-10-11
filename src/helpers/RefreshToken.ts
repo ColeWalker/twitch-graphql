@@ -2,19 +2,13 @@ import axios from 'axios'
 import { AuthProvider, StaticAuthProvider } from 'twitch/lib'
 require('dotenv').config()
 
-const client_ids = process.env.USER_ID || ''
-const client_secrets = process.env.SECRET || ''
-const refresh_tokens = process.env.REFRESH_TOKEN || ''
-
 export default async (
-  clientId: string | undefined = undefined,
-  clientSecret: string | undefined = undefined,
-  refreshToken: string | undefined = undefined
+  clientId?: string,
+  clientSecret?: string,
+  refreshToken?: string
 ): Promise<AuthProvider> => {
   if (!clientId?.length || !clientSecret?.length || !refreshToken?.length) {
-    clientId = await client_ids
-    clientSecret = await client_secrets
-    refreshToken = await refresh_tokens
+    throw new Error('Client info not filled out')
   }
   const raw = await axios.post(
     `https://id.twitch.tv/oauth2/token?grant_type=refresh_token&refresh_token=${refreshToken}&client_id=${clientId}&client_secret=${clientSecret}`
