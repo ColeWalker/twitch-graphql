@@ -18,6 +18,8 @@ import {
 } from '../tests/mocks'
 import { StreamUserLinkModule } from './stream-user-link-type-schema'
 
+jest.setTimeout(30000)
+
 nock('https://api.twitch.tv')
   .get('/helix/users')
   .reply(200, {
