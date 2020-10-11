@@ -23,7 +23,6 @@
     "build": "tsc",
     "start": "node ./dist/server.js",
     "test": "jest --coverage",
-    "package": "ncc build --source-map",
     "dev": "concurrently \"tsc -w\" \"nodemon ./dist/server.js\"",
     "dev-g": "concurrently \"tsc -w\" \"nodemon ./dist/server.js -g\"",
     "semantic-release": "semantic-release"
