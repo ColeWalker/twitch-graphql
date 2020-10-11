@@ -25,6 +25,32 @@ import {
   StreamUserLinkModule,
   StreamUserLinkResolvers,
   StreamUserLinkSchema,
+  RedemptionPubSubModule,
+  RedemptionPubSubResolvers,
+  RedemptionPubSubSchema,
+  RedemptionUserLinkModule,
+  RedemptionUserLinkResolvers,
+  RedemptionUserLinkSchema,
+  ChatPubSubModule,
+  ChatPubSubResolvers,
+  ChatPubSubSchema,
+  ChatUserLinkModule,
+  ChatUserLinkResolvers,
+  ChatUserLinkSchema,
+  BitPubSubModule,
+  BitPubSubResolvers,
+  BitPubSubSchema,
+  BitUserLinkModule,
+  BitUserLinkResolvers,
+  BitUserLinkSchema,
+  SubscriptionPubSubModule,
+  SubscriptionPubSubResolvers,
+  SubscriptionPubSubSchema,
+  SubscriptionPubSubUserLinkModule,
+  SubscriptionPubSubUserLinkResolvers,
+  SubscriptionPubSubUserLinkSchema,
+  SubscriptionPubSubChatLinkModule,
+  SubscriptionPubSubChatLinkSchema,
 } from './index'
 import nock from 'nock'
 import {
@@ -89,6 +115,32 @@ describe('npm package', () => {
     expect(StreamUserLinkModule).toBeTruthy()
     expect(StreamUserLinkResolvers).toBeTruthy()
     expect(StreamUserLinkSchema).toBeTruthy()
+    expect(RedemptionUserLinkModule).toBeTruthy()
+    expect(RedemptionUserLinkResolvers).toBeTruthy()
+    expect(RedemptionUserLinkSchema).toBeTruthy()
+    expect(RedemptionPubSubModule).toBeTruthy()
+    expect(RedemptionPubSubResolvers).toBeTruthy()
+    expect(RedemptionPubSubSchema).toBeTruthy()
+    expect(ChatPubSubModule).toBeTruthy()
+    expect(ChatPubSubResolvers).toBeTruthy()
+    expect(ChatPubSubSchema).toBeTruthy()
+    expect(ChatUserLinkModule).toBeTruthy()
+    expect(ChatUserLinkResolvers).toBeTruthy()
+    expect(ChatUserLinkSchema).toBeTruthy()
+    expect(BitPubSubModule).toBeTruthy()
+    expect(BitPubSubResolvers).toBeTruthy()
+    expect(BitPubSubSchema).toBeTruthy()
+    expect(BitUserLinkModule).toBeTruthy()
+    expect(BitUserLinkResolvers).toBeTruthy()
+    expect(BitUserLinkSchema).toBeTruthy()
+    expect(SubscriptionPubSubModule).toBeTruthy()
+    expect(SubscriptionPubSubResolvers).toBeTruthy()
+    expect(SubscriptionPubSubSchema).toBeTruthy()
+    expect(SubscriptionPubSubUserLinkModule).toBeTruthy()
+    expect(SubscriptionPubSubUserLinkResolvers).toBeTruthy()
+    expect(SubscriptionPubSubUserLinkSchema).toBeTruthy()
+    expect(SubscriptionPubSubChatLinkModule).toBeTruthy()
+    expect(SubscriptionPubSubChatLinkSchema).toBeTruthy()
   })
 
   it('modules should work together', async () => {
@@ -102,6 +154,15 @@ describe('npm package', () => {
         GameStreamLinkModule,
         GameModule,
         StreamUserLinkModule,
+        RedemptionPubSubModule,
+        RedemptionUserLinkModule,
+        ChatPubSubModule,
+        ChatUserLinkModule,
+        BitPubSubModule,
+        BitUserLinkModule,
+        SubscriptionPubSubModule,
+        SubscriptionPubSubChatLinkModule,
+        SubscriptionPubSubUserLinkModule,
       ],
     })
     const schema = app.createSchemaForApollo()

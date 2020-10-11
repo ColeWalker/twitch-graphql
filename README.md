@@ -21,6 +21,16 @@ By default it will run at `http://localhost:5555/graphql`.
     - [StreamUserLink](#streamuserlink)
     - [Game](#game)
     - [GameStreamLink](#gamestreamlink)
+  - [PubSubs](#pubsubs)
+    - [RedemptionPubSub](#redemptionpubsub)
+    - [RedemptionUserLink](#redemptionuserlink)
+    - [ChatPubSub](#chatpubsub)
+    - [ChatUserLink](#chatuserlink)
+    - [BitPubSub](#bitpubsub)
+    - [BitUserLink](#bituserlink)
+  - [SubscriptionPubSub](#subscriptionpubsub)
+    - [SubscriptionPubSubChatLink](#subscriptionpubsubchatlink)
+    - [SubscriptionPubSubUserLink](#subscriptionpubsubuserlink)
 
 ## Environment Variables
 
@@ -144,6 +154,10 @@ Base schema, all other modules extend this.
 
 ### Subscriber
 
+```ts
+import { SubscriberModule } from 'twitch-graphql'
+```
+
 ```graphql
 extend type Query {
   latestSub: Subscriber!
@@ -163,6 +177,10 @@ type Subscriber {
 ```
 
 ### User
+
+```ts
+import { UserModule } from 'twitch-graphql'
+```
 
 Please note that using follows with a high number of maxPages will likely result in rate limiting from twitch.
 
@@ -204,6 +222,10 @@ extend type Query {
 
 ### UserSubscriberLink
 
+```ts
+import { UserSubscriberLinkModule } from 'twitch-graphql'
+```
+
 This module extends Subscriber to add the user field. Only use if both modules are being used in your application.
 
 ```graphql
@@ -221,6 +243,10 @@ extend type User {
 ```
 
 ### Stream
+
+```ts
+import { Stream } from 'twitch-graphql'
+```
 
 ```graphql
 type Stream {
@@ -261,6 +287,10 @@ enum StreamType {
 
 ### StreamUserLink
 
+```ts
+import { StreamUserLinkModule } from 'twitch-graphql'
+```
+
 This module extends Stream to add the user field, and User to add the stream field. Only use if both modules are being used in your application.
 
 ```graphql
@@ -273,6 +303,10 @@ extend type Stream {
 ```
 
 ### Game
+
+```ts
+import { GameModule } from 'twitch-graphql'
+```
 
 ```graphql
 type Game {
@@ -288,10 +322,179 @@ extend type Query {
 
 ### GameStreamLink
 
+```ts
+import { GameStreamLinkModule } from 'twitch-graphql'
+```
+
 This module extends Stream to add the game field. Only use if both modules are being used in your application.
 
 ```graphql
 extend type Stream {
   game: Game
+}
+```
+
+## PubSubs
+
+Twitch PubSubs are supported using [GraphQL Subscriptions.](https://www.apollographql.com/docs/apollo-server/data/subscriptions/)
+
+Currently these PubSub modules are in an **experimental** phase, since no unit tests have been written for them, and have only been tested manually.
+
+### RedemptionPubSub
+
+```ts
+import { RedemptionPubSubModule } from 'twitch-graphql'
+```
+
+```graphql
+type Redemption {
+  userId: String
+  id: String
+  channelId: String
+  userName: String
+  userDisplayName: String
+  redemptionDate: String
+  rewardId: String
+  rewardName: String
+  rewardPrompt: String
+  rewardCost: Int
+  rewardIsQueued: String
+  rewardImage: String
+  message: String
+  status: String
+}
+
+extend type Subscription {
+  newRedemption: Redemption
+}
+```
+
+### RedemptionUserLink
+
+```ts
+import { RedemptionUserLinkModule } from 'twitch-graphql'
+```
+
+```graphql
+extend type Redemption {
+  user: User
+  channelRedeemedAt: User
+}
+```
+
+### ChatPubSub
+
+```ts
+import { ChatPubSubModule } from 'twitch-graphql'
+```
+
+```graphql
+type Chat {
+  message: String
+  displayName: String
+  channel: String
+}
+
+extend type Subscription {
+  newChat(channel: String!): Chat
+}
+```
+
+### ChatUserLink
+
+```ts
+import { ChatUserLinkModule } from 'twitch-graphql'
+```
+
+```graphql
+extend type Chat {
+  user: User
+}
+```
+
+### BitPubSub
+
+```ts
+import { BitPubSubModule } from 'twitch-graphql'
+```
+
+```graphql
+type Bits {
+  userId: String
+  userName: String
+  message: String
+  bits: Int
+  totalBits: Int
+  isAnonymous: Boolean
+}
+
+extend type Subscription {
+  newBits: Bits
+}
+```
+
+### BitUserLink
+
+```ts
+import { BitPubSubModule } from 'twitch-graphql'
+```
+
+```graphql
+extend type Bit {
+  user: User
+}
+```
+
+## SubscriptionPubSub
+
+```ts
+import { SubscriptionPubSubModule } from 'twitch-graphql'
+```
+
+```graphql
+type SubscriptionMessage {
+  userId: String
+  userName: String
+  userDisplayName: String
+  streakMonths: Int
+  cumulativeMonths: Int
+  months: Int
+  time: String
+  subPlan: String
+  isResub: Boolean
+  isGift: Boolean
+  isAnonymous: Boolean
+  gifterId: String
+  gifterName: String
+  gifterDisplayName: String
+  giftDuration: Int
+}
+extend type Subscription {
+  newSubscription: SubscriptionMessage
+}
+```
+
+### SubscriptionPubSubChatLink
+
+```ts
+import { SubscriptionPubSubChatLinkModule } from 'twitch-graphql'
+```
+
+```graphql
+extend type SubscriptionMessage {
+  message: Chat
+}
+```
+
+### SubscriptionPubSubUserLink
+
+```ts
+import { SubscriptionPubSubUserLinkModule } from 'twitch-graphql'
+```
+
+```graphql
+extend type SubscriptionMessage {
+  user: User
+  gifterUser: User
 }
 ```

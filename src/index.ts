@@ -38,3 +38,47 @@ export {
   StreamUserLinkResolvers,
   StreamUserLinkSchema,
 } from './schema/stream-user-link-type-schema'
+export {
+  RedemptionPubSubModule,
+  RedemptionPubSubResolvers,
+  RedemptionPubSubSchema,
+} from './schema/redemption-pubsub-type-schema'
+export {
+  RedemptionUserLinkModule,
+  RedemptionUserLinkResolvers,
+  RedemptionUserLinkSchema,
+} from './schema/redemption-pubsub-user-link-type-schema'
+export {
+  ChatPubSubModule,
+  ChatPubSubResolvers,
+  ChatPubSubSchema,
+} from './schema/chat-pubsub-type-schema'
+export {
+  ChatUserLinkModule,
+  ChatUserLinkResolvers,
+  ChatUserLinkSchema,
+} from './schema/chat-pubsub-user-link-schema'
+export {
+  BitPubSubModule,
+  BitPubSubResolvers,
+  BitPubSubSchema,
+} from './schema/bit-pubsub-type-schema'
+export {
+  BitUserLinkModule,
+  BitUserLinkResolvers,
+  BitUserLinkSchema,
+} from './schema/bit-pubsub-user-link-schema'
+export {
+  SubscriptionPubSubModule,
+  SubscriptionPubSubResolvers,
+  SubscriptionPubSubSchema,
+} from './schema/subscription-pubsub-type-schema'
+export {
+  SubscriptionPubSubUserLinkModule,
+  SubscriptionPubSubUserLinkResolvers,
+  SubscriptionPubSubUserLinkSchema,
+} from './schema/subscription-pubsub-user-link-schema'
+export {
+  SubscriptionPubSubChatLinkModule,
+  SubscriptionPubSubChatLinkSchema,
+} from './schema/subscription-pubsub-chat-link-schema'

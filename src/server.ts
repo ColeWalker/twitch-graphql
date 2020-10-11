@@ -1,6 +1,6 @@
 import express from 'express'
 import cors from 'cors'
-import { graphqlHTTP } from 'express-graphql'
+import http from 'http'
 import { QueryModule } from './schema/query-type-schema'
 import { SubscriberModule } from './schema/subscriber-type-schema'
 import { UserModule } from './schema/user-type-schema'
@@ -9,7 +9,18 @@ import { GameModule } from './schema/game-type-schema'
 import { createApplication } from 'graphql-modules'
 import { UserSubscriberLinkModule } from './schema/user-subscriber-link-type-schema'
 import { GameStreamLinkModule } from './schema/game-stream-link-type-schema'
+import { RedemptionPubSubModule } from './schema/redemption-pubsub-type-schema'
 import { StreamUserLinkModule } from './schema/stream-user-link-type-schema'
+import { RedemptionUserLinkModule } from './schema/redemption-pubsub-user-link-type-schema'
+import { ChatPubSubModule } from './schema/chat-pubsub-type-schema'
+import { ApolloServer } from 'apollo-server-express'
+import { ChatUserLinkModule } from './schema/chat-pubsub-user-link-schema'
+import { BitPubSubModule } from './schema/bit-pubsub-type-schema'
+import { BitUserLinkModule } from './schema/bit-pubsub-user-link-schema'
+import { SubscriptionPubSubModule } from './schema/subscription-pubsub-type-schema'
+import { SubscriptionPubSubUserLinkModule } from './schema/subscription-pubsub-user-link-schema'
+import { SubscriptionPubSubChatLinkModule } from './schema/subscription-pubsub-chat-link-schema'
+
 require('dotenv').config()
 
 let port = 5555
@@ -51,21 +62,38 @@ const app = createApplication({
     GameStreamLinkModule,
     GameModule,
     StreamUserLinkModule,
+    RedemptionPubSubModule,
+    RedemptionUserLinkModule,
+    ChatPubSubModule,
+    ChatUserLinkModule,
+    BitPubSubModule,
+    BitUserLinkModule,
+    SubscriptionPubSubModule,
+    SubscriptionPubSubUserLinkModule,
+    SubscriptionPubSubChatLinkModule,
   ],
 })
-const execute = app.createExecution()
-const server = express()
-server.use(cors())
-server.use(
-  '/graphql',
-  graphqlHTTP((request: any) => ({
-    schema: app.schema,
-    graphiql: useGraphiql,
-    customExecuteFn: execute as any,
-    context: { request },
-  }))
-)
 
-server.listen(port, () => {
-  console.log(`server listening at ${port}, graphiql enabled: ${useGraphiql}`)
+const schema = app.createSchemaForApollo()
+const server = new ApolloServer({
+  schema,
+  introspection: useGraphiql,
+
+  subscriptions: `/subscriptions`,
+  playground: useGraphiql,
+})
+const expressApp = express()
+expressApp.use(cors())
+
+server.applyMiddleware({ app: expressApp })
+const httpServer = http.createServer(expressApp)
+server.installSubscriptionHandlers(httpServer)
+
+httpServer.listen(port, () => {
+  console.log(
+    `🚀 Server ready at http://localhost:${port}${server.graphqlPath}`
+  )
+  console.log(
+    `🚀 Subscriptions ready at ws://localhost:${port}${server.subscriptionsPath}`
+  )
 })

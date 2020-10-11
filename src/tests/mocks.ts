@@ -2,6 +2,252 @@ export const userFollowObject = {
   followDateUTC: new Date('2017-08-22T22:55:24Z').getTime().toString(),
   followDate: new Date('2017-08-22T22:55:24Z').toDateString(),
 }
+
+export const pointsRedemptionRaw = {
+  type: 'reward-redeemed',
+  data: {
+    timestamp: '2019-11-12T01:29:34.98329743Z',
+    redemption: {
+      id: '9203c6f0-51b6-4d1d-a9ae-8eafdb0d6d47',
+      user: {
+        id: '30515034',
+        login: 'davethecust',
+        display_name: 'davethecust',
+      },
+      channel_id: '30515034',
+      redeemed_at: '2019-12-11T18:52:53.128421623Z',
+      reward: {
+        id: '6ef17bb2-e5ae-432e-8b3f-5ac4dd774668',
+        channel_id: '30515034',
+        title: 'hit a gleesh walk on stream',
+        prompt: "cleanside's finest \n",
+        cost: 10,
+        is_user_input_required: true,
+        is_sub_only: false,
+        image: {
+          url_1x:
+            'https://static-cdn.jtvnw.net/custom-reward-images/30515034/6ef17bb2-e5ae-432e-8b3f-5ac4dd774668/7bcd9ca8-da17-42c9-800a-2f08832e5d4b/custom-1.png',
+          url_2x:
+            'https://static-cdn.jtvnw.net/custom-reward-images/30515034/6ef17bb2-e5ae-432e-8b3f-5ac4dd774668/7bcd9ca8-da17-42c9-800a-2f08832e5d4b/custom-2.png',
+          url_4x:
+            'https://static-cdn.jtvnw.net/custom-reward-images/30515034/6ef17bb2-e5ae-432e-8b3f-5ac4dd774668/7bcd9ca8-da17-42c9-800a-2f08832e5d4b/custom-4.png',
+        },
+        default_image: {
+          url_1x:
+            'https://static-cdn.jtvnw.net/custom-reward-images/default-1.png',
+          url_2x:
+            'https://static-cdn.jtvnw.net/custom-reward-images/default-2.png',
+          url_4x:
+            'https://static-cdn.jtvnw.net/custom-reward-images/default-4.png',
+        },
+        background_color: '#00C7AC',
+        is_enabled: true,
+        is_paused: false,
+        is_in_stock: true,
+        max_per_stream: { is_enabled: false, max_per_stream: 0 },
+        should_redemptions_skip_request_queue: true,
+      },
+      user_input: 'yeooo',
+      status: 'FULFILLED',
+    },
+  },
+}
+
+export const whispersEventRaw = {
+  type: 'MESSAGE',
+  data: {
+    topic: 'whispers.44322889',
+    message: {
+      type: 'whisper_received',
+      data: {
+        id: 41,
+      },
+      thread_id: '129454141_44322889',
+      body: 'hello',
+      sent_ts: 1479160009,
+      from_id: 39141793,
+      tags: {
+        login: 'dallas',
+        display_name: 'dallas',
+        color: '#8A2BE2',
+        emotes: [],
+        badges: [
+          {
+            id: 'staff',
+            version: '1',
+          },
+        ],
+      },
+      recipient: {
+        id: 129454141,
+        username: 'dallasnchains',
+        display_name: 'dallasnchains',
+        color: '',
+        badges: [],
+      },
+      nonce: '6GVBTfBXNj7d71BULYKjpiKapegDI1',
+    },
+    data_object: {
+      id: 41,
+      thread_id: '129454141_44322889',
+      body: 'hello',
+      sent_ts: 1479160009,
+      from_id: 44322889,
+      tags: {
+        login: 'dallas',
+        display_name: 'dallas',
+        color: '#8A2BE2',
+        emotes: [],
+        badges: [
+          {
+            id: 'staff',
+            version: '1',
+          },
+        ],
+      },
+      recipient: {
+        id: 129454141,
+        username: 'dallasnchains',
+        display_name: 'dallasnchains',
+        color: '',
+        badges: [],
+      },
+      nonce: '6GVBTfBXNj7d71BULYKjpiKapegDI1',
+    },
+  },
+}
+
+export const bitsV1EventRaw = {
+  type: 'MESSAGE',
+  data: {
+    topic: 'channel-bits-events-v1.44322889',
+    message: {
+      data: {
+        user_name: 'dallasnchains',
+        channel_name: 'dallas',
+        user_id: '129454141',
+        channel_id: '44322889',
+        time: '2017-02-09T13:23:58.168Z',
+        chat_message: 'cheer10000 New badge hype!',
+        bits_used: 10000,
+        total_bits_used: 25000,
+        context: 'cheer',
+        badge_entitlement: { new_version: 25000, previous_version: 10000 },
+      },
+      version: '1.0',
+      message_type: 'bits_event',
+      message_id: '8145728a4-35f0-4cf7-9dc0-f2ef24de1eb6',
+    },
+  },
+}
+
+export const bitsV2EventRaw = {
+  type: 'MESSAGE',
+  data: {
+    topic: 'channel-bits-events-v2.46024993',
+    message: {
+      data: {
+        user_name: 'jwp',
+        channel_name: 'bontakun',
+        user_id: '95546976',
+        channel_id: '46024993',
+        time: '2017-02-09T13:23:58.168Z',
+        chat_message: 'cheer10000 New badge hype!',
+        bits_used: 10000,
+        total_bits_used: 25000,
+        context: 'cheer',
+        badge_entitlement: { new_version: 25000, previous_version: 10000 },
+      },
+      version: '1.0',
+      message_type: 'bits_event',
+      message_id: '8145728a4-35f0-4cf7-9dc0-f2ef24de1eb6',
+      is_anonymous: true,
+    },
+  },
+}
+
+export const bitBadgeEventRaw = {
+  type: 'MESSAGE',
+  data: {
+    topic: 'channel-bits-events-v1.44322889',
+    message: {
+      data: {
+        user_name: 'dallasnchains',
+        channel_name: 'dallas',
+        user_id: '129454141',
+        channel_id: '44322889',
+        time: '2017-02-09T13:23:58.168Z',
+        chat_message: 'cheer10000 New badge hype!',
+        bits_used: 10000,
+        total_bits_used: 25000,
+        context: 'cheer',
+        badge_entitlement: { new_version: 25000, previous_version: 10000 },
+      },
+      version: '1.0',
+      message_type: 'bits_event',
+      message_id: '8145728a4-35f0-4cf7-9dc0-f2ef24de1eb6',
+    },
+  },
+}
+
+export const subscriptionEventRaw = {
+  type: 'MESSAGE',
+  data: {
+    topic: 'channel-subscribe-events-v1.44322889',
+    message: {
+      user_name: 'tww2',
+      display_name: 'TWW2',
+      channel_name: 'mr_woodchuck',
+      user_id: '13405587',
+      channel_id: '89614178',
+      time: '2015-12-19T16:39:57-08:00',
+      sub_plan: '1000',
+      sub_plan_name: 'Channel Subscription (mr_woodchuck)',
+      cumulative_months: 9,
+      streak_months: 3,
+      context: 'resub',
+      is_gift: false,
+      sub_message: {
+        message: 'A Twitch baby is born! KappaHD',
+        emotes: [
+          {
+            start: 23,
+            end: 7,
+            id: 2867,
+          },
+        ],
+      },
+    },
+  },
+}
+
+export const giftEventRaw = {
+  type: 'MESSAGE',
+  data: {
+    topic: 'channel-subscribe-events-v1.44322889',
+    message: {
+      user_name: 'tww2',
+      display_name: 'TWW2',
+      channel_name: 'mr_woodchuck',
+      user_id: '13405587',
+      channel_id: '89614178',
+      time: '2015-12-19T16:39:57-08:00',
+      sub_plan: '1000',
+      sub_plan_name: 'Channel Subscription (mr_woodchuck)',
+      months: 9,
+      context: 'subgift',
+      is_gift: true,
+      sub_message: {
+        message: '',
+        emotes: null,
+      },
+      recipient_id: '19571752',
+      recipient_user_name: 'forstycup',
+      recipient_display_name: 'forstycup',
+    },
+  },
+}
+
 export const userFollowsRaw = {
   total: 2,
   data: [

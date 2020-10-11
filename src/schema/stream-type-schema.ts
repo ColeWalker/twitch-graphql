@@ -1,5 +1,5 @@
 import { createModule, gql } from 'graphql-modules'
-import { HelixStream } from 'twitch'
+import { HelixStream, HelixStreamData } from 'twitch'
 import { HelixStreamFilter } from 'twitch/lib/API/Helix/Stream/HelixStreamApi'
 import TwitchClients from '../injections/Twitch-Clients'
 import { TwitchId } from '../injections/Twitch-Id'
@@ -32,7 +32,7 @@ export const StreamResolvers = {
 
       const page = apiClient.helix.streams.getStreamsPaginated(streamFilter)
 
-      let pages = []
+      let pages: HelixStreamData[] = []
       if (page.current) pages.push(...page.current)
 
       for (let i = 1; i <= args?.maxPages; i++) {
