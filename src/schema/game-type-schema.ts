@@ -1,5 +1,6 @@
 import { createModule, gql } from 'graphql-modules'
 // import { ApiClient } from 'twitch'
+import { HelixGame } from 'twitch'
 // import RefreshToken from '../helpers/RefreshToken'
 
 export const GameResolvers = {
