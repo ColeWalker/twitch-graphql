@@ -1,30 +1,29 @@
 import { createModule, gql } from 'graphql-modules'
 import { HelixFollow, HelixFollowData, HelixUser } from 'twitch'
-import { TwitchClients } from '../injections/Twitch-Clients'
-import { TwitchId } from '../injections/Twitch-Id'
-import { UserId } from '../injections/User-Id'
+import { ApiClient } from 'twitch'
+import RefreshToken from '../helpers/RefreshToken'
 
 export const UserResolvers = {
   Query: {
     async getUserByDisplayName(
       _parent: {},
       args: { displayName: string },
-      { injector }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: GraphQLModules.ModuleContext
     ) {
-      const clients = injector.get(TwitchClients)
-      const apiClient = await clients.apiClient()
+      const authProvider = await RefreshToken(user_id, secret, refresh_token)
+      const twitchClient = new ApiClient({ authProvider, preAuth: true })
 
-      return apiClient.helix.users.getUserByName(args.displayName)
+      return twitchClient.helix.users.getUserByName(args.displayName)
     },
     async getUserById(
       _parent: {},
       args: { userId: string },
-      { injector }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: GraphQLModules.ModuleContext
     ) {
-      const clients = injector.get(TwitchClients)
-      const apiClient = await clients.apiClient()
+      const authProvider = await RefreshToken(user_id, secret, refresh_token)
+      const twitchClient = new ApiClient({ authProvider, preAuth: true })
 
-      return apiClient.helix.users.getUserById(args.userId)
+      return twitchClient.helix.users.getUserById(args.userId)
     },
   },
   User: {
@@ -50,12 +49,12 @@ export const UserResolvers = {
     async getFollowToDisplayName(
       user: HelixUser,
       args: { displayName: string },
-      { injector }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: GraphQLModules.ModuleContext
     ) {
-      const clients = injector.get(TwitchClients)
-      const apiClient = await clients.apiClient()
+      const authProvider = await RefreshToken(user_id, secret, refresh_token)
+      const twitchClient = new ApiClient({ authProvider })
 
-      const followed = await apiClient.helix.users.getUserByName(
+      const followed = await twitchClient.helix.users.getUserByName(
         args.displayName
       )
 
@@ -67,12 +66,12 @@ export const UserResolvers = {
     async followsDisplayName(
       user: HelixUser,
       args: { displayName: string },
-      { injector }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: GraphQLModules.ModuleContext
     ) {
-      const clients = injector.get(TwitchClients)
-      const apiClient = await clients.apiClient()
+      const authProvider = await RefreshToken(user_id, secret, refresh_token)
+      const twitchClient = new ApiClient({ authProvider, preAuth: true })
 
-      const followed = await apiClient.helix.users.getUserByName(
+      const followed = await twitchClient.helix.users.getUserByName(
         args.displayName
       )
 
@@ -81,11 +80,11 @@ export const UserResolvers = {
     async follows(
       user: HelixUser,
       args: { maxPages: number },
-      { injector }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: GraphQLModules.ModuleContext
     ) {
-      const clients = injector.get(TwitchClients)
-      const apiClient = await clients.apiClient()
-      const page = await apiClient.helix.users.getFollowsPaginated({
+      const authProvider = await RefreshToken(user_id, secret, refresh_token)
+      const twitchClient = new ApiClient({ authProvider, preAuth: true })
+      const page = await twitchClient.helix.users.getFollowsPaginated({
         user: user,
       })
 
@@ -97,7 +96,7 @@ export const UserResolvers = {
       }
 
       return {
-        nodes: pages.map((el) => new HelixFollow(el, apiClient)),
+        nodes: pages.map((el) => new HelixFollow(el, twitchClient)),
         cursor: page.currentCursor,
         total: await page.getTotalCount(),
       }
@@ -159,6 +158,5 @@ export const UserModule = createModule({
   id: `user-module`,
   dirname: __dirname,
   typeDefs: UserSchema,
-  providers: [TwitchClients, TwitchId, UserId],
   resolvers: UserResolvers,
 })

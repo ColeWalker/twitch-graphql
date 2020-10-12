@@ -20,7 +20,7 @@ import { BitUserLinkModule } from './schema/bit-pubsub-user-link-schema'
 import { SubscriptionPubSubModule } from './schema/subscription-pubsub-type-schema'
 import { SubscriptionPubSubUserLinkModule } from './schema/subscription-pubsub-user-link-schema'
 import { SubscriptionPubSubChatLinkModule } from './schema/subscription-pubsub-chat-link-schema'
-
+import { onConnect, context } from './helpers/ServerSetup'
 require('dotenv').config()
 
 let port = 5555
@@ -73,15 +73,20 @@ const app = createApplication({
     SubscriptionPubSubChatLinkModule,
   ],
 })
+app.createSubscription()
 
 const schema = app.createSchemaForApollo()
 const server = new ApolloServer({
   schema,
   introspection: useGraphiql,
-
-  subscriptions: `/subscriptions`,
+  subscriptions: {
+    path: `/subscriptions`,
+    onConnect,
+  },
+  context,
   playground: useGraphiql,
 })
+
 const expressApp = express()
 expressApp.use(cors())
 

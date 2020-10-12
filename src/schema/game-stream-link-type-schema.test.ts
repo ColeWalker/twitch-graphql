@@ -15,8 +15,22 @@ import {
   helixStreamRaw,
   helixSubRaw,
   krakenSubRaw,
+  contextValue,
+  authenticationMock,
+  validationMock,
 } from '../tests/mocks'
 import { StreamUserLinkModule } from './stream-user-link-type-schema'
+nock(`https://id.twitch.tv`)
+  .post('/oauth2/token')
+  .query(true)
+  .reply(200, authenticationMock)
+  .persist()
+
+nock(`https://id.twitch.tv`)
+  .get('/oauth2/validate')
+  .query(true)
+  .reply(200, validationMock)
+  .persist()
 
 nock('https://api.twitch.tv')
   .get('/helix/users')
@@ -30,6 +44,7 @@ nock('https://api.twitch.tv')
   .query(true)
   .reply(200, krakenSubRaw)
   .persist()
+
 nock('https://api.twitch.tv')
   .get('/helix/subscriptions')
   .query(true)
@@ -78,13 +93,12 @@ describe('GameStreamLinkModule', () => {
         }
       }
     `)
-    const contextValue = { request: {}, response: {} }
+
     const result = await execute({
       schema,
       contextValue,
       document,
     })
-
     expect(result?.errors?.length).toBeFalsy()
 
     const game = result?.data?.latestSub?.user?.stream?.game

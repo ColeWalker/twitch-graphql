@@ -13,8 +13,13 @@ import {
   userFollowObject,
   userFollowsObject,
   userFollowsRaw,
+  contextValue,
+  authenticationMock,
 } from '../tests/mocks'
-
+nock(`https://id.twitch.tv`)
+  .post('/oauth2/token')
+  .query(true)
+  .reply(200, authenticationMock)
 nock('https://api.twitch.tv')
   .get('/helix/users')
   .query(true)
@@ -64,7 +69,7 @@ describe('UserModule', () => {
         }
       }
     `)
-    const contextValue = { request: {}, response: {} }
+
     const result = await execute({
       schema,
       contextValue,
@@ -97,7 +102,7 @@ describe('UserModule', () => {
           }
       }
     `)
-    const contextValue = { request: {}, response: {} }
+
     const result = await execute({
       schema,
       contextValue,
@@ -131,12 +136,13 @@ describe('UserModule', () => {
           }
       }
     `)
-    const contextValue = { request: {}, response: {} }
+
     const result = await execute({
       schema,
       contextValue,
       document,
     })
+    console.log(result?.errors?.[0]?.locations)
     expect(result?.errors?.length).toBeFalsy()
 
     const user = result?.data?.getUserByDisplayName
@@ -167,12 +173,13 @@ describe('follows', () => {
         }
       }
     `)
-    const contextValue = { request: {}, response: {} }
+
     const result = await execute({
       schema,
       contextValue,
       document,
     })
+    console.error(result.errors)
     expect(result?.errors?.length).toBeFalsy()
     const follows = result?.data?.latestSub?.user?.followsId
     expect(follows).toBe(true)
@@ -199,7 +206,7 @@ describe('follows', () => {
         }
       }
     `)
-    const contextValue = { request: {}, response: {} }
+
     const result = await execute({
       schema,
       contextValue,
@@ -235,7 +242,7 @@ describe('follows', () => {
         }
       }
     `)
-    const contextValue = { request: {}, response: {} }
+
     const result = await execute({
       schema,
       contextValue,
@@ -272,7 +279,7 @@ describe('follows', () => {
         }
       }
     `)
-    const contextValue = { request: {}, response: {} }
+
     const result = await execute({
       schema,
       contextValue,
@@ -308,7 +315,6 @@ describe('follows', () => {
         }
       }
     `)
-    const contextValue = { request: {}, response: {} }
 
     const result = await execute({
       schema,

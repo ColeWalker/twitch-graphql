@@ -8,6 +8,8 @@ By default it will run at `http://localhost:5555/graphql`.
 
 - [Twitch GraphQL](#twitch-graphql)
   - [Environment Variables](#environment-variables)
+  - [Authentication via headers](#authentication-via-headers)
+    - [Example of client setup](#example-of-client-setup)
   - [Installation and Usage of the NPM Package](#installation-and-usage-of-the-npm-package)
   - [Command line arguments](#command-line-arguments)
   - [Commands](#commands)
@@ -44,6 +46,81 @@ This project assumes that you already have a Twitch API App set up, and an OAuth
 | REFRESH_TOKEN | The refresh token for your OAuth token                |
 | PORT          | The port that you want to run the server on           |
 | GRAPHIQL      | Whether or not you want the server to enable graphiql |
+
+## Authentication via headers
+
+This library now supports authentication via request headers. Headers will take priority over environment variables.
+
+| Variable      | Value                                  |
+| ------------- | -------------------------------------- |
+| secret        | Your application's secret              |
+| user_id       | Your application's User ID             |
+| twitch_id     | Your Twitch account's ID               |
+| refresh_token | The refresh token for your OAuth token |
+
+These items will be stored in the GraphQL modules global context in the same name as they appear in the headers. All of the headers are supported as connectionParams for Subscriptions.
+
+For your convenience, the `context` and `onConnect` methods have been provided to automatically set the global context in the expected manner.
+
+```ts
+import { context, onConnect } from 'twitch-graphql'
+
+const server = new ApolloServer({
+  schema,
+  subscriptions: {
+    path: `/subscriptions`,
+    onConnect,
+  },
+  context,
+})
+```
+
+### Example of client setup
+
+Here is an apollo client setup that will just work.
+
+```ts
+const httpLink = new HttpLink({
+  uri: 'http://localhost:5555/graphql',
+  headers: {
+    twitch_id: 'YOUR_TWITCH_ID',
+    refresh_token: 'YOUR_TOKEN',
+    secret: 'YOUR_SECRET',
+    user_id: 'YOUR_USER_ID',
+  },
+})
+
+const wsLink = new WebSocketLink({
+  uri: `ws://localhost:5555/subscriptions`,
+  options: {
+    reconnect: true,
+    connectionParams: {
+      twitch_id: 'YOUR_TWITCH_ID',
+      refresh_token: 'YOUR_TOKEN',
+      secret: 'YOUR_SECRET',
+      user_id: 'YOUR_USER_ID',
+    },
+  },
+})
+
+const splitLink = split(
+  ({ query }) => {
+    const definition = getMainDefinition(query)
+    return (
+      definition.kind === 'OperationDefinition' &&
+      definition.operation === 'subscription'
+    )
+  },
+  wsLink,
+  httpLink
+)
+
+const client = new ApolloClient({
+  uri: 'http://localhost:5555/graphql',
+  cache: new InMemoryCache(),
+  link: splitLink,
+})
+```
 
 ## Installation and Usage of the NPM Package
 

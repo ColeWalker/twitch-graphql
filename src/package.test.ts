@@ -51,6 +51,8 @@ import {
   SubscriptionPubSubUserLinkSchema,
   SubscriptionPubSubChatLinkModule,
   SubscriptionPubSubChatLinkSchema,
+  onConnect,
+  context,
 } from './index'
 import nock from 'nock'
 import {
@@ -59,8 +61,21 @@ import {
   helixStreamRaw,
   helixSubRaw,
   krakenSubRaw,
+  contextValue,
+  authenticationMock,
+  validationMock,
 } from './tests/mocks'
+nock(`https://id.twitch.tv`)
+  .post('/oauth2/token')
+  .query(true)
+  .reply(200, authenticationMock)
+  .persist()
 
+nock(`https://id.twitch.tv`)
+  .get('/oauth2/validate')
+  .query(true)
+  .reply(200, validationMock)
+  .persist()
 nock('https://api.twitch.tv')
   .get('/helix/users')
   .query(true)
@@ -141,6 +156,8 @@ describe('npm package', () => {
     expect(SubscriptionPubSubUserLinkSchema).toBeTruthy()
     expect(SubscriptionPubSubChatLinkModule).toBeTruthy()
     expect(SubscriptionPubSubChatLinkSchema).toBeTruthy()
+    expect(onConnect).toBeTruthy()
+    expect(context).toBeTruthy()
   })
 
   it('modules should work together', async () => {
@@ -182,7 +199,7 @@ describe('npm package', () => {
         }
       }
     `)
-    const contextValue = { request: {}, response: {} }
+
     const result = await execute({
       schema,
       contextValue,

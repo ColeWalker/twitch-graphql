@@ -13,8 +13,21 @@ import {
   helixStreamRaw,
   helixSubRaw,
   krakenSubRaw,
+  contextValue,
+  authenticationMock,
+  validationMock,
 } from '../tests/mocks'
+nock(`https://id.twitch.tv`)
+  .post('/oauth2/token')
+  .query(true)
+  .reply(200, authenticationMock)
+  .persist()
 
+nock(`https://id.twitch.tv`)
+  .get('/oauth2/validate')
+  .query(true)
+  .reply(200, validationMock)
+  .persist()
 nock('https://api.twitch.tv')
   .get('/helix/users')
   .query(true)
@@ -71,7 +84,7 @@ describe('StreamModule', () => {
         }
       }
     `)
-    const contextValue = { request: {}, response: {} }
+
     const result = await execute({
       schema,
       contextValue,
@@ -116,7 +129,7 @@ describe('StreamModule', () => {
         }
       }
     `)
-    const contextValue = { request: {}, response: {} }
+
     const result = await execute({
       schema,
       contextValue,

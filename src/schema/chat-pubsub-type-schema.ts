@@ -1,9 +1,7 @@
 import { createModule, gql } from 'graphql-modules'
-import { TwitchClients } from '../injections/Twitch-Clients'
-import { TwitchId } from '../injections/Twitch-Id'
-import { UserId } from '../injections/User-Id'
 import asyncify from 'callback-to-async-iterator'
 import { ChatClient } from 'twitch-chat-client'
+import RefreshToken from '../helpers/RefreshToken'
 
 export interface Chat {
   channel: string
@@ -17,11 +15,10 @@ export const ChatPubSubResolvers = {
       subscribe: async (
         _: any,
         args: { channel: string },
-        { injector }: GraphQLModules.Context
+        { user_id, secret, refresh_token }: GraphQLModules.Context
       ) => {
-        const clients = injector.get(TwitchClients)
-
-        const chatClient = new ChatClient(await clients.authProvider(), {
+        const authProvider = await RefreshToken(user_id, secret, refresh_token)
+        const chatClient = new ChatClient(authProvider, {
           channels: [args.channel],
         })
         await chatClient.connect()
@@ -57,7 +54,6 @@ export const ChatPubSubSchema = gql`
 export const ChatPubSubModule = createModule({
   id: `chat-pubsub-module`,
   dirname: __dirname,
-  providers: [TwitchClients, TwitchId, UserId],
   typeDefs: ChatPubSubSchema,
   resolvers: ChatPubSubResolvers,
 })

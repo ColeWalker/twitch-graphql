@@ -15,8 +15,22 @@ import {
   helixStreamRaw,
   helixSubRaw,
   krakenSubRaw,
+  contextValue,
+  authenticationMock,
+  validationMock,
 } from '../tests/mocks'
 import { StreamUserLinkModule } from './stream-user-link-type-schema'
+nock(`https://id.twitch.tv`)
+  .post('/oauth2/token')
+  .query(true)
+  .reply(200, authenticationMock)
+  .persist()
+
+nock(`https://id.twitch.tv`)
+  .get('/oauth2/validate')
+  .query(true)
+  .reply(200, validationMock)
+  .persist()
 
 nock('https://api.twitch.tv')
   .get('/helix/users')
@@ -78,7 +92,7 @@ describe('GameModule', () => {
         }
       }
     `)
-    const contextValue = { request: {}, response: {} }
+
     const result = await execute({
       schema,
       contextValue,
@@ -92,14 +106,7 @@ describe('GameModule', () => {
 
   it('can search game with getGameByName', async () => {
     const app = createApplication({
-      modules: [
-        QueryModule,
-        SubscriberModule,
-        UserModule,
-        StreamModule,
-        UserSubscriberLinkModule,
-        GameModule,
-      ],
+      modules: [QueryModule, GameModule],
     })
     const schema = app.createSchemaForApollo()
 
@@ -112,12 +119,13 @@ describe('GameModule', () => {
         }  
       }
     `)
-    const contextValue = { request: {}, response: {} }
+
     const result = await execute({
       schema,
       contextValue,
       document,
     })
+    console.info(result?.errors)
     expect(result?.errors?.length).toBeFalsy()
     const game = result?.data?.getGameByName
     expect(game).toMatchObject(expectedGame)
