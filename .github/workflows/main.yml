@@ -7,7 +7,6 @@ env:
   USER_ID: ${{ secrets.USER_ID }}
 on:
   pull_request_target:
-    types: [assigned, opened, synchronize, reopened, edited]
     branches:
       - master
       - "**/*"
