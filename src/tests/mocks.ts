@@ -1,8 +1,45 @@
+export const contextValue = {
+  twitch_id: '12345',
+  refresh_token: '123',
+  secret: '123',
+  user_id: '123',
+}
+
 export const userFollowObject = {
   followDateUTC: new Date('2017-08-22T22:55:24Z').getTime().toString(),
   followDate: new Date('2017-08-22T22:55:24Z').toDateString(),
 }
 
+export const authenticationMock = {
+  access_token: '1234',
+  expires_in: 13134,
+  refresh_token: '1234',
+  scope: [
+    'analytics:read:games',
+    'channel:read:redemptions',
+    'channel:read:subscriptions',
+    'channel_subscriptions',
+    'chat:edit',
+    'chat:read',
+    'whispers:read',
+  ],
+  token_type: 'bearer',
+}
+
+export const validationMock = {
+  client_id: '1234',
+  login: 'login',
+  scopes: [
+    'analytics:read:games',
+    'channel:read:redemptions',
+    'channel:read:subscriptions',
+    'channel_subscriptions',
+    'chat:edit',
+    'chat:read',
+    'whispers:read',
+  ],
+  user_id: '1234',
+}
 export const pointsRedemptionRaw = {
   type: 'reward-redeemed',
   data: {

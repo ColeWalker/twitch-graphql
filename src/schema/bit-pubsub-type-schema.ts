@@ -1,8 +1,8 @@
 import { createModule, gql } from 'graphql-modules'
-import { TwitchClients } from '../injections/Twitch-Clients'
-import { TwitchId } from '../injections/Twitch-Id'
-import { UserId } from '../injections/User-Id'
 import asyncify from 'callback-to-async-iterator'
+import RefreshToken from '../helpers/RefreshToken'
+import { ApiClient } from 'twitch'
+import { PubSubClient } from 'twitch-pubsub-client'
 
 export const BitPubSubResolvers = {
   Subscription: {
@@ -10,13 +10,12 @@ export const BitPubSubResolvers = {
       subscribe: async (
         _: any,
         _args: any,
-        { injector }: GraphQLModules.Context
+        { user_id, refresh_token, secret }: GraphQLModules.Context
       ) => {
-        const clients = injector.get(TwitchClients)
-
-        const twitchClient = await clients.apiClient()
+        const authProvider = await RefreshToken(user_id, secret, refresh_token)
+        const twitchClient = new ApiClient({ authProvider, preAuth: true })
         const myId = (await twitchClient.getTokenInfo()).userId
-        const pubSubClient = await clients.pubSubClient()
+        const pubSubClient = new PubSubClient()
         await pubSubClient.registerUserListener(twitchClient)
 
         const curriedOnBits = (cb: any) => pubSubClient.onBits(myId, cb)
@@ -50,7 +49,6 @@ export const BitPubSubSchema = gql`
 export const BitPubSubModule = createModule({
   id: `bit-pubsub-module`,
   dirname: __dirname,
-  providers: [TwitchClients, TwitchId, UserId],
   typeDefs: BitPubSubSchema,
   resolvers: BitPubSubResolvers,
 })

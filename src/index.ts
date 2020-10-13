@@ -82,3 +82,4 @@ export {
   SubscriptionPubSubChatLinkModule,
   SubscriptionPubSubChatLinkSchema,
 } from './schema/subscription-pubsub-chat-link-schema'
+export { onConnect, context } from './helpers/ServerSetup'

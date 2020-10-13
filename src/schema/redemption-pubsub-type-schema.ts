@@ -1,8 +1,8 @@
 import { createModule, gql } from 'graphql-modules'
-import { TwitchClients } from '../injections/Twitch-Clients'
-import { TwitchId } from '../injections/Twitch-Id'
-import { UserId } from '../injections/User-Id'
 import asyncify from 'callback-to-async-iterator'
+import { PubSubClient } from 'twitch-pubsub-client/lib'
+import { ApiClient } from 'twitch/lib'
+import RefreshToken from '../helpers/RefreshToken'
 
 export const RedemptionPubSubResolvers = {
   Subscription: {
@@ -10,13 +10,13 @@ export const RedemptionPubSubResolvers = {
       subscribe: async (
         _: any,
         _args: any,
-        { injector }: GraphQLModules.Context
+        { user_id, secret, refresh_token }: GraphQLModules.Context
       ) => {
-        const clients = injector.get(TwitchClients)
-
-        const twitchClient = await clients.apiClient()
+        const authProvider = await RefreshToken(user_id, secret, refresh_token)
+        const twitchClient = new ApiClient({ authProvider, preAuth: true })
         const myId = (await twitchClient.getTokenInfo()).userId
-        const pubSubClient = await clients.pubSubClient()
+        const pubSubClient = new PubSubClient()
+
         await pubSubClient.registerUserListener(twitchClient)
         const curriedOnRedemption = (cb: any) =>
           pubSubClient.onRedemption(myId, cb)
@@ -58,7 +58,6 @@ export const RedemptionPubSubSchema = gql`
 export const RedemptionPubSubModule = createModule({
   id: `redemption-pubsub-module`,
   dirname: __dirname,
-  providers: [TwitchClients, TwitchId, UserId],
   typeDefs: RedemptionPubSubSchema,
   resolvers: RedemptionPubSubResolvers,
 })

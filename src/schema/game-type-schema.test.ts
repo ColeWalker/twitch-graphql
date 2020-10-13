@@ -2,7 +2,7 @@ import { createApplication } from 'graphql-modules'
 import { SubscriberModule } from './subscriber-type-schema'
 import { UserModule } from './user-type-schema'
 import { StreamModule } from './stream-type-schema'
-import { GameModule } from './game-type-schema'
+import { GameModule, GameResolvers } from './game-type-schema'
 import { parse, execute } from 'graphql'
 import { QueryModule } from './query-type-schema'
 import { UserSubscriberLinkModule } from './user-subscriber-link-type-schema'
@@ -15,8 +15,24 @@ import {
   helixStreamRaw,
   helixSubRaw,
   krakenSubRaw,
+  contextValue,
+  authenticationMock,
+  validationMock,
 } from '../tests/mocks'
 import { StreamUserLinkModule } from './stream-user-link-type-schema'
+import { ApiClient, HelixGame } from 'twitch/lib'
+import RefreshToken from '../helpers/RefreshToken'
+nock(`https://id.twitch.tv`)
+  .post('/oauth2/token')
+  .query(true)
+  .reply(200, authenticationMock)
+  .persist()
+
+nock(`https://id.twitch.tv`)
+  .get('/oauth2/validate')
+  .query(true)
+  .reply(200, validationMock)
+  .persist()
 
 nock('https://api.twitch.tv')
   .get('/helix/users')
@@ -78,7 +94,7 @@ describe('GameModule', () => {
         }
       }
     `)
-    const contextValue = { request: {}, response: {} }
+
     const result = await execute({
       schema,
       contextValue,
@@ -91,35 +107,23 @@ describe('GameModule', () => {
   })
 
   it('can search game with getGameByName', async () => {
-    const app = createApplication({
-      modules: [
-        QueryModule,
-        SubscriberModule,
-        UserModule,
-        StreamModule,
-        UserSubscriberLinkModule,
-        GameModule,
-      ],
-    })
-    const schema = app.createSchemaForApollo()
+    const authProvider = await RefreshToken('a', 'b', 'c')
+    const contextWithClient = {
+      ...contextValue,
+      authProvider,
+      twitchClient: new ApiClient({ authProvider }),
+    }
 
-    const document = parse(`
-      {
-        getGameByName(gameName: "Science & Technology") {
-          id
-          boxArtUrl
-          name
-        }  
-      }
-    `)
-    const contextValue = { request: {}, response: {} }
-    const result = await execute({
-      schema,
-      contextValue,
-      document,
-    })
-    expect(result?.errors?.length).toBeFalsy()
-    const game = result?.data?.getGameByName
-    expect(game).toMatchObject(expectedGame)
+    const rawGame = await GameResolvers.Query.getGameByName(
+      {},
+      { gameName: 'hello world' },
+      contextWithClient
+    )
+
+    expect(rawGame).toBeTruthy()
+
+    expect(rawGame).toMatchObject(
+      new HelixGame(helixGameRaw.data[0], contextWithClient.twitchClient)
+    )
   })
 })

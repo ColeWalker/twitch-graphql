@@ -1,67 +1,66 @@
 import { createModule, gql } from 'graphql-modules'
-import { TwitchClients } from '../injections/Twitch-Clients'
 import { getLatestSub } from '../subscriptions/GetLatestSub'
-import { UserId } from '../injections/User-Id'
-import { TwitchId } from '../injections/Twitch-Id'
-import { HelixSubscription } from 'twitch/lib'
+import { ApiClient, HelixSubscription } from 'twitch/lib'
 import { getSubs } from '../subscriptions/GetSubs'
 import { getCurrentSubCount } from '../subscriptions/SubCount'
 import { getRandomSub } from '../subscriptions/GetRandomSub'
+import RefreshToken from '../helpers/RefreshToken'
 
 export const SubscriberResolvers = {
   Query: {
     async latestSub(
       _parent: {},
       args: {},
-      { injector }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: GraphQLModules.ModuleContext
     ) {
-      const clients = await injector.get(TwitchClients)
-      const apiClient = await clients.apiClient()
-      const twitchId = injector.get(TwitchId).id()
-      return await getLatestSub(twitchId, apiClient)
+      const authProvider = await RefreshToken(user_id, secret, refresh_token)
+      const twitchClient = new ApiClient({ authProvider, preAuth: true })
+      const myId = (await twitchClient.getTokenInfo()).userId
+      return await getLatestSub(myId, twitchClient)
     },
     async randomSub(
       _parent: {},
       args: {},
-      { injector }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: Partial<GraphQLModules.ModuleContext>
     ) {
-      const clients = await injector.get(TwitchClients)
-      const apiClient = await clients.apiClient()
-      const twitchId = injector.get(TwitchId).id()
-      return await getRandomSub(twitchId, apiClient)
+      const authProvider = await RefreshToken(user_id, secret, refresh_token)
+      const twitchClient = new ApiClient({ authProvider, preAuth: true })
+      const myId = (await twitchClient.getTokenInfo()).userId
+
+      return await getRandomSub(myId, twitchClient)
     },
     async allSubs(
       _parent: {},
       args: {},
-      { injector }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: Partial<GraphQLModules.ModuleContext>
     ) {
-      const clients = await injector.get(TwitchClients)
-      const apiClient = await clients.apiClient()
-      const twitchId = injector.get(TwitchId).id()
+      const authProvider = await RefreshToken(user_id, secret, refresh_token)
+      const twitchClient = new ApiClient({ authProvider, preAuth: true })
+      const myId = (await twitchClient.getTokenInfo()).userId
 
-      return await getSubs(twitchId, apiClient)
+      return await getSubs(myId, twitchClient)
     },
     async subCount(
       _parent: {},
       args: {},
-      { injector }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: Partial<GraphQLModules.ModuleContext>
     ) {
-      const clients = await injector.get(TwitchClients)
-      const apiClient = await clients.apiClient()
-      const twitchId = injector.get(TwitchId).id()
+      const authProvider = await RefreshToken(user_id, secret, refresh_token)
+      const twitchClient = new ApiClient({ authProvider, preAuth: true })
+      const myId = (await twitchClient.getTokenInfo()).userId
 
-      return await getCurrentSubCount(twitchId, apiClient)
+      return await getCurrentSubCount(myId, twitchClient)
     },
     async getSubscriberByDisplayName(
       _parent: {},
       args: { displayName: string },
-      { injector }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: Partial<GraphQLModules.ModuleContext>
     ) {
-      const clients = await injector.get(TwitchClients)
-      const apiClient = await clients.apiClient()
-      const twitchId = injector.get(TwitchId).id()
+      const authProvider = await RefreshToken(user_id, secret, refresh_token)
+      const twitchClient = new ApiClient({ authProvider, preAuth: true })
+      const myId = (await twitchClient.getTokenInfo()).userId
 
-      const allSubs = await getSubs(twitchId, apiClient)
+      const allSubs = await getSubs(myId, twitchClient)
 
       return allSubs.find((sub) => sub.userDisplayName === args?.displayName)
     },
@@ -103,7 +102,6 @@ export const SubscriberSchema = gql`
 export const SubscriberModule = createModule({
   id: `subscriber-module`,
   dirname: __dirname,
-  providers: [TwitchClients, TwitchId, UserId],
   typeDefs: SubscriberSchema,
   resolvers: SubscriberResolvers,
 })

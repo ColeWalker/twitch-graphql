@@ -1,8 +1,6 @@
 import { gql, createModule } from 'graphql-modules'
-import { HelixSubscription, HelixUser } from 'twitch'
-import { TwitchClients } from '../injections/Twitch-Clients'
-import { TwitchId } from '../injections/Twitch-Id'
-import { UserId } from '../injections/User-Id'
+import { ApiClient, HelixSubscription, HelixUser } from 'twitch'
+import RefreshToken from '../helpers/RefreshToken'
 
 export const UserSubscriberLinkResolvers = {
   Subscriber: {
@@ -17,12 +15,12 @@ export const UserSubscriberLinkResolvers = {
     async getSubscriptionToDisplayName(
       user: HelixUser,
       args: { displayName: string },
-      { injector }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: Partial<GraphQLModules.ModuleContext>
     ) {
-      const clients = injector.get(TwitchClients)
-      const apiClient = await clients.apiClient()
+      const authProvider = await RefreshToken(user_id, secret, refresh_token)
+      const twitchClient = new ApiClient({ authProvider, preAuth: true })
 
-      const subscribed = await apiClient.helix.users.getUserByName(
+      const subscribed = await twitchClient.helix.users.getUserByName(
         args.displayName
       )
 
@@ -34,12 +32,12 @@ export const UserSubscriberLinkResolvers = {
     async isSubscribedToDisplayName(
       user: HelixUser,
       args: { displayName: string },
-      { injector }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: Partial<GraphQLModules.ModuleContext>
     ) {
-      const clients = injector.get(TwitchClients)
-      const apiClient = await clients.apiClient()
+      const authProvider = await RefreshToken(user_id, secret, refresh_token)
+      const twitchClient = new ApiClient({ authProvider, preAuth: true })
 
-      const subscribed = await apiClient.helix.users.getUserByName(
+      const subscribed = await twitchClient.helix.users.getUserByName(
         args.displayName
       )
 
@@ -65,6 +63,5 @@ export const UserSubscriberLinkModule = createModule({
   id: `user-subscriber-link-module`,
   dirname: __dirname,
   typeDefs: UserSubscriberLinkSchema,
-  providers: [TwitchClients, TwitchId, UserId],
   resolvers: UserSubscriberLinkResolvers,
 })

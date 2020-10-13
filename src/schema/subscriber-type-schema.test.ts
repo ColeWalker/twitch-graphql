@@ -1,4 +1,4 @@
-import { SubscriberModule } from './subscriber-type-schema'
+import { SubscriberModule, SubscriberResolvers } from './subscriber-type-schema'
 import { execute, parse } from 'graphql'
 import { createApplication } from 'graphql-modules'
 import { QueryModule } from './query-type-schema'
@@ -8,7 +8,24 @@ import {
   expectedUserRaw,
   helixSubRaw,
   krakenSubRaw,
+  contextValue,
+  authenticationMock,
+  validationMock,
 } from '../tests/mocks'
+import { ApiClient, HelixSubscription } from 'twitch/lib'
+import RefreshToken from '../helpers/RefreshToken'
+
+nock(`https://id.twitch.tv`)
+  .post('/oauth2/token')
+  .query(true)
+  .reply(200, authenticationMock)
+  .persist()
+
+nock(`https://id.twitch.tv`)
+  .get('/oauth2/validate')
+  .query(true)
+  .reply(200, validationMock)
+  .persist()
 
 nock('https://api.twitch.tv')
   .get('/helix/users')
@@ -43,7 +60,7 @@ describe('SubscriberModule', () => {
         }
       }
     `)
-    const contextValue = { request: {}, response: {} }
+
     const result = await execute({
       schema,
       contextValue,
@@ -55,98 +72,78 @@ describe('SubscriberModule', () => {
   })
 
   it('randomSub', async () => {
-    const app = createApplication({ modules: [QueryModule, SubscriberModule] })
-    const schema = app.createSchemaForApollo()
+    const authProvider = await RefreshToken('a', 'b', 'c')
+    const contextWithClient = {
+      ...contextValue,
+      authProvider,
+      twitchClient: new ApiClient({ authProvider }),
+    }
 
-    const document = parse(`
-      {
-        randomSub {
-          userId
-          tier
-          userDisplayName
-          isGift
-        }
-      }
-    `)
-    const contextValue = { request: {}, response: {} }
-    const result = await execute({
-      schema,
-      contextValue,
-      document,
-    })
+    const rawSub = await SubscriberResolvers.Query.randomSub(
+      {},
+      {},
+      contextWithClient
+    )
 
-    expect(result?.errors?.length).toBeFalsy()
-    expect(expectedAllSubs).toContainEqual(result?.data?.randomSub)
+    expect(rawSub).toBeTruthy()
+    expect(rawSub).toBeInstanceOf(HelixSubscription)
   })
 
   it('allSubs', async () => {
-    const app = createApplication({ modules: [QueryModule, SubscriberModule] })
-    const schema = app.createSchemaForApollo()
+    const authProvider = await RefreshToken('a', 'b', 'c')
+    const contextWithClient = {
+      ...contextValue,
+      authProvider,
+      twitchClient: new ApiClient({ authProvider }),
+    }
 
-    const document = parse(`
-      {
-        allSubs {
-          userId
-          tier
-          userDisplayName
-          isGift
-        }
-      }
-    `)
-    const contextValue = { request: {}, response: {} }
-    const result = await execute({
-      schema,
-      contextValue,
-      document,
-    })
+    const allSubs = (
+      await SubscriberResolvers.Query.allSubs({}, {}, contextWithClient)
+    ).map((x: HelixSubscription) => ({
+      isGift: x.isGift,
+      tier: Number(x.tier),
+      userId: x.userId,
+      userDisplayName: x.userDisplayName,
+    }))
 
-    expect(result?.errors?.length).toBeFalsy()
-    expect(result?.data?.allSubs).toMatchObject(expectedAllSubs)
+    expect(allSubs).toMatchObject(expectedAllSubs)
   })
 
   it('findSub', async () => {
-    const app = createApplication({ modules: [QueryModule, SubscriberModule] })
-    const schema = app.createSchemaForApollo()
+    const authProvider = await RefreshToken('a', 'b', 'c')
+    const contextWithClient = {
+      ...contextValue,
+      authProvider,
+      twitchClient: new ApiClient({ authProvider }),
+    }
 
-    const document = parse(`
-      {
-        getSubscriberByDisplayName(displayName: "snoirf") {
-          userId
-          tier
-          userDisplayName
-          isGift
-        }
-      }
-    `)
-    const contextValue = { request: {}, response: {} }
-    const result = await execute({
-      schema,
-      contextValue,
-      document,
-    })
-
-    expect(result?.errors?.length).toBeFalsy()
-    const sub = result?.data?.getSubscriberByDisplayName
-    expect(sub).toMatchObject(expectedAllSubs[0])
+    const getSub = await SubscriberResolvers.Query.getSubscriberByDisplayName(
+      {},
+      { displayName: 'snoirf' },
+      contextWithClient
+    )
+    expect(getSub).toBeTruthy()
+    expect({
+      isGift: getSub?.isGift,
+      tier: Number(getSub?.tier),
+      userId: getSub?.userId,
+      userDisplayName: getSub?.userDisplayName,
+    }).toMatchObject(expectedAllSubs[0])
   })
 
   it('subCount', async () => {
-    const app = createApplication({ modules: [QueryModule, SubscriberModule] })
-    const schema = app.createSchemaForApollo()
+    const authProvider = await RefreshToken('a', 'b', 'c')
+    const contextWithClient = {
+      ...contextValue,
+      authProvider,
+      twitchClient: new ApiClient({ authProvider }),
+    }
 
-    const document = parse(`
-      {
-        subCount
-      }
-    `)
-    const contextValue = { request: {}, response: {} }
-    const result = await execute({
-      schema,
-      contextValue,
-      document,
-    })
-
-    expect(result?.errors?.length).toBeFalsy()
-    expect(result?.data?.subCount).toEqual(1)
+    const subCount = await SubscriberResolvers.Query.subCount(
+      {},
+      {},
+      contextWithClient
+    )
+    expect(subCount).toEqual(1)
   })
 })

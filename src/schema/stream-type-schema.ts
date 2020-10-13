@@ -1,24 +1,23 @@
 import { createModule, gql } from 'graphql-modules'
-import { HelixStream, HelixStreamData } from 'twitch'
+import { ApiClient, HelixStream, HelixStreamData } from 'twitch'
 import { HelixStreamFilter } from 'twitch/lib/API/Helix/Stream/HelixStreamApi'
-import { TwitchClients } from '../injections/Twitch-Clients'
-import { TwitchId } from '../injections/Twitch-Id'
-import { UserId } from '../injections/User-Id'
+import RefreshToken from '../helpers/RefreshToken'
 
 export const StreamResolvers = {
   Query: {
     async getStreams(
       _parent: unknown,
       args: { streamFilter: any; maxPages: number },
-      { injector }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: Partial<GraphQLModules.ModuleContext>
     ) {
-      const clients = injector.get(TwitchClients)
-      const apiClient = await clients.apiClient()
+      const authProvider = await RefreshToken(user_id, secret, refresh_token)
+      const twitchClient = new ApiClient({ authProvider, preAuth: true })
+
       let gameIds: string[] = []
 
       if (args?.streamFilter?.gameNames?.length) {
         gameIds = (
-          await apiClient.helix.games.getGamesByNames(
+          await twitchClient.helix.games.getGamesByNames(
             args.streamFilter.gameNames
           )
         )?.map((x) => x.id)
@@ -31,7 +30,7 @@ export const StreamResolvers = {
           : [...gameIds],
       }
 
-      const page = apiClient.helix.streams.getStreamsPaginated(streamFilter)
+      const page = twitchClient.helix.streams.getStreamsPaginated(streamFilter)
 
       let pages: HelixStreamData[] = []
       if (page.current) pages.push(...page.current)
@@ -42,7 +41,7 @@ export const StreamResolvers = {
       }
 
       return {
-        nodes: pages.map((el) => new HelixStream(el, apiClient)),
+        nodes: pages.map((el) => new HelixStream(el, twitchClient)),
         cursor: page.currentCursor,
         total: pages?.length,
       }
@@ -116,7 +115,6 @@ export const StreamSchema = gql`
 export const StreamModule = createModule({
   id: `stream-module`,
   dirname: __dirname,
-  providers: [TwitchClients, TwitchId, UserId],
   typeDefs: StreamSchema,
   resolvers: StreamResolvers,
 })
