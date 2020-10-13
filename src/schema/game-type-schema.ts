@@ -8,7 +8,7 @@ export const GameResolvers = {
     async getGameByName(
       _parent: {},
       args: any,
-      { user_id, secret, refresh_token }: any
+      { user_id, secret, refresh_token }: Partial<GraphQLModules.ModuleContext>
     ) {
       const authProvider = await RefreshToken(user_id, secret, refresh_token)
       const twitchClient = new ApiClient({ authProvider, preAuth: true })
