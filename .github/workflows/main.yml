@@ -13,6 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+        with:
+          configuration-path: '.github/auto_assign.yml'
+          repo-token: '${{ secrets.GITHUB_TOKEN }}'
       - uses: actions/cache@v2
         with:
           path: '**/node_modules'
