@@ -1,15 +1,16 @@
 import axios from 'axios'
 import { AuthProvider, StaticAuthProvider } from 'twitch/lib'
-import { error } from 'console'
 require('dotenv').config()
 
-export default async (): Promise<AuthProvider> => {
-  const clientId = process.env.USER_ID || ''
-  const clientSecret = process.env.SECRET || ''
-  const refreshToken = process.env.REFRESH_TOKEN || ''
-
-  if (!clientId.length || !clientSecret.length || !refreshToken.length) {
-    throw error('env not loading properly')
+export default async (
+  clientId?: string,
+  clientSecret?: string,
+  refreshToken?: string
+): Promise<AuthProvider> => {
+  if (!clientId?.length || !clientSecret?.length || !refreshToken?.length) {
+    clientId = process.env.USER_ID || ''
+    clientSecret = process.env.SECRET || ''
+    refreshToken = process.env.REFRESH_TOKEN || ''
   }
   const raw = await axios.post(
     `https://id.twitch.tv/oauth2/token?grant_type=refresh_token&refresh_token=${refreshToken}&client_id=${clientId}&client_secret=${clientSecret}`

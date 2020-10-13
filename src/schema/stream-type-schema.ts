@@ -1,7 +1,7 @@
 import { createModule, gql } from 'graphql-modules'
-import { HelixStream, HelixStreamData } from 'twitch'
+import { HelixStream } from 'twitch'
 import { HelixStreamFilter } from 'twitch/lib/API/Helix/Stream/HelixStreamApi'
-import { TwitchClients } from '../injections/Twitch-Clients'
+import TwitchClients from '../injections/Twitch-Clients'
 import { TwitchId } from '../injections/Twitch-Id'
 import { UserId } from '../injections/User-Id'
 
@@ -12,8 +12,7 @@ export const StreamResolvers = {
       args: { streamFilter: any; maxPages: number },
       { injector }: GraphQLModules.ModuleContext
     ) {
-      const clients = injector.get(TwitchClients)
-      const apiClient = await clients.apiClient()
+      const apiClient = await TwitchClients.apiClient()
       let gameIds: string[] = []
 
       if (args?.streamFilter?.gameNames?.length) {
@@ -33,7 +32,7 @@ export const StreamResolvers = {
 
       const page = apiClient.helix.streams.getStreamsPaginated(streamFilter)
 
-      let pages: HelixStreamData[] = []
+      let pages: any[] = []
       if (page.current) pages.push(...page.current)
 
       for (let i = 1; i <= args?.maxPages; i++) {
@@ -116,7 +115,7 @@ export const StreamSchema = gql`
 export const StreamModule = createModule({
   id: `stream-module`,
   dirname: __dirname,
-  providers: [TwitchClients, TwitchId, UserId],
+  providers: [TwitchId, UserId],
   typeDefs: StreamSchema,
   resolvers: StreamResolvers,
 })

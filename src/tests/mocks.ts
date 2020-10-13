@@ -423,7 +423,7 @@ export const expectedUserRaw = {
 
 export const expectedUserObject = {
   id: '123',
-  displayName: 'IIIsutha067III',
+  displayName: 'dallas',
   description: 'Just a gamer playing games and chatting. :)',
   profilePictureURL:
     'https://static-cdn.jtvnw.net/jtv_user_pictures/dallas-profile_image-1a2c906ee2c35f12-300x300.png',

@@ -1,5 +1,5 @@
 import { createModule, gql } from 'graphql-modules'
-import { TwitchClients } from '../injections/Twitch-Clients'
+import TwitchClients from '../injections/Twitch-Clients'
 import { TwitchId } from '../injections/Twitch-Id'
 import { UserId } from '../injections/User-Id'
 import asyncify from 'callback-to-async-iterator'
@@ -12,7 +12,7 @@ export const RedemptionPubSubResolvers = {
         _args: any,
         { injector }: GraphQLModules.Context
       ) => {
-        const clients = injector.get(TwitchClients)
+        const clients = TwitchClients
 
         const twitchClient = await clients.apiClient()
         const myId = (await twitchClient.getTokenInfo()).userId
@@ -58,7 +58,7 @@ export const RedemptionPubSubSchema = gql`
 export const RedemptionPubSubModule = createModule({
   id: `redemption-pubsub-module`,
   dirname: __dirname,
-  providers: [TwitchClients, TwitchId, UserId],
+  providers: [TwitchId, UserId],
   typeDefs: RedemptionPubSubSchema,
   resolvers: RedemptionPubSubResolvers,
 })

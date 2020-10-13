@@ -18,31 +18,28 @@ import {
 } from '../tests/mocks'
 import { StreamUserLinkModule } from './stream-user-link-type-schema'
 
+jest.setTimeout(30000)
+
 nock('https://api.twitch.tv')
   .get('/helix/users')
-  .query(true)
   .reply(200, {
     data: [expectedUserRaw],
   })
   .persist()
 nock('https://api.twitch.tv')
   .get(/\/kraken\/channels\/[0-9]*\/subscriptions/)
-  .query(true)
   .reply(200, krakenSubRaw)
   .persist()
 nock('https://api.twitch.tv')
   .get('/helix/subscriptions')
-  .query(true)
   .reply(200, helixSubRaw)
   .persist()
 nock('https://api.twitch.tv')
   .get('/helix/streams')
-  .query(true)
   .reply(200, helixStreamRaw)
   .persist()
 nock('https://api.twitch.tv')
   .get('/helix/games')
-  .query(true)
   .reply(200, helixGameRaw)
   .persist()
 

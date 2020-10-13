@@ -1,6 +1,6 @@
 import { createModule, gql } from 'graphql-modules'
-import { HelixFollow, HelixFollowData, HelixUser } from 'twitch'
-import { TwitchClients } from '../injections/Twitch-Clients'
+import { HelixFollow, HelixUser } from 'twitch'
+import TwitchClients from '../injections/Twitch-Clients'
 import { TwitchId } from '../injections/Twitch-Id'
 import { UserId } from '../injections/User-Id'
 
@@ -11,8 +11,7 @@ export const UserResolvers = {
       args: { displayName: string },
       { injector }: GraphQLModules.ModuleContext
     ) {
-      const clients = injector.get(TwitchClients)
-      const apiClient = await clients.apiClient()
+      const apiClient = await TwitchClients.apiClient()
 
       return apiClient.helix.users.getUserByName(args.displayName)
     },
@@ -21,8 +20,7 @@ export const UserResolvers = {
       args: { userId: string },
       { injector }: GraphQLModules.ModuleContext
     ) {
-      const clients = injector.get(TwitchClients)
-      const apiClient = await clients.apiClient()
+      const apiClient = await TwitchClients.apiClient()
 
       return apiClient.helix.users.getUserById(args.userId)
     },
@@ -30,7 +28,7 @@ export const UserResolvers = {
   User: {
     displayName(user: HelixUser) {
       HelixFollow
-      return user.displayName
+      return user.name
     },
     description(user: HelixUser) {
       return user.description
@@ -52,8 +50,7 @@ export const UserResolvers = {
       args: { displayName: string },
       { injector }: GraphQLModules.ModuleContext
     ) {
-      const clients = injector.get(TwitchClients)
-      const apiClient = await clients.apiClient()
+      const apiClient = await TwitchClients.apiClient()
 
       const followed = await apiClient.helix.users.getUserByName(
         args.displayName
@@ -69,8 +66,7 @@ export const UserResolvers = {
       args: { displayName: string },
       { injector }: GraphQLModules.ModuleContext
     ) {
-      const clients = injector.get(TwitchClients)
-      const apiClient = await clients.apiClient()
+      const apiClient = await TwitchClients.apiClient()
 
       const followed = await apiClient.helix.users.getUserByName(
         args.displayName
@@ -83,13 +79,12 @@ export const UserResolvers = {
       args: { maxPages: number },
       { injector }: GraphQLModules.ModuleContext
     ) {
-      const clients = injector.get(TwitchClients)
-      const apiClient = await clients.apiClient()
+      const apiClient = await TwitchClients.apiClient()
       const page = await apiClient.helix.users.getFollowsPaginated({
         user: user,
       })
 
-      let pages: HelixFollowData[] = []
+      let pages: any[] = []
       if (page.current) pages.push(...page.current)
       for (let i = 1; i <= args.maxPages; i++) {
         await page.getNext()
@@ -159,6 +154,6 @@ export const UserModule = createModule({
   id: `user-module`,
   dirname: __dirname,
   typeDefs: UserSchema,
-  providers: [TwitchClients, TwitchId, UserId],
+  providers: [TwitchId, UserId],
   resolvers: UserResolvers,
 })

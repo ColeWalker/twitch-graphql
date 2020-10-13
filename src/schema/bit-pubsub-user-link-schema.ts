@@ -1,5 +1,5 @@
 import { createModule, gql } from 'graphql-modules'
-import { TwitchClients } from '../injections/Twitch-Clients'
+import TwitchClients from '../injections/Twitch-Clients'
 import { TwitchId } from '../injections/Twitch-Id'
 import { UserId } from '../injections/User-Id'
 import { PubSubBitsMessage } from 'twitch-pubsub-client'
@@ -10,7 +10,7 @@ export const BitUserLinkResolvers = {
       _args: any,
       { injector }: GraphQLModules.Context
     ) => {
-      const clients = injector.get(TwitchClients)
+      const clients = TwitchClients
       const twitchClient = await clients.apiClient()
 
       return twitchClient.helix.users.getUserById(bit.userId || '')
@@ -27,7 +27,7 @@ export const BitUserLinkSchema = gql`
 export const BitUserLinkModule = createModule({
   id: `bit-pubsub-user-link-module`,
   dirname: __dirname,
-  providers: [TwitchClients, TwitchId, UserId],
+  providers: [TwitchId, UserId],
   typeDefs: BitUserLinkSchema,
   resolvers: BitUserLinkResolvers,
 })

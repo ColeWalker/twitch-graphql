@@ -1,5 +1,8 @@
 {
   "name": "twitch-graphql",
+  "jest": {
+    "verbose": true
+  },
   "version": "0.0.0-development",
   "description": "A graphql wrapper for the Twitch API.",
   "main": "dist/index.js",
@@ -19,6 +22,7 @@
     "prepare": "tsc",
     "build": "tsc",
     "start": "node ./dist/server.js",
+    "test": "jest --testTimeout=60000 --coverage",
     "dev": "concurrently \"tsc -w\" \"nodemon ./dist/server.js\"",
     "dev-g": "concurrently \"tsc -w\" \"nodemon ./dist/server.js -g\"",
     "semantic-release": "semantic-release"
@@ -39,7 +43,7 @@
     "callback-to-async-iterator": "^1.1.1",
     "dotenv": "^8.2.0",
     "graphql": "^15.3.0",
-    "graphql-modules": "^1.0.0-alpha.1",
+    "graphql-modules": "^1.0.0-alpha.2",
     "graphql-tag": "^2.11.0",
     "graphql-tools": "^6.0.18",
     "reflect-metadata": "^0.1.13",
