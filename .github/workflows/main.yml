@@ -11,7 +11,7 @@ on:
       - master
       - "**/*"
 jobs:
-  main:
+  master:
     runs-on: ubuntu-latest
     strategy:
       matrix:
