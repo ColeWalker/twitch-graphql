@@ -20,7 +20,7 @@ export const context = async ({ req, ...props }) => {
     }
   }
   const authProvider = await RefreshToken(
-    req?.headers?.twitch_id,
+    req?.headers?.user_id,
     req?.headers?.secret,
     req?.headers?.refresh_token
   )
