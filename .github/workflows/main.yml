@@ -6,6 +6,9 @@ env:
   TWITCH_USER_NAME: ${{ secrets.TWITCH_USER_NAME }}
   USER_ID: ${{ secrets.USER_ID }}
 on:
+  push:
+    branches:
+      - master
   pull_request_target:
     types: [assigned, opened, synchronize, reopened, edited]
     branches:
