@@ -15,7 +15,7 @@ export const UserSubscriberLinkResolvers = {
     async getSubscriptionToDisplayName(
       user: HelixUser,
       args: { displayName: string },
-      { user_id, secret, refresh_token }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: Partial<GraphQLModules.ModuleContext>
     ) {
       const authProvider = await RefreshToken(user_id, secret, refresh_token)
       const twitchClient = new ApiClient({ authProvider, preAuth: true })
@@ -32,7 +32,7 @@ export const UserSubscriberLinkResolvers = {
     async isSubscribedToDisplayName(
       user: HelixUser,
       args: { displayName: string },
-      { user_id, secret, refresh_token }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: Partial<GraphQLModules.ModuleContext>
     ) {
       const authProvider = await RefreshToken(user_id, secret, refresh_token)
       const twitchClient = new ApiClient({ authProvider, preAuth: true })

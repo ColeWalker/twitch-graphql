@@ -1,9 +1,4 @@
-import { createApplication } from 'graphql-modules'
-import { SubscriberModule } from './subscriber-type-schema'
-import { UserModule } from './user-type-schema'
-import { parse, execute } from 'graphql'
-import { QueryModule } from './query-type-schema'
-import { UserSubscriberLinkModule } from './user-subscriber-link-type-schema'
+import { UserResolvers } from './user-type-schema'
 import nock from 'nock'
 import {
   expectedUserObject,
@@ -15,11 +10,27 @@ import {
   userFollowsRaw,
   contextValue,
   authenticationMock,
+  validationMock,
 } from '../tests/mocks'
+import {
+  ApiClient,
+  HelixBroadcasterType,
+  HelixFollow,
+  HelixUser,
+  HelixUserType,
+} from 'twitch/lib'
+import RefreshToken from '../helpers/RefreshToken'
+
 nock(`https://id.twitch.tv`)
   .post('/oauth2/token')
   .query(true)
   .reply(200, authenticationMock)
+  .persist()
+nock(`https://id.twitch.tv`)
+  .get('/oauth2/validate')
+  .query(true)
+  .reply(200, validationMock)
+  .persist()
 nock('https://api.twitch.tv')
   .get('/helix/users')
   .query(true)
@@ -45,285 +56,177 @@ nock('https://api.twitch.tv')
   .persist()
 
 describe('UserModule', () => {
-  it('user should have all fields', async () => {
-    const app = createApplication({
-      modules: [
-        QueryModule,
-        SubscriberModule,
-        UserSubscriberLinkModule,
-        UserModule,
-      ],
-    })
-    const schema = app.createSchemaForApollo()
-
-    const document = parse(`
-      {
-        latestSub {
-          user{
-            displayName
-            description
-            id
-            profilePictureURL
-            views
-          }
-        }
-      }
-    `)
-
-    const result = await execute({
-      schema,
-      contextValue,
-      document,
-    })
-    expect(result?.errors?.length).toBeFalsy()
-
-    const user = result?.data?.latestSub?.user
-    expect(user).toMatchObject(expectedUserObject)
-  })
   it('getUserById should work', async () => {
-    const app = createApplication({
-      modules: [
-        QueryModule,
-        SubscriberModule,
-        UserSubscriberLinkModule,
-        UserModule,
-      ],
-    })
-    const schema = app.createSchemaForApollo()
+    const authProvider = await RefreshToken('a', 'b', 'c')
+    const contextWithClient = {
+      ...contextValue,
+      authProvider,
+      twitchClient: new ApiClient({ authProvider }),
+    }
+    const user = await UserResolvers.Query.getUserById(
+      {},
+      { userId: '123' },
+      contextWithClient
+    )
 
-    const document = parse(`
-      {
-        getUserById(userId: "anything"){
-            displayName
-            description
-            id
-            profilePictureURL
-            views
-          }
-      }
-    `)
-
-    const result = await execute({
-      schema,
-      contextValue,
-      document,
-    })
-
-    expect(result?.errors?.length).toBeFalsy()
-    const user = result?.data?.getUserById
-    expect(user).toMatchObject(expectedUserObject)
+    expect({
+      id: user?.id,
+      displayName: user?.displayName,
+      description: user?.description,
+      profilePictureURL: user?.profilePictureUrl,
+      views: user?.views,
+    }).toMatchObject(expectedUserObject)
   })
 
   it('getUserByDisplayName should work', async () => {
-    const app = createApplication({
-      modules: [
-        QueryModule,
-        SubscriberModule,
-        UserSubscriberLinkModule,
-        UserModule,
-      ],
-    })
-    const schema = app.createSchemaForApollo()
+    const authProvider = await RefreshToken('a', 'b', 'c')
+    const contextWithClient = {
+      ...contextValue,
+      authProvider,
+      twitchClient: new ApiClient({ authProvider }),
+    }
+    const user = await UserResolvers.Query.getUserByDisplayName(
+      {},
+      { displayName: '123' },
+      contextWithClient
+    )
 
-    const document = parse(`
-      {
-        getUserByDisplayName(displayName: "anything"){
-            displayName
-            description
-            id
-            profilePictureURL
-            views
-          }
-      }
-    `)
-
-    const result = await execute({
-      schema,
-      contextValue,
-      document,
-    })
-    console.log(result?.errors?.[0]?.locations)
-    expect(result?.errors?.length).toBeFalsy()
-
-    const user = result?.data?.getUserByDisplayName
-
-    expect(user).toMatchObject(expectedUserObject)
+    expect({
+      id: user?.id,
+      displayName: user?.displayName,
+      description: user?.description,
+      profilePictureURL: user?.profilePictureUrl,
+      views: user?.views,
+    }).toMatchObject(expectedUserObject)
   })
 })
 
 describe('follows', () => {
   it('followsId should work', async () => {
-    const app = createApplication({
-      modules: [
-        QueryModule,
-        SubscriberModule,
-        UserSubscriberLinkModule,
-        UserModule,
-      ],
-    })
-    const schema = app.createSchemaForApollo()
+    const authProvider = await RefreshToken('a', 'b', 'c')
+    const contextWithClient = {
+      ...contextValue,
+      authProvider,
+      twitchClient: new ApiClient({ authProvider }),
+    }
+    const follows = await UserResolvers.User.followsId(
+      new HelixUser(
+        {
+          ...expectedUserRaw,
+          type: HelixUserType.None,
+          broadcaster_type: HelixBroadcasterType.Affiliate,
+        },
 
-    const document = parse(`
-      {
-        latestSub{
-          user {
-            displayName
-            followsId(userId: "anything")
-          }
-        }
-      }
-    `)
-
-    const result = await execute({
-      schema,
-      contextValue,
-      document,
-    })
-    console.error(result.errors)
-    expect(result?.errors?.length).toBeFalsy()
-    const follows = result?.data?.latestSub?.user?.followsId
+        contextWithClient.twitchClient
+      ),
+      { userId: '123' }
+    )
     expect(follows).toBe(true)
   })
 
   it('followsDisplayName should work', async () => {
-    const app = createApplication({
-      modules: [
-        QueryModule,
-        SubscriberModule,
-        UserSubscriberLinkModule,
-        UserModule,
-      ],
-    })
-    const schema = app.createSchemaForApollo()
+    const authProvider = await RefreshToken('a', 'b', 'c')
+    const contextWithClient = {
+      ...contextValue,
+      authProvider,
+      twitchClient: new ApiClient({ authProvider }),
+    }
+    const follows = await UserResolvers.User.followsDisplayName(
+      new HelixUser(
+        {
+          ...expectedUserRaw,
+          type: HelixUserType.None,
+          broadcaster_type: HelixBroadcasterType.Affiliate,
+        },
 
-    const document = parse(`
-      {
-        latestSub{
-          user {
-            displayName
-            followsDisplayName(displayName: "anything")
-          }
-        }
-      }
-    `)
-
-    const result = await execute({
-      schema,
-      contextValue,
-      document,
-    })
-    expect(result?.errors?.length).toBeFalsy()
-    const follows = result?.data?.latestSub?.user?.followsDisplayName
+        contextWithClient.twitchClient
+      ),
+      { displayName: '123' },
+      contextWithClient
+    )
     expect(follows).toBe(true)
   })
   it('follows should work', async () => {
-    const app = createApplication({
-      modules: [
-        QueryModule,
-        SubscriberModule,
-        UserSubscriberLinkModule,
-        UserModule,
-      ],
-    })
-    const schema = app.createSchemaForApollo()
+    const authProvider = await RefreshToken('a', 'b', 'c')
+    const contextWithClient = {
+      ...contextValue,
+      authProvider,
+      twitchClient: new ApiClient({ authProvider }),
+    }
+    const follows = await UserResolvers.User.follows(
+      new HelixUser(
+        {
+          ...expectedUserRaw,
+          type: HelixUserType.None,
+          broadcaster_type: HelixBroadcasterType.Affiliate,
+        },
 
-    const document = parse(`
-      {
-        getUserByDisplayName(displayName: "anything"){
-          displayName
-          follows(maxPages: 1) {
-            total
-            nodes{
-              followDateUTC
-              followDate
-            }
-            cursor
-          }
-        }
-      }
-    `)
+        contextWithClient.twitchClient
+      ),
+      { maxPages: 1 },
+      contextWithClient
+    )
 
-    const result = await execute({
-      schema,
-      contextValue,
-      document,
-    })
-
-    expect(result?.errors?.length).toBeFalsy()
-    const follows = result?.data?.getUserByDisplayName?.follows
-
-    expect(follows).toMatchObject(userFollowsObject)
+    expect({
+      cursor: 'xxx',
+      total: 2,
+      nodes: follows?.nodes?.map((x: HelixFollow) => ({
+        followDate: x.followDate.toDateString(),
+        followDateUTC: new Date(x.followDate).getTime().toString(),
+      })),
+    }).toMatchObject(userFollowsObject)
   })
   it('getFollowToId should work', async () => {
-    const app = createApplication({
-      modules: [
-        QueryModule,
-        SubscriberModule,
-        UserSubscriberLinkModule,
-        UserModule,
-      ],
-    })
-    const schema = app.createSchemaForApollo()
+    const authProvider = await RefreshToken('a', 'b', 'c')
+    const contextWithClient = {
+      ...contextValue,
+      authProvider,
+      twitchClient: new ApiClient({ authProvider }),
+    }
+    const follow = await UserResolvers.User.getFollowToId(
+      new HelixUser(
+        {
+          ...expectedUserRaw,
+          type: HelixUserType.None,
+          broadcaster_type: HelixBroadcasterType.Affiliate,
+        },
 
-    const document = parse(`
-      {
-        latestSub {
-          user {
-            displayName
-            getFollowToId(userId: "321"){
-              followDate
-              followDateUTC
-              
-            }
-          }
-        }
-      }
-    `)
-
-    const result = await execute({
-      schema,
-      contextValue,
-      document,
-    })
-    expect(result?.errors?.length).toBeFalsy()
-
-    const follow = result?.data?.latestSub?.user?.getFollowToId
-    expect(follow).toMatchObject(userFollowObject)
+        contextWithClient.twitchClient
+      ),
+      { userId: '123' }
+    )
+    expect({
+      followDate: follow?.followDate.toDateString(),
+      followDateUTC:
+        follow?.followDate && new Date(follow?.followDate).getTime().toString(),
+    }).toMatchObject(userFollowObject)
   })
 
   it('getFollowToDisplayName should work', async () => {
-    const app = createApplication({
-      modules: [
-        QueryModule,
-        SubscriberModule,
-        UserSubscriberLinkModule,
-        UserModule,
-      ],
-    })
-    const schema = app.createSchemaForApollo()
+    const authProvider = await RefreshToken('a', 'b', 'c')
+    const contextWithClient = {
+      ...contextValue,
+      authProvider,
+      twitchClient: new ApiClient({ authProvider }),
+    }
+    const follow = await UserResolvers.User.getFollowToId(
+      new HelixUser(
+        {
+          ...expectedUserRaw,
+          type: HelixUserType.None,
+          broadcaster_type: HelixBroadcasterType.Affiliate,
+        },
 
-    const document = parse(`
-      {
-        latestSub {
-          user {
-            displayName
-            getFollowToDisplayName(displayName: "LIRIK"){
-              followDate
-              followDateUTC
-            }
-          }
-        }
-      }
-    `)
+        contextWithClient.twitchClient
+      ),
+      { userId: '123' }
+    )
+    expect({
+      followDate: follow?.followDate.toDateString(),
+      followDateUTC:
+        follow?.followDate && new Date(follow?.followDate).getTime().toString(),
+    }).toMatchObject(userFollowObject)
 
-    const result = await execute({
-      schema,
-      contextValue,
-      document,
-    })
-
-    expect(result?.errors?.length).toBeFalsy()
-    const follow = result?.data?.latestSub?.user?.getFollowToDisplayName
-    expect(follow).toMatchObject(userFollowObject)
+    // const follow = result?.data?.latestSub?.user?.getFollowToDisplayName
   })
 })

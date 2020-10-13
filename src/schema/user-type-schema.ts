@@ -8,7 +8,7 @@ export const UserResolvers = {
     async getUserByDisplayName(
       _parent: {},
       args: { displayName: string },
-      { user_id, secret, refresh_token }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: Partial<GraphQLModules.ModuleContext>
     ) {
       const authProvider = await RefreshToken(user_id, secret, refresh_token)
       const twitchClient = new ApiClient({ authProvider, preAuth: true })
@@ -18,7 +18,7 @@ export const UserResolvers = {
     async getUserById(
       _parent: {},
       args: { userId: string },
-      { user_id, secret, refresh_token }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: Partial<GraphQLModules.ModuleContext>
     ) {
       const authProvider = await RefreshToken(user_id, secret, refresh_token)
       const twitchClient = new ApiClient({ authProvider, preAuth: true })
@@ -49,7 +49,7 @@ export const UserResolvers = {
     async getFollowToDisplayName(
       user: HelixUser,
       args: { displayName: string },
-      { user_id, secret, refresh_token }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: Partial<GraphQLModules.ModuleContext>
     ) {
       const authProvider = await RefreshToken(user_id, secret, refresh_token)
       const twitchClient = new ApiClient({ authProvider })
@@ -66,7 +66,7 @@ export const UserResolvers = {
     async followsDisplayName(
       user: HelixUser,
       args: { displayName: string },
-      { user_id, secret, refresh_token }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: Partial<GraphQLModules.ModuleContext>
     ) {
       const authProvider = await RefreshToken(user_id, secret, refresh_token)
       const twitchClient = new ApiClient({ authProvider, preAuth: true })
@@ -80,7 +80,7 @@ export const UserResolvers = {
     async follows(
       user: HelixUser,
       args: { maxPages: number },
-      { user_id, secret, refresh_token }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: Partial<GraphQLModules.ModuleContext>
     ) {
       const authProvider = await RefreshToken(user_id, secret, refresh_token)
       const twitchClient = new ApiClient({ authProvider, preAuth: true })

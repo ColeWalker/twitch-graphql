@@ -1,7 +1,7 @@
 import { createApplication } from 'graphql-modules'
 import { SubscriberModule } from './subscriber-type-schema'
 import { UserModule } from './user-type-schema'
-import { StreamModule } from './stream-type-schema'
+import { StreamModule, StreamResolvers } from './stream-type-schema'
 import { parse, execute } from 'graphql'
 import { QueryModule } from './query-type-schema'
 import { UserSubscriberLinkModule } from './user-subscriber-link-type-schema'
@@ -17,6 +17,8 @@ import {
   authenticationMock,
   validationMock,
 } from '../tests/mocks'
+import { ApiClient, HelixStream } from 'twitch/lib'
+import RefreshToken from '../helpers/RefreshToken'
 nock(`https://id.twitch.tv`)
   .post('/oauth2/token')
   .query(true)
@@ -97,46 +99,30 @@ describe('StreamModule', () => {
   })
 
   it('getStreams', async () => {
-    const app = createApplication({
-      modules: [
-        QueryModule,
-        SubscriberModule,
-        UserModule,
-        UserSubscriberLinkModule,
-        StreamModule,
-        StreamUserLinkModule,
-      ],
-    })
-    const schema = app.createSchemaForApollo()
+    const authProvider = await RefreshToken('a', 'b', 'c')
+    const contextWithClient = {
+      ...contextValue,
+      authProvider,
+      twitchClient: new ApiClient({ authProvider }),
+    }
 
-    const document = parse(`
-      {
-        getStreams(
-          streamFilter: {
-            userNames: ["supcole"]
-          }
-        ) {
-          nodes { 
-            language
-            gameId
-            id
-            title
-            viewers
-            thumbnailUrl
-            userDisplayName
-            userId
-          }
-        }
-      }
-    `)
+    const rawStreams = (
+      await StreamResolvers.Query.getStreams(
+        {},
+        { streamFilter: { userNames: ['hello world'] }, maxPages: 1 },
+        contextWithClient
+      )
+    ).nodes.map((x: HelixStream) => ({
+      language: x.language,
+      gameId: x.gameId,
+      id: x.id,
+      title: x.title,
+      viewers: x.viewers,
+      thumbnailUrl: x.thumbnailUrl,
+      userDisplayName: x.userDisplayName,
+      userId: x.userId,
+    }))
 
-    const result = await execute({
-      schema,
-      contextValue,
-      document,
-    })
-    expect(result?.errors?.length).toBeFalsy()
-    const stream = result?.data?.getStreams?.nodes
-    expect(stream).toMatchObject([expectedStream])
+    expect(rawStreams).toMatchObject([expectedStream])
   })
 })

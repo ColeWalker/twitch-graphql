@@ -1,26 +1,18 @@
 import { createModule, gql } from 'graphql-modules'
-// import { ApiClient } from 'twitch'
 import { HelixGame } from 'twitch'
-// import RefreshToken from '../helpers/RefreshToken'
+import { ApiClient } from 'twitch'
+import RefreshToken from '../helpers/RefreshToken'
 
 export const GameResolvers = {
   Query: {
-    getGameByName: async (
+    async getGameByName(
       _parent: {},
-      args: { gameName: string },
-      context: GraphQLModules.ModuleContext
-    ) => {
-      // const authProvider = await RefreshToken(
-      //   context?.user_id,
-      //   context?.secret,
-      //   context?.refresh_token
-      // )
-
-      // const twitchClient = new ApiClient({ authProvider })
-      const game = await context.twitchClient.helix.games.getGameByName(
-        args.gameName
-      )
-
+      args: any,
+      { user_id, secret, refresh_token }: any
+    ) {
+      const authProvider = await RefreshToken(user_id, secret, refresh_token)
+      const twitchClient = new ApiClient({ authProvider, preAuth: true })
+      const game = await twitchClient.helix.games.getGameByName(args.gameName)
       return game
     },
   },

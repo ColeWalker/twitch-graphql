@@ -8,7 +8,7 @@ export const StreamResolvers = {
     async getStreams(
       _parent: unknown,
       args: { streamFilter: any; maxPages: number },
-      { user_id, secret, refresh_token }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: Partial<GraphQLModules.ModuleContext>
     ) {
       const authProvider = await RefreshToken(user_id, secret, refresh_token)
       const twitchClient = new ApiClient({ authProvider, preAuth: true })

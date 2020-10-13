@@ -4,6 +4,7 @@ export const contextValue = {
   secret: '123',
   user_id: '123',
 }
+
 export const userFollowObject = {
   followDateUTC: new Date('2017-08-22T22:55:24Z').getTime().toString(),
   followDate: new Date('2017-08-22T22:55:24Z').toDateString(),

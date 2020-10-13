@@ -21,7 +21,7 @@ export const SubscriberResolvers = {
     async randomSub(
       _parent: {},
       args: {},
-      { user_id, secret, refresh_token }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: Partial<GraphQLModules.ModuleContext>
     ) {
       const authProvider = await RefreshToken(user_id, secret, refresh_token)
       const twitchClient = new ApiClient({ authProvider, preAuth: true })
@@ -32,7 +32,7 @@ export const SubscriberResolvers = {
     async allSubs(
       _parent: {},
       args: {},
-      { user_id, secret, refresh_token }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: Partial<GraphQLModules.ModuleContext>
     ) {
       const authProvider = await RefreshToken(user_id, secret, refresh_token)
       const twitchClient = new ApiClient({ authProvider, preAuth: true })
@@ -43,7 +43,7 @@ export const SubscriberResolvers = {
     async subCount(
       _parent: {},
       args: {},
-      { user_id, secret, refresh_token }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: Partial<GraphQLModules.ModuleContext>
     ) {
       const authProvider = await RefreshToken(user_id, secret, refresh_token)
       const twitchClient = new ApiClient({ authProvider, preAuth: true })
@@ -54,7 +54,7 @@ export const SubscriberResolvers = {
     async getSubscriberByDisplayName(
       _parent: {},
       args: { displayName: string },
-      { user_id, secret, refresh_token }: GraphQLModules.ModuleContext
+      { user_id, secret, refresh_token }: Partial<GraphQLModules.ModuleContext>
     ) {
       const authProvider = await RefreshToken(user_id, secret, refresh_token)
       const twitchClient = new ApiClient({ authProvider, preAuth: true })

@@ -2,7 +2,7 @@ import { createApplication } from 'graphql-modules'
 import { SubscriberModule } from './subscriber-type-schema'
 import { UserModule } from './user-type-schema'
 import { StreamModule } from './stream-type-schema'
-import { GameModule } from './game-type-schema'
+import { GameModule, GameResolvers } from './game-type-schema'
 import { parse, execute } from 'graphql'
 import { QueryModule } from './query-type-schema'
 import { UserSubscriberLinkModule } from './user-subscriber-link-type-schema'
@@ -20,6 +20,8 @@ import {
   validationMock,
 } from '../tests/mocks'
 import { StreamUserLinkModule } from './stream-user-link-type-schema'
+import { ApiClient, HelixGame } from 'twitch/lib'
+import RefreshToken from '../helpers/RefreshToken'
 nock(`https://id.twitch.tv`)
   .post('/oauth2/token')
   .query(true)
@@ -105,29 +107,23 @@ describe('GameModule', () => {
   })
 
   it('can search game with getGameByName', async () => {
-    const app = createApplication({
-      modules: [QueryModule, GameModule],
-    })
-    const schema = app.createSchemaForApollo()
+    const authProvider = await RefreshToken('a', 'b', 'c')
+    const contextWithClient = {
+      ...contextValue,
+      authProvider,
+      twitchClient: new ApiClient({ authProvider }),
+    }
 
-    const document = parse(`
-      {
-        getGameByName(gameName: "Science & Technology") {
-          id
-          boxArtUrl
-          name
-        }  
-      }
-    `)
+    const rawGame = await GameResolvers.Query.getGameByName(
+      {},
+      { gameName: 'hello world' },
+      contextWithClient
+    )
 
-    const result = await execute({
-      schema,
-      contextValue,
-      document,
-    })
-    console.info(result?.errors)
-    expect(result?.errors?.length).toBeFalsy()
-    const game = result?.data?.getGameByName
-    expect(game).toMatchObject(expectedGame)
+    expect(rawGame).toBeTruthy()
+
+    expect(rawGame).toMatchObject(
+      new HelixGame(helixGameRaw.data[0], contextWithClient.twitchClient)
+    )
   })
 })
