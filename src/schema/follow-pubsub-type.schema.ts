@@ -1,8 +1,8 @@
 import { createModule, gql } from 'graphql-modules'
 import { ApiClient } from 'twitch/lib'
 import asyncify from 'callback-to-async-iterator'
-import { HelixFollow } from 'twitch'
 import RefreshToken from '../helpers/RefreshToken'
+import { HelixFollow } from 'twitch'
 import axios from 'axios'
 export const FollowPubSubResolvers = {
   Subscription: {
@@ -48,14 +48,14 @@ export const FollowPubSubResolvers = {
 
         // I am aware that pubsub.asyncIterator('FOLLOWS') exists
         // but it hasn't been working nicely so I'm doing this
-        const curried = (cb: any) =>
-          pubsub.subscribe('FOLLOWS', (cb) => {
-            const helix = twitchClient
-            return cb()
+        const curried = async (cb: any) =>
+          await pubsub.subscribe('FOLLOWS', (follow) => {
+            const helix = new HelixFollow(follow, twitchClient)
+            return cb(helix)
           })
         return asyncify(curried)
       },
-      resolve: (follow: any) => {
+      resolve: async (follow: HelixFollow) => {
         return follow
       },
     },
@@ -64,11 +64,11 @@ export const FollowPubSubResolvers = {
 
 export const FollowPubSubSchema = gql`
   type FollowSubscription {
-    followed_at: String
-    from_id: String
-    from_name: String
-    to_id: String
-    to_name: String
+    followDate: String
+    followedUserDisplayName: String
+    followedUserId: String
+    userDisplayName: String
+    userId: String
   }
 
   extend type Subscription {

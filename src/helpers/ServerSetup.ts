@@ -21,15 +21,7 @@ export const context = async ({ req, ...props }) => {
 
   app.post('/webhooks/follows', bodyParser.json(), async (req, res) => {
     const follow = req.body?.data?.[0]
-    const parsedFollow = {
-      followedAt: follow?.followed_at,
-      fromId: follow?.from_id,
-      fromName: follow?.from_name,
-      toId: follow?.to_id,
-      toName: follow?.to_name,
-    }
-
-    pubsub.publish('FOLLOWS', parsedFollow)
+    await pubsub.publish('FOLLOWS', follow)
     return res.status(200).send()
   })
 
