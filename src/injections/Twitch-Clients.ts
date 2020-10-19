@@ -1,8 +1,9 @@
 import 'reflect-metadata'
 import { ApiClient, AuthProvider } from 'twitch'
-import { PubSubClient } from 'twitch-pubsub-client'
+import { PubSub } from 'graphql-subscriptions'
 import RefreshToken from '../helpers/RefreshToken'
 import { Injectable } from 'graphql-modules'
+import { PubSubClient } from 'twitch-pubsub-client/lib'
 require('dotenv').config()
 
 declare global {
@@ -14,6 +15,10 @@ declare global {
       user_id: string
       authProvider: AuthProvider
       twitchClient: ApiClient
+      app: any
+      callbackUrl: string
+      webhookPort: string
+      pubsub: PubSub
       connectionParams: {
         twitch_id: string
         refresh_token: string
