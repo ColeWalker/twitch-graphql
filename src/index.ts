@@ -83,3 +83,13 @@ export {
   SubscriptionPubSubChatLinkSchema,
 } from './schema/subscription-pubsub-chat-link-schema'
 export { onConnect, context } from './helpers/ServerSetup'
+export {
+  FollowPubSubUserLinkModule,
+  FollowPubSubUserLinkResolvers,
+  FollowPubSubUserLinkSchema,
+} from './schema/follow-pubsub-user-link-schema'
+export {
+  FollowPubSubModule,
+  FollowPubSubResolvers,
+  FollowPubSubSchema,
+} from './schema/follow-pubsub-type-schema'
