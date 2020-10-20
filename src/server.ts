@@ -21,7 +21,7 @@ import { SubscriptionPubSubModule } from './schema/subscription-pubsub-type-sche
 import { SubscriptionPubSubUserLinkModule } from './schema/subscription-pubsub-user-link-schema'
 import { SubscriptionPubSubChatLinkModule } from './schema/subscription-pubsub-chat-link-schema'
 import { onConnect, context } from './helpers/ServerSetup'
-import { FollowPubSubModule } from './schema/follow-pubsub-type.schema'
+import { FollowPubSubModule } from './schema/follow-pubsub-type-schema'
 require('dotenv').config()
 
 let port = 5555

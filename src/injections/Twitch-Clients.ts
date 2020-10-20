@@ -1,10 +1,6 @@
 import 'reflect-metadata'
 import { ApiClient, AuthProvider } from 'twitch'
 import { PubSub } from 'graphql-subscriptions'
-import RefreshToken from '../helpers/RefreshToken'
-import { Injectable } from 'graphql-modules'
-import { PubSubClient } from 'twitch-pubsub-client/lib'
-require('dotenv').config()
 
 declare global {
   namespace GraphQLModules {
@@ -26,21 +22,5 @@ declare global {
         user_id: string
       }
     }
-  }
-}
-
-@Injectable()
-export class TwitchClients {
-  async apiClient() {
-    const authProvider = await RefreshToken()
-    return new ApiClient({ authProvider, preAuth: true })
-  }
-
-  async pubSubClient() {
-    return new PubSubClient()
-  }
-
-  async authProvider() {
-    return RefreshToken()
   }
 }

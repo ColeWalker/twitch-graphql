@@ -7,25 +7,25 @@ require('dotenv').config()
 export const onConnect = (connectionParams: any) => {
   return { ...connectionParams }
 }
+const app = express()
+const pubsub = new PubSub()
+const webhookPort = process.env.WEBHOOK_PORT || 5554
+
+app.get('/webhooks/follows', (req, res) => {
+  res.status(200).send(req.query['hub.challenge'])
+
+  console.log('Topic was subscribed to')
+})
+
+app.post('/webhooks/follows', bodyParser.json(), async (req, res) => {
+  const follow = req.body?.data?.[0]
+  await pubsub.publish(`FOLLOWS-${follow?.to_id}`, follow)
+  return res.status(200).send()
+})
+
+app.listen(webhookPort, () => {})
 
 export const context = async ({ req, ...props }) => {
-  const app = express()
-  const webhookPort = process.env.WEBHOOK_PORT || 5554
-  const pubsub = new PubSub()
-
-  app.get('/webhooks/follows', (req, res) => {
-    res.status(200).send(req.query['hub.challenge'])
-
-    console.log('Topic was subscribed to')
-  })
-
-  app.post('/webhooks/follows', bodyParser.json(), async (req, res) => {
-    const follow = req.body?.data?.[0]
-    await pubsub.publish('FOLLOWS', follow)
-    return res.status(200).send()
-  })
-
-  app.listen(webhookPort, () => {})
   const callbackUrl = process.env.CALLBACK_URL || ''
   if (props?.connection?.context) {
     const authProvider = await RefreshToken(

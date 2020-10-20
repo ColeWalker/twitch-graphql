@@ -51,6 +51,12 @@ import {
   SubscriptionPubSubUserLinkSchema,
   SubscriptionPubSubChatLinkModule,
   SubscriptionPubSubChatLinkSchema,
+  FollowPubSubUserLinkModule,
+  FollowPubSubUserLinkResolvers,
+  FollowPubSubUserLinkSchema,
+  FollowPubSubModule,
+  FollowPubSubResolvers,
+  FollowPubSubSchema,
   onConnect,
   context,
 } from './index'
@@ -158,6 +164,12 @@ describe('npm package', () => {
     expect(SubscriptionPubSubChatLinkSchema).toBeTruthy()
     expect(onConnect).toBeTruthy()
     expect(context).toBeTruthy()
+    expect(FollowPubSubUserLinkModule).toBeTruthy()
+    expect(FollowPubSubUserLinkResolvers).toBeTruthy()
+    expect(FollowPubSubUserLinkSchema).toBeTruthy()
+    expect(FollowPubSubModule).toBeTruthy()
+    expect(FollowPubSubResolvers).toBeTruthy()
+    expect(FollowPubSubSchema).toBeTruthy()
   })
 
   it('modules should work together', async () => {
@@ -180,6 +192,8 @@ describe('npm package', () => {
         SubscriptionPubSubModule,
         SubscriptionPubSubChatLinkModule,
         SubscriptionPubSubUserLinkModule,
+        FollowPubSubModule,
+        FollowPubSubUserLinkModule,
       ],
     })
     const schema = app.createSchemaForApollo()

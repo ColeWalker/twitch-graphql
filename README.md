@@ -10,6 +10,9 @@ By default it will run at `http://localhost:5555/graphql`.
   - [Environment Variables](#environment-variables)
   - [Authentication via headers](#authentication-via-headers)
     - [Example of client setup](#example-of-client-setup)
+  - [Webhooks](#webhooks)
+    - [Why?](#why)
+    - [Setting up ngrok](#setting-up-ngrok)
   - [Installation and Usage of the NPM Package](#installation-and-usage-of-the-npm-package)
   - [Command line arguments](#command-line-arguments)
   - [Commands](#commands)
@@ -33,19 +36,23 @@ By default it will run at `http://localhost:5555/graphql`.
   - [SubscriptionPubSub](#subscriptionpubsub)
     - [SubscriptionPubSubChatLink](#subscriptionpubsubchatlink)
     - [SubscriptionPubSubUserLink](#subscriptionpubsubuserlink)
+    - [FollowPubSub](#followpubsub)
+    - [FollowPubSubUserLink](#followpubsubuserlink)
 
 ## Environment Variables
 
 This project assumes that you already have a Twitch API App set up, and an OAuth token with every scope that you will need. This information will be stored inside of several environment variables in a .env file. If you need a Twitch API Application (for user ID and client secret), information regarding setting one up is [documented in the Twitch API documentation.](https://dev.twitch.tv/docs/api/) If you require an OAuth or refresh token, there is [documentation available in the Twitch API documentation.](https://dev.twitch.tv/docs/authentication) Alternatively, there is a [guide below on how to retrieve a refresh token.](#getting-a-twitch-refresh-token)
 
-| Variable      | Value                                                 |
-| ------------- | ----------------------------------------------------- |
-| SECRET        | Your application's secret                             |
-| USER_ID       | Your application's User ID                            |
-| TWITCH_ID     | Your Twitch account's ID                              |
-| REFRESH_TOKEN | The refresh token for your OAuth token                |
-| PORT          | The port that you want to run the server on           |
-| GRAPHIQL      | Whether or not you want the server to enable graphiql |
+| Variable      | Value                                                                                                    |
+| ------------- | -------------------------------------------------------------------------------------------------------- |
+| SECRET        | Your application's secret                                                                                |
+| USER_ID       | Your application's User ID                                                                               |
+| TWITCH_ID     | Your Twitch account's ID                                                                                 |
+| REFRESH_TOKEN | The refresh token for your OAuth token                                                                   |
+| PORT          | The port that you want to run the server on                                                              |
+| GRAPHIQL      | Whether or not you want the server to enable graphiql                                                    |
+| WEBHOOK_PORT  | The port that you want to run the webhook listener on                                                    |
+| CALLBACK_URL  | The full URL (including http) for twitch to send webhooks to (the URL the webhook port is accessible at) |
 
 ## Authentication via headers
 
@@ -122,6 +129,28 @@ const client = new ApolloClient({
 })
 ```
 
+## Webhooks
+
+Twitch doesn't have a PubSub for follows yet, so if you need to use the follow subscription, you need to have this server port forwarded and open to outside requests.
+
+### Why?
+
+Webhooks work like this:
+
+1. We tell Twitch we want to be notified whenever a follow happens.
+2. Twitch sends us a request telling us they've confirmed that they will do that.
+3. Twitch sends us requests with information about any follow event that occurs.
+
+### Setting up ngrok
+
+If you don't want to bother with port forwarding, you can use [ngrok](https://ngrok.com/) to set up a secure tunnel to your server from the outside using the following steps.
+
+1. Download ngrok
+2. Run `./ngrok http PORT` in the directory where ngrok was downloaded, where `PORT` is your `WEBHOOK_PORT` environment variable.
+3. ngrok will log an `http` url and an `https` `something.ngrok.io` url in the console window, copy and paste this into the `CALLBACK_URL` environment variable.
+
+You will need to repeat this process _each time_ that you restart ngrok.
+
 ## Installation and Usage of the NPM Package
 
 This library is also available as a NPM package.
@@ -141,45 +170,78 @@ Every module in this library depends on the base module, "Query". You will **_AL
 Example:
 
 ```ts
-import { graphqlHTTP } from 'express-graphql'
-import { QueryModule } from 'twitch-graphql'
-import { SubscriberModule } from 'twitch-graphql'
-import { UserModule } from 'twitch-graphql'
-import { StreamModule } from 'twitch-graphql'
-import { GameModule } from 'twitch-graphql'
-import { UserSubscriberLinkModule } from 'twitch-graphql'
-import { StreamUserLinkModule } from 'twitch-graphql'
-import { GameStreamLinkModule } from 'twitch-graphql'
+import express from 'express'
+import http from 'http'
+import { QueryModule } from './schema/query-type-schema'
+import { SubscriberModule } from './schema/subscriber-type-schema'
+import { UserModule } from './schema/user-type-schema'
+import { StreamModule } from './schema/stream-type-schema'
+import { GameModule } from './schema/game-type-schema'
 import { createApplication } from 'graphql-modules'
-
-const port = 5555
+import { UserSubscriberLinkModule } from './schema/user-subscriber-link-type-schema'
+import { GameStreamLinkModule } from './schema/game-stream-link-type-schema'
+import { RedemptionPubSubModule } from './schema/redemption-pubsub-type-schema'
+import { StreamUserLinkModule } from './schema/stream-user-link-type-schema'
+import { RedemptionUserLinkModule } from './schema/redemption-pubsub-user-link-type-schema'
+import { ChatPubSubModule } from './schema/chat-pubsub-type-schema'
+import { ApolloServer } from 'apollo-server-express'
+import { ChatUserLinkModule } from './schema/chat-pubsub-user-link-schema'
+import { BitPubSubModule } from './schema/bit-pubsub-type-schema'
+import { BitUserLinkModule } from './schema/bit-pubsub-user-link-schema'
+import { SubscriptionPubSubModule } from './schema/subscription-pubsub-type-schema'
+import { SubscriptionPubSubUserLinkModule } from './schema/subscription-pubsub-user-link-schema'
+import { SubscriptionPubSubChatLinkModule } from './schema/subscription-pubsub-chat-link-schema'
+import { onConnect, context } from './helpers/ServerSetup'
+import { FollowPubSubModule } from './schema/follow-pubsub-type.schema'
 const app = createApplication({
   modules: [
     QueryModule,
     SubscriberModule,
     UserModule,
     StreamModule,
-    GameModule,
     UserSubscriberLinkModule,
-    StreamUserLinkModule,
     GameStreamLinkModule,
+    GameModule,
+    StreamUserLinkModule,
+    RedemptionPubSubModule,
+    RedemptionUserLinkModule,
+    ChatPubSubModule,
+    ChatUserLinkModule,
+    BitPubSubModule,
+    BitUserLinkModule,
+    SubscriptionPubSubModule,
+    SubscriptionPubSubUserLinkModule,
+    SubscriptionPubSubChatLinkModule,
+    FollowPubSubModule,
   ],
 })
-const execute = app.createExecution()
-const server = express()
+app.createSubscription()
 
-server.use(
-  '/graphql',
-  graphqlHTTP((request: any) => ({
-    schema: app.schema,
-    graphiql: useGraphiql,
-    customExecuteFn: execute as any,
-    context: { request },
-  }))
-)
+const schema = app.createSchemaForApollo()
+const server = new ApolloServer({
+  schema,
+  introspection: true,
+  subscriptions: {
+    path: `/subscriptions`,
+    onConnect,
+  },
+  context,
+  playground: true,
+})
 
-server.listen(port, () => {
-  console.log(`server listening at ${port}, graphiql enabled: ${useGraphiql}`)
+const expressApp = express()
+
+server.applyMiddleware({ app: expressApp })
+const httpServer = http.createServer(expressApp)
+server.installSubscriptionHandlers(httpServer)
+
+httpServer.listen(port, () => {
+  console.log(
+    `🚀 Server ready at http://localhost:${port}${server.graphqlPath}`
+  )
+  console.log(
+    `🚀 Subscriptions ready at ws://localhost:${port}${server.subscriptionsPath}`
+  )
 })
 ```
 
@@ -374,6 +436,7 @@ This module extends Stream to add the user field, and User to add the stream fie
 extend type User {
   stream: Stream
 }
+
 extend type Stream {
   user: User
 }
@@ -546,6 +609,7 @@ type SubscriptionMessage {
   gifterDisplayName: String
   giftDuration: Int
 }
+
 extend type Subscription {
   newSubscription: SubscriptionMessage
 }
@@ -573,5 +637,38 @@ import { SubscriptionPubSubUserLinkModule } from 'twitch-graphql'
 extend type SubscriptionMessage {
   user: User
   gifterUser: User
+}
+```
+
+### FollowPubSub
+
+```ts
+import { FollowPubSubModule } from 'twitch-graphql'
+```
+
+```graphql
+type FollowSubscription {
+  followDate: String
+  followedUserDisplayName: String
+  followedUserId: String
+  userDisplayName: String
+  userId: String
+}
+
+extend type Subscription {
+  newFollow: FollowSubscription
+}
+```
+
+### FollowPubSubUserLink
+
+```ts
+import { FollowPubSubUserLinkModule } from 'twitch-graphql'
+```
+
+```graphql
+extend type FollowSubscription {
+  followedUser: User
+  followerUser: User
 }
 ```
