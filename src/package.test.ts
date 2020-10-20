@@ -1,5 +1,3 @@
-import { execute, parse } from 'graphql'
-import { createApplication } from 'graphql-modules'
 import {
   GameModule,
   GameResolvers,
@@ -60,55 +58,6 @@ import {
   onConnect,
   context,
 } from './index'
-import nock from 'nock'
-import {
-  expectedUserRaw,
-  helixGameRaw,
-  helixStreamRaw,
-  helixSubRaw,
-  krakenSubRaw,
-  contextValue,
-  authenticationMock,
-  validationMock,
-} from './tests/mocks'
-nock(`https://id.twitch.tv`)
-  .post('/oauth2/token')
-  .query(true)
-  .reply(200, authenticationMock)
-  .persist()
-
-nock(`https://id.twitch.tv`)
-  .get('/oauth2/validate')
-  .query(true)
-  .reply(200, validationMock)
-  .persist()
-nock('https://api.twitch.tv')
-  .get('/helix/users')
-  .query(true)
-  .reply(200, {
-    data: [expectedUserRaw],
-  })
-  .persist()
-nock('https://api.twitch.tv')
-  .get(/\/kraken\/channels\/[0-9]*\/subscriptions/)
-  .query(true)
-  .reply(200, krakenSubRaw)
-  .persist()
-nock('https://api.twitch.tv')
-  .get('/helix/subscriptions')
-  .query(true)
-  .reply(200, helixSubRaw)
-  .persist()
-nock('https://api.twitch.tv')
-  .get('/helix/streams')
-  .query(true)
-  .reply(200, helixStreamRaw)
-  .persist()
-nock('https://api.twitch.tv')
-  .get('/helix/games')
-  .query(true)
-  .reply(200, helixGameRaw)
-  .persist()
 
 describe('npm package', () => {
   it('everything should exist', () => {
@@ -170,56 +119,5 @@ describe('npm package', () => {
     expect(FollowPubSubModule).toBeTruthy()
     expect(FollowPubSubResolvers).toBeTruthy()
     expect(FollowPubSubSchema).toBeTruthy()
-  })
-
-  it('modules should work together', async () => {
-    const app = createApplication({
-      modules: [
-        QueryModule,
-        SubscriberModule,
-        UserModule,
-        StreamModule,
-        UserSubscriberLinkModule,
-        GameStreamLinkModule,
-        GameModule,
-        StreamUserLinkModule,
-        RedemptionPubSubModule,
-        RedemptionUserLinkModule,
-        ChatPubSubModule,
-        ChatUserLinkModule,
-        BitPubSubModule,
-        BitUserLinkModule,
-        SubscriptionPubSubModule,
-        SubscriptionPubSubChatLinkModule,
-        SubscriptionPubSubUserLinkModule,
-        FollowPubSubModule,
-        FollowPubSubUserLinkModule,
-      ],
-    })
-    const schema = app.createSchemaForApollo()
-
-    const document = parse(`
-      {
-        latestSub {
-          user{
-            stream {
-              game {
-                id
-                boxArtUrl
-                name
-              }
-            }
-          }
-        }
-      }
-    `)
-
-    const result = await execute({
-      schema,
-      contextValue,
-      document,
-    })
-
-    expect(result?.errors?.length).toBeFalsy()
   })
 })
