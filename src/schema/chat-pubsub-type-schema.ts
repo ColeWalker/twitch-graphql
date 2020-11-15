@@ -24,8 +24,13 @@ export const ChatPubSubResolvers = {
         await chatClient.connect()
 
         const curriedOnChat = async (cb: any) =>
-          chatClient.onMessage(async (channel, user, message) => {
-            return cb({ channel, displayName: user, message })
+          chatClient.onMessage(async (channel, user, message, msg) => {
+            return cb({
+              channel,
+              displayName: user,
+              message,
+              userInfo: msg.userInfo,
+            })
           })
 
         const asyncified = asyncify(curriedOnChat)
@@ -44,6 +49,20 @@ export const ChatPubSubSchema = gql`
     message: String
     displayName: String
     channel: String
+    userInfo: ChatUser
+  }
+
+  type ChatUser {
+    userName: String
+    displayName: String
+    color: String
+    userId: String
+    userType: String
+    isBroadcaster: Boolean
+    isSubscriber: Boolean
+    isFounder: Boolean
+    isMod: Boolean
+    isVip: Boolean
   }
 
   extend type Subscription {
