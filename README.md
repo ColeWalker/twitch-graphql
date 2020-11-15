@@ -33,7 +33,7 @@ By default it will run at `http://localhost:5555/graphql`.
     - [ChatUserLink](#chatuserlink)
     - [BitPubSub](#bitpubsub)
     - [BitUserLink](#bituserlink)
-  - [SubscriptionPubSub](#subscriptionpubsub)
+    - [SubscriptionPubSub](#subscriptionpubsub)
     - [SubscriptionPubSubChatLink](#subscriptionpubsubchatlink)
     - [SubscriptionPubSubUserLink](#subscriptionpubsubuserlink)
     - [FollowPubSub](#followpubsub)
@@ -533,6 +533,20 @@ type Chat {
   message: String
   displayName: String
   channel: String
+  userInfo: ChatUser
+}
+
+type ChatUser {
+  userName: String
+  displayName: String
+  color: String
+  userId: String
+  userType: String
+  isBroadcaster: Boolean
+  isSubscriber: Boolean
+  isFounder: Boolean
+  isMod: Boolean
+  isVip: Boolean
 }
 
 extend type Subscription {
@@ -585,7 +599,7 @@ extend type Bit {
 }
 ```
 
-## SubscriptionPubSub
+### SubscriptionPubSub
 
 ```ts
 import { SubscriptionPubSubModule } from 'twitch-graphql'
