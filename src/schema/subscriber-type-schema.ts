@@ -1,6 +1,6 @@
 import { createModule, gql } from 'graphql-modules'
 import { getLatestSub } from '../subscriptions/GetLatestSub'
-import { ApiClient, HelixSubscription } from 'twitch/lib'
+import { ApiClient, HelixSubscription } from 'twitch'
 import { getSubs } from '../subscriptions/GetSubs'
 import { getCurrentSubCount } from '../subscriptions/SubCount'
 import { getRandomSub } from '../subscriptions/GetRandomSub'

@@ -1,7 +1,8 @@
 import { createModule, gql } from 'graphql-modules'
 import asyncify from 'callback-to-async-iterator'
 import { ChatClient } from 'twitch-chat-client'
-import RefreshToken from '../helpers/RefreshToken'
+import RefreshToken, { rawToken } from '../helpers/RefreshToken'
+import tmi from 'tmi.js'
 
 export interface Chat {
   channel: string
@@ -13,7 +14,7 @@ export const ChatPubSubResolvers = {
   Subscription: {
     newChat: {
       subscribe: async (
-        _: any,
+        _: unknown,
         args: { channel: string },
         { user_id, secret, refresh_token }: GraphQLModules.Context
       ) => {
@@ -42,6 +43,33 @@ export const ChatPubSubResolvers = {
       },
     },
   },
+  Mutation: {
+    sendChat: async (
+      _: any,
+      args: { channel: string; message: string },
+      { user_id, secret, refresh_token, twitch_id }: GraphQLModules.Context
+    ) => {
+      const password = await rawToken(user_id, secret, refresh_token)
+
+      try {
+        const chatClient = tmi.Client({
+          identity: { username: twitch_id, password },
+          connection: {
+            reconnect: true,
+          },
+          channels: [args.channel],
+        })
+        await chatClient.connect()
+        await chatClient.say(args.channel, args.message)
+        await chatClient.disconnect()
+      } catch (err) {
+        console.error(err)
+        return false
+      }
+
+      return true
+    },
+  },
 }
 
 export const ChatPubSubSchema = gql`
@@ -67,6 +95,10 @@ export const ChatPubSubSchema = gql`
 
   extend type Subscription {
     newChat(channel: String!): Chat
+  }
+
+  extend type Mutation {
+    sendChat(channel: String!, message: String!): Boolean
   }
 `
 

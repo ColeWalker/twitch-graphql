@@ -1,5 +1,5 @@
 import { createModule, gql } from 'graphql-modules'
-import { ApiClient } from 'twitch/lib'
+import { ApiClient } from 'twitch'
 import asyncify from 'callback-to-async-iterator'
 import RefreshToken from '../helpers/RefreshToken'
 import { HelixFollow } from 'twitch'

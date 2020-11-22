@@ -552,6 +552,10 @@ type ChatUser {
 extend type Subscription {
   newChat(channel: String!): Chat
 }
+
+extend type Mutation {
+  sendChat(channel: String!, message: String!): Boolean
+}
 ```
 
 ### ChatUserLink

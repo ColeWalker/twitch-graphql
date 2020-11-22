@@ -1,4 +1,4 @@
-import { PubSubClient } from 'twitch-pubsub-client/lib'
+import { PubSubClient } from 'twitch-pubsub-client'
 
 import { getCurrentSubCount } from './SubCount'
 import { ApiClient } from 'twitch'

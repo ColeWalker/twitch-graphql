@@ -1,4 +1,4 @@
-import { ApiClient } from 'twitch/lib'
+import { ApiClient } from 'twitch'
 import RefreshToken from './RefreshToken'
 import express from 'express'
 import { PubSub } from 'graphql-subscriptions'
