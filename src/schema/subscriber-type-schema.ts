@@ -1,6 +1,6 @@
 import { createModule, gql } from 'graphql-modules'
 import { getLatestSub } from '../subscriptions/GetLatestSub'
-import { ApiClient, HelixSubscription } from 'twitch'
+import { ApiClient } from 'twitch'
 import { getSubs } from '../subscriptions/GetSubs'
 import { getCurrentSubCount } from '../subscriptions/SubCount'
 import { getRandomSub } from '../subscriptions/GetRandomSub'
@@ -63,20 +63,6 @@ export const SubscriberResolvers = {
       const allSubs = await getSubs(myId, twitchClient)
 
       return allSubs.find((sub) => sub.userDisplayName === args?.displayName)
-    },
-  },
-  Subscriber: {
-    async userId(obj: HelixSubscription) {
-      return obj.userId
-    },
-    async userDisplayName(obj: HelixSubscription) {
-      return obj.userDisplayName
-    },
-    async isGift(obj: HelixSubscription) {
-      return obj.isGift
-    },
-    async tier(obj: HelixSubscription) {
-      return obj.tier
     },
   },
 }
