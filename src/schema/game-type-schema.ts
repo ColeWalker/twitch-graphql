@@ -1,5 +1,4 @@
 import { createModule, gql } from 'graphql-modules'
-import { HelixGame } from 'twitch'
 import { ApiClient } from 'twitch'
 import RefreshToken from '../helpers/RefreshToken'
 
@@ -14,17 +13,6 @@ export const GameResolvers = {
       const twitchClient = new ApiClient({ authProvider, preAuth: true })
       const game = await twitchClient.helix.games.getGameByName(args.gameName)
       return game
-    },
-  },
-  Game: {
-    id(game: HelixGame) {
-      return game.id
-    },
-    name(game: HelixGame) {
-      return game.name
-    },
-    boxArtUrl(game: HelixGame) {
-      return game.boxArtUrl
     },
   },
 }

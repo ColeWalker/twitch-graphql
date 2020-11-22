@@ -61,7 +61,7 @@ export const FollowPubSubResolvers = {
     },
   },
 }
-// TODO: follow user link type
+
 export const FollowPubSubSchema = gql`
   type FollowSubscription {
     followDate: String

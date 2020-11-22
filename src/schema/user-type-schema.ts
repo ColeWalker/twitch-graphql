@@ -28,7 +28,6 @@ export const UserResolvers = {
   },
   User: {
     displayName(user: HelixUser) {
-      HelixFollow
       return user.displayName
     },
     description(user: HelixUser) {
