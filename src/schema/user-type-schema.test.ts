@@ -18,7 +18,7 @@ import {
   HelixFollow,
   HelixUser,
   HelixUserType,
-} from 'twitch/lib'
+} from 'twitch'
 import RefreshToken from '../helpers/RefreshToken'
 
 nock(`https://id.twitch.tv`)

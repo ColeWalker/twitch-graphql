@@ -1,5 +1,5 @@
 import { createModule, gql } from 'graphql-modules'
-import { ApiClient } from 'twitch/lib'
+import { ApiClient } from 'twitch'
 import RefreshToken from '../helpers/RefreshToken'
 
 import { Chat } from './chat-pubsub-type-schema'

@@ -1,6 +1,6 @@
 import { createModule, gql } from 'graphql-modules'
 import { PubSubBitsMessage } from 'twitch-pubsub-client'
-import { ApiClient } from 'twitch/lib'
+import { ApiClient } from 'twitch'
 import RefreshToken from '../helpers/RefreshToken'
 export const BitUserLinkResolvers = {
   Bit: {

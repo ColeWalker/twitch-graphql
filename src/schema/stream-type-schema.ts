@@ -1,6 +1,5 @@
 import { createModule, gql } from 'graphql-modules'
 import { ApiClient, HelixStream, HelixStreamData } from 'twitch'
-import { HelixStreamFilter } from 'twitch/lib/API/Helix/Stream/HelixStreamApi'
 import RefreshToken from '../helpers/RefreshToken'
 
 export const StreamResolvers = {
@@ -23,7 +22,7 @@ export const StreamResolvers = {
         )?.map((x) => x.id)
       }
 
-      const streamFilter: HelixStreamFilter = {
+      const streamFilter: any = {
         ...args.streamFilter,
         game: args.streamFilter?.gameIds
           ? [...args.streamFilter?.gameIds, ...gameIds]

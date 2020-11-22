@@ -20,7 +20,7 @@ import {
   validationMock,
 } from '../tests/mocks'
 import { StreamUserLinkModule } from './stream-user-link-type-schema'
-import { ApiClient, HelixGame } from 'twitch/lib'
+import { ApiClient, HelixGame } from 'twitch'
 import RefreshToken from '../helpers/RefreshToken'
 nock(`https://id.twitch.tv`)
   .post('/oauth2/token')

@@ -1,7 +1,7 @@
 import { createModule, gql } from 'graphql-modules'
 import asyncify from 'callback-to-async-iterator'
-import { PubSubClient } from 'twitch-pubsub-client/lib'
-import { ApiClient } from 'twitch/lib'
+import { PubSubClient } from 'twitch-pubsub-client'
+import { ApiClient } from 'twitch'
 import RefreshToken from '../helpers/RefreshToken'
 
 export const SubscriptionPubSubResolvers = {

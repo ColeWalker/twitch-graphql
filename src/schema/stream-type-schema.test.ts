@@ -17,7 +17,7 @@ import {
   authenticationMock,
   validationMock,
 } from '../tests/mocks'
-import { ApiClient, HelixStream } from 'twitch/lib'
+import { ApiClient, HelixStream } from 'twitch'
 import RefreshToken from '../helpers/RefreshToken'
 nock(`https://id.twitch.tv`)
   .post('/oauth2/token')

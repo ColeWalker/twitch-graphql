@@ -1,4 +1,4 @@
-import { PubSubClient } from 'twitch-pubsub-client/lib'
+import { PubSubClient } from 'twitch-pubsub-client'
 
 export default async function (channelID: string, pubSubClient: PubSubClient) {
   return await pubSubClient.onRedemption(channelID, (message) => {
