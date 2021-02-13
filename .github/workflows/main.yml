@@ -5,11 +5,7 @@ env:
   TWITCH_ID: ${{ secrets.TWITCH_ID }}
   TWITCH_USER_NAME: ${{ secrets.TWITCH_USER_NAME }}
   USER_ID: ${{ secrets.USER_ID }}
-on:
-  push:
-    branches: [master]
-  pull_request:
-    branches: [master]
+on: [pull_request, pull_request_target]
 jobs:
   build:
     runs-on: ubuntu-latest
